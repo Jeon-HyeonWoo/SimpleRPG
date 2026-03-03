@@ -9,9 +9,16 @@
 /**
  * 
  */
+
+class ASimpleRPGPlayerState;
+
 UCLASS()
 class SIMPLERPG_API ASimpleRPGGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+
+	ASimpleRPGGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
 };

@@ -4,16 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "SimpleRPGCharacter.generated.h"
+#include "AbilitySystemInterface.h"
+#include "SimpleRPGCharacterBase.generated.h"
 
 UCLASS()
-class SIMPLERPG_API ASimpleRPGCharacter : public ACharacter
+class SIMPLERPG_API ASimpleRPGCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ASimpleRPGCharacter();
+	ASimpleRPGCharacterBase();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,7 +24,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+public:
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+protected:
+
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent = nullptr;
 
 };

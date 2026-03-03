@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SimpleRPGCharacter.h"
+#include "SimpleRPGCharacterBase.h"
 
 // Sets default values
-ASimpleRPGCharacter::ASimpleRPGCharacter()
+ASimpleRPGCharacterBase::ASimpleRPGCharacterBase()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,23 +12,24 @@ ASimpleRPGCharacter::ASimpleRPGCharacter()
 }
 
 // Called when the game starts or when spawned
-void ASimpleRPGCharacter::BeginPlay()
+void ASimpleRPGCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ASimpleRPGCharacter::Tick(float DeltaTime)
+void ASimpleRPGCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
-void ASimpleRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+UAbilitySystemComponent* ASimpleRPGCharacterBase::GetAbilitySystemComponent() const
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	return AbilitySystemComponent;
 }
+
+// Called to bind functionality to input
+
 
