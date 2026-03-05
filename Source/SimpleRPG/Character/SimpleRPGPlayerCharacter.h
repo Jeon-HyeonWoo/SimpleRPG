@@ -9,6 +9,9 @@
 /**
  * 
  */
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class SIMPLERPG_API ASimpleRPGPlayerCharacter : public ASimpleRPGCharacterBase
 {
@@ -16,6 +19,16 @@ class SIMPLERPG_API ASimpleRPGPlayerCharacter : public ASimpleRPGCharacterBase
 	
 public:
 
+	ASimpleRPGPlayerCharacter();
+
 	/* override from ACharacter */
 	virtual void PossessedBy(AController* NewController) override;
+
+public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Camera")
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Camera")
+	TObjectPtr<UCameraComponent> CameraComponent;
 };
