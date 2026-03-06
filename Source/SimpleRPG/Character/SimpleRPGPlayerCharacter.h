@@ -11,6 +11,7 @@
  */
 class USpringArmComponent;
 class UCameraComponent;
+class UAnimInstance;
 
 UCLASS()
 class SIMPLERPG_API ASimpleRPGPlayerCharacter : public ASimpleRPGCharacterBase
@@ -24,6 +25,8 @@ public:
 	/* override from ACharacter */
 	virtual void PossessedBy(AController* NewController) override;
 
+	virtual void BeginPlay() override;
+
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Camera")
@@ -31,4 +34,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Animation")
+	TSubclassOf<UAnimInstance> UnArmedAnimLayer;
 };

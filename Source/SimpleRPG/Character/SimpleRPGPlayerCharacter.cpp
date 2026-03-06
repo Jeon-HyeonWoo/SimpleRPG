@@ -70,5 +70,22 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 		UE_LOG(LogTemp, Error, TEXT("PlayerState is invalid"));
 	}
 
+
+	if (USkeletalMeshComponent* MeshComponent = GetMesh())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UnArmedAnimLayer: %s"),
+			UnArmedAnimLayer ? *UnArmedAnimLayer->GetName() : TEXT("nullptr"));
+		MeshComponent->LinkAnimClassLayers(UnArmedAnimLayer);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("MeshComponent is invalid"));
+	}
 	
+}
+
+void ASimpleRPGPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
 }
