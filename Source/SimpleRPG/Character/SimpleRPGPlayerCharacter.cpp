@@ -1,10 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "SimpleRPGPlayerCharacter.h"
+
 //Unreal header
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/MovementComponent.h"
 //SimpleRPG header
-#include "SimpleRPGPlayerCharacter.h"
 #include "../Player/SimpleRPGPlayerState.h"
 
 
@@ -14,6 +17,10 @@
 
 ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter()
 {
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+
 	//Create SpringArmComponent
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARMCOMPONENT"));
 	if (IsValid(SpringArmComponent))
@@ -22,6 +29,10 @@ ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter()
 		SpringArmComponent->TargetArmLength = 400.0f;
 		SpringArmComponent->SocketOffset = FVector(0, 50, 70);
 		SpringArmComponent->bUsePawnControlRotation = true;
+
+		SpringArmComponent->bEnableCameraLag = true;
+		SpringArmComponent->CameraLagSpeed = 10.0f;
+		
 	}
 	else
 	{
