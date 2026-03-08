@@ -7,8 +7,10 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/MovementComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 //SimpleRPG header
 #include "../Player/SimpleRPGPlayerState.h"
+
 
 
 
