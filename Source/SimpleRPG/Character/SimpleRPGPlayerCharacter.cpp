@@ -10,6 +10,9 @@
 #include "Components/SkeletalMeshComponent.h"
 //SimpleRPG header
 #include "../Player/SimpleRPGPlayerState.h"
+#include "../GameMode/SimpleRPGGameMode.h"
+#include "PawnData.h"
+#include "../AbilitySystem/SimpleRPGAbilitySet.h"
 
 
 
@@ -59,20 +62,45 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	/*
-	* Connecting CharacterBase's ASC to PlayerState's ASC
+	* 1. Connecting CharacterBase's ASC to PlayerState's ASC
+	* 2. GiveToAbilitySystem from GameMode's PawnData
 	*/
 	ASimpleRPGPlayerState* SimpleRPGPlayerState = Cast<ASimpleRPGPlayerState>(GetPlayerState());
 
 	if (IsValid(SimpleRPGPlayerState))
 	{
 		AbilitySystemComponent = SimpleRPGPlayerState->GetAbilitySystemComponent();
+
+		if (HasAuthority())
+		{
+			ASimpleRPGGameMode* SimpleRPGGameMode = Cast<ASimpleRPGGameMode>(GetWorld()->GetAuthGameMode());
+			if (IsValid(SimpleRPGGameMode))
+			{
+				const UPawnData* PawnData = SimpleRPGGameMode->DefaultPawnData;
+				if (IsValid(PawnData) && IsValid(PawnData->AbilitySet))
+				{
+					PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("%d, %hs, PawnData or AbilitySet is invalid"), __LINE__, __FUNCTION__);
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("%d, %hs, GameMode is invalid"), __LINE__, __FUNCTION__);
+			}
+			
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("PlayerState is invalid"));
 	}
 
-
+	/*
+	* LinkAnimClassLayer Test code
+	*/
 	if (USkeletalMeshComponent* MeshComponent = GetMesh())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UnArmedAnimLayer: %s"),
@@ -84,6 +112,11 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 		UE_LOG(LogTemp, Error, TEXT("MeshComponent is invalid"));
 	}
 	
+	/*
+	* 
+	*/
+	
+
 }
 
 void ASimpleRPGPlayerCharacter::BeginPlay()
