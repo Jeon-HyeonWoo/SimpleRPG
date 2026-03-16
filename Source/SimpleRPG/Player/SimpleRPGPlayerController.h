@@ -12,6 +12,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class USimpleRPGInputConfig;
 
 UCLASS()
 class SIMPLERPG_API ASimpleRPGPlayerController : public APlayerController
@@ -48,4 +49,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
 	TObjectPtr<UInputAction> IA_Look;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
+	TObjectPtr<USimpleRPGInputConfig> InputConfig;
 };

@@ -7,6 +7,9 @@
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "SimpleRPGPlayerState.h"
+#include "../Character/PawnData.h"
+#include "../Input/SimpleRPGInputConfig.h"
 
 ASimpleRPGPlayerController::ASimpleRPGPlayerController()
 {
