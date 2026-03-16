@@ -29,6 +29,10 @@ public:
 	
 public:
 
+	void SetPawnData(UPawnData* InPawnData);
+
+public:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Pawn")
 	TObjectPtr<UPawnData> PawnData;
 

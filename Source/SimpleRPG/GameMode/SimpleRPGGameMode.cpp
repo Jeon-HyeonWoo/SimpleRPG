@@ -19,7 +19,7 @@ void ASimpleRPGGameMode::HandleStartingNewPlayer_Implementation(APlayerControlle
 	{
 		if (IsValid(DefaultPawnData))
 		{
-			PS->PawnData = DefaultPawnData;
+			PS->SetPawnData(DefaultPawnData);
 		}
 		else
 		{

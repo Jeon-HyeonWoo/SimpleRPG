@@ -9,6 +9,8 @@
 /**
  * 
  */
+class USimpleRPGAbilitySet;
+
 UCLASS(BlueprintType, Const, Meta = (DisplayName = "SimpleRPG Pawn Data"))
 class SIMPLERPG_API UPawnData : public UPrimaryDataAsset
 {
@@ -18,6 +20,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Pawn")
 	TSubclassOf<APawn> PawnClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Abilities")
+	TObjectPtr<USimpleRPGAbilitySet> AbilitySet;
 
 	/*
 	* TODO

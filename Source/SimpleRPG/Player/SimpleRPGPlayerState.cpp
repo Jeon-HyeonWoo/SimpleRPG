@@ -2,7 +2,9 @@
 
 
 #include "SimpleRPGPlayerState.h"
+#include "../Character/PawnData.h"
 #include "AbilitySystemComponent.h"
+#include "../AbilitySystem/SimpleRPGAbilitySet.h"
 
 ASimpleRPGPlayerState::ASimpleRPGPlayerState(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
@@ -18,4 +20,23 @@ ASimpleRPGPlayerState::ASimpleRPGPlayerState(const FObjectInitializer& ObjectIni
 UAbilitySystemComponent* ASimpleRPGPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent.Get();
-};
+}
+
+void ASimpleRPGPlayerState::SetPawnData(UPawnData* InPawnData)
+{
+	if (!IsValid(InPawnData))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, InPawnData is invalid"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	PawnData = InPawnData;
+
+	if (!IsValid(PawnData->AbilitySet))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, AbilitySet in PawnData is invalid"), __LINE__, __FUNCTION__);
+		return;
+	}
+	PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
+	
+}
