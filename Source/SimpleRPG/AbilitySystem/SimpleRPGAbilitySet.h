@@ -26,4 +26,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Abilities")
 	TArray<TSubclassOf<USimpleRPGGameplayAbility>> GrantedAbilities;
+	 
 };
