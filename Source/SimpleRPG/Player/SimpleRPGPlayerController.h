@@ -28,11 +28,6 @@ public:
 	/* InputComponent가 준비가 되었을 때 호출 */
 	virtual void SetupInputComponent() override;
 
-private:
-
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
@@ -42,13 +37,4 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
 	int32 InputMappingContextPriority = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
-	TObjectPtr<UInputAction> IA_Move;
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
-	TObjectPtr<UInputAction> IA_Look;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
-	TObjectPtr<USimpleRPGInputConfig> InputConfig;
 };

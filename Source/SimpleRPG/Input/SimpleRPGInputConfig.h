@@ -32,6 +32,14 @@ class SIMPLERPG_API USimpleRPGInputConfig : public UDataAsset
 	
 public:
 
+	UFUNCTION(BlueprintCallable, Category = "SimpleRPG|Input")
+	const UInputAction* FindNativeInputActionByTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
+
+	UFUNCTION(BlueprintCallable, Category = "SimpleRPG|Input")
+	const UInputAction* FindAbilityInputActionByTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
+
+public:
+
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Input")
 	TArray<FSimpleRPGInputAction> NativeInputActions;
 

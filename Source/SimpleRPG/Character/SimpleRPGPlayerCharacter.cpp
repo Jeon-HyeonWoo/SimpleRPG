@@ -8,11 +8,15 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/MovementComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "InputAction.h"
+#include "InputActionValue.h"
 //SimpleRPG header
 #include "../Player/SimpleRPGPlayerState.h"
 #include "../GameMode/SimpleRPGGameMode.h"
 #include "PawnData.h"
 #include "../AbilitySystem/SimpleRPGAbilitySet.h"
+#include "../Input/SimpleRPGInputConfig.h"
+#include "../Input/SimpleRPGInputComponent.h"
 
 
 
@@ -44,6 +48,7 @@ ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter()
 		UE_LOG(LogTemp, Error, TEXT("%d, %hs, SpringArmComponent is invalid"), __LINE__, __FUNCTION__);
 	}
 
+	//Create CameraComponent
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERACOMPONENT"));
 	if (IsValid(CameraComponent))
 	{
@@ -124,3 +129,50 @@ void ASimpleRPGPlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 }
+
+void ASimpleRPGPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	USimpleRPGInputComponent* SRPGIC = CastChecked<USimpleRPGInputComponent>(PlayerInputComponent);
+
+	//Native
+	SRPGIC->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag(FName("Input.Move")),
+		ETriggerEvent::Triggered, this, &ThisClass::MoveHandler);
+
+	SRPGIC->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag(FName("Input.Look")),
+		ETriggerEvent::Triggered, this, &ThisClass::LookHandler);
+}
+
+void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value)
+{
+	const FVector2D MovementVector = Value.Get<FVector2D>();
+	const FRotator MovementRotation(0.0f, GetControlRotation().Yaw, 0.0f);
+
+	if (MovementVector.X != 0.0f)
+	{
+		const FVector MovementDirection = MovementRotation.RotateVector(FVector::RightVector);
+		AddMovementInput(MovementDirection, MovementVector.X);
+	}
+
+	if (MovementVector.Y != 0.0f)
+	{
+		const FVector MovementDirection = MovementRotation.RotateVector(FVector::ForwardVector);
+		AddMovementInput(MovementDirection, MovementVector.Y);
+	}
+}
+
+void ASimpleRPGPlayerCharacter::LookHandler(const FInputActionValue& Value)
+{
+	const FVector2D LookVector = Value.Get<FVector2D>();
+
+	if (LookVector.X != 0.0f)
+	{
+		AddControllerYawInput(LookVector.X);
+	}
+	if (LookVector.Y != 0.0f)
+	{
+		AddControllerPitchInput(-LookVector.Y);
+	}
+}
+

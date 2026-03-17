@@ -12,6 +12,9 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UAnimInstance;
+class USimpleRPGInputConfig;
+class UInputAction;
+struct FInputActionValue;
 
 UCLASS()
 class SIMPLERPG_API ASimpleRPGPlayerCharacter : public ASimpleRPGCharacterBase
@@ -26,7 +29,10 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void BeginPlay() override;
-
+	
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+//Components
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Camera")
@@ -37,4 +43,23 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Animation")
 	TSubclassOf<UAnimInstance> UnArmedAnimLayer;
+
+
+//Native Input Handler Func
+public:
+
+	void MoveHandler(const FInputActionValue& Value);
+	void LookHandler(const FInputActionValue& Value);
+
+//Native Input
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Input")
+	TObjectPtr<USimpleRPGInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Input")
+	TObjectPtr<UInputAction> IA_Move;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Input")
+	TObjectPtr<UInputAction> IA_Look;
 };
