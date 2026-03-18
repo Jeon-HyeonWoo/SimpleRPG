@@ -40,3 +40,16 @@ const UInputAction* USimpleRPGInputConfig::FindAbilityInputActionByTag(const FGa
 
     return nullptr;
 }
+
+ESimpleRPGAbilityInputID USimpleRPGInputConfig::FindAbilityInputIDByTag(const FGameplayTag& InputTag) const
+{
+    for (const FSimpleRPGInputAction& Action : AbilityInputActions)
+    {
+        if (Action.InputAction && (Action.InputTag == InputTag))
+        {
+            return Action.AbilityInputID;
+        }
+    }
+
+    return ESimpleRPGAbilityInputID::None;
+}

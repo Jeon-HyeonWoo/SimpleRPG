@@ -10,6 +10,7 @@
 /**
  * 
  */
+
 UCLASS()
 class SIMPLERPG_API USimpleRPGInputComponent : public UEnhancedInputComponent
 {
@@ -26,12 +27,13 @@ public:
 		FuncType Func
 		);
 
-	template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
+
+	template<class UserClass>
 	void BindAbilityActions(
 		const USimpleRPGInputConfig* InputConfig,
 		UserClass* Object,
-		PressedFuncType PressedFunc,
-		ReleasedFuncType ReleasedFunc
+		void(UserClass::* PressedFunc)(const FInputActionValue&, FGameplayTag),
+		void(UserClass::* ReleasedFunc)(const FInputActionValue&, FGameplayTag)
 	);
 };
 
@@ -46,23 +48,22 @@ inline void USimpleRPGInputComponent::BindNativeAction(const USimpleRPGInputConf
 	}
 }
 
-template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
-inline void USimpleRPGInputComponent::BindAbilityActions(const USimpleRPGInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc)
+
+
+template<class UserClass>
+inline void USimpleRPGInputComponent::BindAbilityActions(const USimpleRPGInputConfig* InputConfig, UserClass* Object, void(UserClass::* PressedFunc)(const FInputActionValue&, FGameplayTag), void(UserClass::* ReleasedFunc)(const FInputActionValue&, FGameplayTag))
 {
 	check(InputConfig);
 
 	for (const FSimpleRPGInputAction& Action : InputConfig->AbilityInputActions)
 	{
-		if (Action.InputAction && Action.InputTag.IsValid())
+		if (PressedFunc)
 		{
-			if (PressedFunc)
-			{
-				BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc);
-			}
-			if (ReleasedFunc)
-			{
-				BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc);
-			}
+			BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag);
+		}
+		if (ReleasedFunc)
+		{
+			BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag);
 		}
 	}
 }

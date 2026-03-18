@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "GameplayTagContainer.h"
+#include "SimpleRPGAbilityInputID.h"
 #include "SimpleRPGInputConfig.generated.h"
 
 /**
@@ -23,6 +24,9 @@ struct FSimpleRPGInputAction
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag InputTag;
+
+	UPROPERTY(EditDefaultsOnly)
+	ESimpleRPGAbilityInputID AbilityInputID = ESimpleRPGAbilityInputID::None;
 };
 
 UCLASS()
@@ -37,6 +41,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "SimpleRPG|Input")
 	const UInputAction* FindAbilityInputActionByTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
+
+	UFUNCTION(BlueprintCallable, Category = "SimpleRPG|Input")
+	ESimpleRPGAbilityInputID FindAbilityInputIDByTag(const FGameplayTag& InputTag) const;
 
 public:
 

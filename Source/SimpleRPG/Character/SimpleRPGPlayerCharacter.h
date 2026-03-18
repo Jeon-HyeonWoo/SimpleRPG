@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SimpleRPGCharacterBase.h"
+#include "GameplayTagContainer.h"
 #include "SimpleRPGPlayerCharacter.generated.h"
 
 /**
@@ -50,6 +51,12 @@ public:
 
 	void MoveHandler(const FInputActionValue& Value);
 	void LookHandler(const FInputActionValue& Value);
+
+//Ability Input Handler Func
+public:
+
+	void OnAbilityInputPressed(const FInputActionValue& Value, FGameplayTag InputTag);
+	void OnAbilityInputReleased(const FInputActionValue& Value, FGameplayTag InputTag);
 
 //Native Input
 public:

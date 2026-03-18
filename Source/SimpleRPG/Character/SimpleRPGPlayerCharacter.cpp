@@ -10,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
+#include "AbilitySystemComponent.h"
 //SimpleRPG header
 #include "../Player/SimpleRPGPlayerState.h"
 #include "../GameMode/SimpleRPGGameMode.h"
@@ -136,12 +137,15 @@ void ASimpleRPGPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 
 	USimpleRPGInputComponent* SRPGIC = CastChecked<USimpleRPGInputComponent>(PlayerInputComponent);
 
-	//Native
+	//Native Bind
 	SRPGIC->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag(FName("Input.Move")),
 		ETriggerEvent::Triggered, this, &ThisClass::MoveHandler);
 
 	SRPGIC->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag(FName("Input.Look")),
 		ETriggerEvent::Triggered, this, &ThisClass::LookHandler);
+
+	//Ability Bind Pressed and Released
+	SRPGIC->BindAbilityActions(InputConfig, this, &ThisClass::OnAbilityInputPressed, &ThisClass::OnAbilityInputReleased);
 }
 
 void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value)
@@ -175,4 +179,40 @@ void ASimpleRPGPlayerCharacter::LookHandler(const FInputActionValue& Value)
 		AddControllerPitchInput(-LookVector.Y);
 	}
 }
+
+void ASimpleRPGPlayerCharacter::OnAbilityInputPressed(const FInputActionValue& Value, FGameplayTag InputTag)
+{
+	//ASC nullptr check
+	if (!AbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, AbilitySystemComponent is invalid"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//cast tag to id
+	const int32 InputID = static_cast<int32>(InputConfig->FindAbilityInputIDByTag(InputTag));
+	if (InputID != static_cast<int32>(ESimpleRPGAbilityInputID::None))
+	{
+		AbilitySystemComponent->AbilityLocalInputPressed(InputID);
+	}
+}
+
+void ASimpleRPGPlayerCharacter::OnAbilityInputReleased(const FInputActionValue& Value, FGameplayTag InputTag)
+{
+	if (!AbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, AbilitySystemComponent is invalid"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//cast tag to id
+	const int32 InputID = static_cast<int32>(InputConfig->FindAbilityInputIDByTag(InputTag));
+
+	if (InputID != static_cast<int32>(ESimpleRPGAbilityInputID::None))
+	{
+		AbilitySystemComponent->AbilityLocalInputReleased(InputID);
+	}
+}
+
+
 
