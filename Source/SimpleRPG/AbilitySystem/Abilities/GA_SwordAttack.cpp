@@ -1,0 +1,143 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "GA_SwordAttack.h"
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+
+UGA_SwordAttack::UGA_SwordAttack()
+{
+	/*
+	*	기본 인스턴스 정책 = 인스턴스를 만들지 않음
+		InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
+		이유 : 메모리 절약
+		예시 : 패시브 스킬 처럼 멤버 변수가 필요 없는 Ability는 인스턴스를 만들 이유가 없기 때문
+
+		우리가 쓰는 instancedPerActor는 콤보 상태 추적을 위해 멤버 변수 설치 및
+		같은 어빌리티를 공유하는 타 액터들과 상태를 달리해야하기 때문
+
+		NonInstanced = SharedPtr, InstancePerActor = UniquePtr 같은 느낌?
+	*/
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	
+}
+
+void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	if (bComboWindowOpen)
+	{
+		bNextComboQueued = true;
+	}
+}
+
+void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
+	/*
+	* SpecHandle : Spec 포인터라고 생각, ClearAbility 할 때 Handle번호를 받아서 제거
+	* ActorInfo : Ability를 소유한 Actor 정보, ActorInfo->AvatarActor로 Character에 접근, ActorInfo->ASC로 ASC에 접근 등등
+	* ActivationInfo : 어떻게 활성화가 되었는가?
+	* TriggerEventData : Event로 Trigger된 경우, 우리는 input으로 하기에 Nullptr
+	*/
+
+	/* CommitAbility : Ability실행 최종 확인 함수 */
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	ResetCombo();
+	CurrentComboCount = 1;
+
+	/* 일반 montage를 안쓰는 이유? : MontageTask는 Ability와 생명주기를 동일시 함으로 기존 montage를 쓴다면 직접 처리해야 하는 일이 많아짐  */
+	UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,				//Task를 소유하는 Ability
+		NAME_None,			//Task Instance 이름, Debuging용도
+		ComboMontage,		//재생할 Montage
+		1.0f,				// 재생속도
+		ComboSectionNames.IsValidIndex(0) ? ComboSectionNames[0] : NAME_None	//시작섹션이름
+	);
+
+	/* Montage가 정상적으로 재생이 완료 됐을 시 */
+	MontageTask->OnCompleted.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
+
+	/* Montage가 BlendOut 처리가 될 시(정상 재생이되, Blending Out을 하는 것 */
+	MontageTask->OnBlendOut.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
+
+	/* 다른 Montage에 의해 끊길 시, ex)피격 Montage재생 */
+	MontageTask->OnInterrupted.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
+
+	/* Ability 자체가 Cancel될 때, 태그 충돌 및 강제 캔슬 시 호출 */
+	MontageTask->OnCancelled.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
+
+	//Task를 실행시키는 함수
+	MontageTask->ReadyForActivation();
+}
+
+void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	/*
+	* bReplicateEndAbility : 멀티플레이어에서 종료를 네트워크로 전파할지 여부
+	* bWasCancelled : 정상 종료인지, Cancel인지 구분하는 Flag, OnMotageCompleted에서 호출하면 False, OnMontageCancelled = true
+	*/
+	ResetCombo();
+
+	/*
+	* EndAbility 기능 : 
+	* AbilityState = 비활성
+	* GameplayTag 해제,
+	* Activate AbilityTask 정리,
+	* ASC에 Ability가 끝났다를 알림
+	*/
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UGA_SwordAttack::OpenComboWindow()
+{
+	bComboWindowOpen = true;
+}
+
+void UGA_SwordAttack::CloseComboWindow()
+{
+	bComboWindowOpen = false;
+	if (bNextComboQueued)
+	{
+		StartNextCombo();
+	}
+}
+
+void UGA_SwordAttack::OnMontageCompleted()
+{
+	/* 정상 종료, 콤보 입력 없이 몽타주가 끝까지 재생되었거나, 콤보 피니시 후 종료 */
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void UGA_SwordAttack::OnMontageCancelled()
+{
+	/* 비정상 종료, 피격 및 다른 Ability나 행동으로 의해 끊길 경우 */
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+void UGA_SwordAttack::StartNextCombo()
+{
+	bNextComboQueued = false;
+	CurrentComboCount++;
+
+	//콤보카운트가 넘어가거나, Montage Section이름이 이상하다면? 콤보시작 x
+	if (CurrentComboCount > MaxComboCount || !ComboSectionNames.IsValidIndex(CurrentComboCount - 1))
+	{
+		return;
+	}
+
+	/* 다음섹션 값이 있다면?! 다음 섹션으로 점프 */
+	FName NextSection = ComboSectionNames[CurrentComboCount - 1];
+	MontageJumpToSection(NextSection);
+
+
+}
+
+void UGA_SwordAttack::ResetCombo()
+{
+	CurrentComboCount = 0;
+	bComboWindowOpen = false;
+	bNextComboQueued = false;
+}

@@ -17,6 +17,4 @@ class SIMPLERPG_API USimpleRPGGameplayAbility : public UGameplayAbility
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Ability")
-	FGameplayTag InputTag;
 };
