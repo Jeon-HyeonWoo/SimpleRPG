@@ -57,6 +57,14 @@ public:
 	UFUNCTION()
 	void OnMontageCancelled();
 
+protected:
+
+	UFUNCTION()
+	void OnComboWindowOpen(FGameplayEventData PayLoad);
+
+	UFUNCTION()
+	void OnComboWindowClose(FGameplayEventData PayLoad);
+
 private:
 
 	void StartNextCombo();

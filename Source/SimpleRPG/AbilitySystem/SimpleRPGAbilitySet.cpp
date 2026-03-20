@@ -15,16 +15,17 @@ void USimpleRPGAbilitySet::GiveToAbilitySystem(UAbilitySystemComponent* ASC) con
 		return;
 	}
 
-	for (const TSubclassOf<USimpleRPGGameplayAbility>& AbilityClass : GrantedAbilities)
+	for (const FSimpleRPGAbilitySetEntry& Entry : GrantedAbilities)
 	{
-		if (!IsValid(AbilityClass))
+		if (!IsValid(Entry.AbilityClass))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s, is invalid"), *(AbilityClass.Get()->GetName()));
+			UE_LOG(LogTemp, Warning, TEXT("%s, is invalid"), *(Entry.AbilityClass.Get()->GetName()));
 			continue;
 		}
 
 		/* Spec = 말 그대로 Ability에 대한 스펙, 정보 묶음 AbilityClass와 Level, 부여오브젝트, 런타임테그, 핸들(포인터개념)을 포함 */
-		FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
+		FGameplayAbilitySpec AbilitySpec(Entry.AbilityClass, 1);
+		AbilitySpec.InputID = static_cast<int32>(Entry.InputID);
 		ASC->GiveAbility(AbilitySpec);
 	}
 

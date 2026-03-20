@@ -3,6 +3,7 @@
 
 #include "GA_SwordAttack.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 
 UGA_SwordAttack::UGA_SwordAttack()
 {
@@ -18,19 +19,34 @@ UGA_SwordAttack::UGA_SwordAttack()
 		NonInstanced = SharedPtr, InstancePerActor = UniquePtr 같은 느낌?
 	*/
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	bRetriggerInstancedAbility = false;
+	
+	// 활성화 도중 재 활성화 방지
+	FGameplayTag SwordAttackTag = FGameplayTag::RequestGameplayTag(FName("Ability.SwordAttack"));
+
+	//이 Ability가 활성화되면 캐릭터에 Tag부여
+	ActivationOwnedTags.AddTag(SwordAttackTag);
+
+	// 캐릭터에 이 Tag가 붙어있으면 Ability활성화 차단
+	ActivationBlockedTags.AddTag(SwordAttackTag);
 	
 }
 
 void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
+	UE_LOG(LogTemp, Warning, TEXT("InputPressed - ComboWindowOpen : %s"), bComboWindowOpen ? TEXT("true") : TEXT("false"));
+
 	if (bComboWindowOpen)
 	{
 		bNextComboQueued = true;
+		StartNextCombo();
+		UE_LOG(LogTemp, Warning, TEXT("Combo Queued"));
 	}
 }
 
 void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("GA_SworldAttack::AtivateAbility Called"));
 	/*
 	* SpecHandle : Spec 포인터라고 생각, ClearAbility 할 때 Handle번호를 받아서 제거
 	* ActorInfo : Ability를 소유한 Actor 정보, ActorInfo->AvatarActor로 Character에 접근, ActorInfo->ASC로 ASC에 접근 등등
@@ -71,10 +87,32 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 	//Task를 실행시키는 함수
 	MontageTask->ReadyForActivation();
+
+	UAbilityTask_WaitGameplayEvent* WaitOpenTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+		this,		//소유 Ability
+		FGameplayTag::RequestGameplayTag(FName("Event.ComboWindow.Open")) //기다릴 Event Tag
+	);
+
+
+	/* Event 도착시 호출될 callback Function */
+	WaitOpenTask->EventReceived.AddDynamic(this, &UGA_SwordAttack::OnComboWindowOpen);	
+	/* 실행 함수 */
+	WaitOpenTask->ReadyForActivation();		
+
+	UAbilityTask_WaitGameplayEvent* WaitCloseTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+		this,
+		FGameplayTag::RequestGameplayTag(FName("Event.ComboWindow.Close"))
+	);
+	WaitCloseTask->EventReceived.AddDynamic(
+		this,
+		&UGA_SwordAttack::OnComboWindowClose
+	);
+	WaitCloseTask->ReadyForActivation();
 }
 
 void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	UE_LOG(LogTemp, Warning, TEXT("GA_SwordAttack::EndAbility - WasCancelled : %s"), bWasCancelled ? TEXT("true") : TEXT("false"));
 	/*
 	* bReplicateEndAbility : 멀티플레이어에서 종료를 네트워크로 전파할지 여부
 	* bWasCancelled : 정상 종료인지, Cancel인지 구분하는 Flag, OnMotageCompleted에서 호출하면 False, OnMontageCancelled = true
@@ -101,7 +139,7 @@ void UGA_SwordAttack::CloseComboWindow()
 	bComboWindowOpen = false;
 	if (bNextComboQueued)
 	{
-		StartNextCombo();
+		bNextComboQueued = false;
 	}
 }
 
@@ -115,6 +153,18 @@ void UGA_SwordAttack::OnMontageCancelled()
 {
 	/* 비정상 종료, 피격 및 다른 Ability나 행동으로 의해 끊길 경우 */
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+void UGA_SwordAttack::OnComboWindowOpen(FGameplayEventData PayLoad)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindow Opened"));
+	OpenComboWindow(); 
+}
+
+void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindow Close"));
+	CloseComboWindow();
 }
 
 void UGA_SwordAttack::StartNextCombo()

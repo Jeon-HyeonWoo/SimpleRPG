@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "../Input/SimpleRPGAbilityInputID.h"
 #include "SimpleRPGAbilitySet.generated.h"
 
 /**
@@ -12,6 +13,18 @@
 
 class USimpleRPGGameplayAbility;
 class UAbilitySystemComponent;
+
+USTRUCT(BlueprintType)
+struct FSimpleRPGAbilitySetEntry
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USimpleRPGGameplayAbility> AbilityClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	ESimpleRPGAbilityInputID InputID = ESimpleRPGAbilityInputID::None;
+};
 
 UCLASS()
 class SIMPLERPG_API USimpleRPGAbilitySet : public UPrimaryDataAsset
@@ -25,6 +38,6 @@ public:
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Abilities")
-	TArray<TSubclassOf<USimpleRPGGameplayAbility>> GrantedAbilities;
+	TArray<FSimpleRPGAbilitySetEntry> GrantedAbilities;
 	 
 };

@@ -76,6 +76,7 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 	if (IsValid(SimpleRPGPlayerState))
 	{
 		AbilitySystemComponent = SimpleRPGPlayerState->GetAbilitySystemComponent();
+		AbilitySystemComponent->InitAbilityActorInfo(SimpleRPGPlayerState, this);
 
 		if (HasAuthority())
 		{
