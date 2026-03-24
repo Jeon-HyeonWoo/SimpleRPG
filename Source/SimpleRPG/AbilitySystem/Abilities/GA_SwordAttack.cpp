@@ -64,29 +64,7 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 	ResetCombo();
 	CurrentComboCount = 1;
 
-	/* 일반 montage를 안쓰는 이유? : MontageTask는 Ability와 생명주기를 동일시 함으로 기존 montage를 쓴다면 직접 처리해야 하는 일이 많아짐  */
-	UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,				//Task를 소유하는 Ability
-		NAME_None,			//Task Instance 이름, Debuging용도
-		ComboMontage,		//재생할 Montage
-		1.0f,				// 재생속도
-		ComboSectionNames.IsValidIndex(0) ? ComboSectionNames[0] : NAME_None	//시작섹션이름
-	);
-
-	/* Montage가 정상적으로 재생이 완료 됐을 시 */
-	MontageTask->OnCompleted.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
-
-	/* Montage가 BlendOut 처리가 될 시(정상 재생이되, Blending Out을 하는 것 */
-	MontageTask->OnBlendOut.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
-
-	/* 다른 Montage에 의해 끊길 시, ex)피격 Montage재생 */
-	MontageTask->OnInterrupted.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
-
-	/* Ability 자체가 Cancel될 때, 태그 충돌 및 강제 캔슬 시 호출 */
-	MontageTask->OnCancelled.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
-
-	//Task를 실행시키는 함수
-	MontageTask->ReadyForActivation();
+	PlayComboMontage(0);
 
 	UAbilityTask_WaitGameplayEvent* WaitOpenTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this,		//소유 Ability
@@ -151,6 +129,11 @@ void UGA_SwordAttack::OnMontageCompleted()
 
 void UGA_SwordAttack::OnMontageCancelled()
 {
+	/* 콤보 전환 시 무시 */
+	if (bIsTransitioningCombo)
+	{
+		return;
+	}
 	/* 비정상 종료, 피격 및 다른 Ability나 행동으로 의해 끊길 경우 */
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
@@ -167,21 +150,53 @@ void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 	CloseComboWindow();
 }
 
+void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
+{
+	/* ComboMontages의 IndexValid check */
+	if (!ComboMontages.IsValidIndex(MontageIndex))
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
+
+	/* 일반 몽타주를 안쓰는 이유 : Ability와 생명주기를 같이 함 + Montage의 기능을 ability와 합쳐서 간소화 */
+	UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,							/* Task를 소유하고 있는 Ability */
+		NAME_None,						/* Task Instance 이름, Debug용도 */
+		ComboMontages[MontageIndex],	/* 재생할 Montage */
+		1.0f,							/* 재생 속도 */
+		NAME_None						/* 시작 섹션 이름 -> 단일 Montage라 필요없음 */
+	);
+
+	/* Montage의 정상적 재생 종료 */
+	MontageTask->OnCompleted.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
+
+	/* Montage가 BlendOut 처리, 정상적인 재생과 다음 Montage와의 Blend */
+	MontageTask->OnBlendOut.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
+
+	/* 다른 Montage에 의해 끊길 시 ex)피격시 피격 Montage 재생 */
+	MontageTask->OnInterrupted.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
+
+	/* Ability 자체가 Cancel될 때, 태그 충돌 및 강제 캔슬 시 호출 */
+	MontageTask->OnCancelled.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
+
+	/* Task 실행 */
+	MontageTask->ReadyForActivation();
+}
+
 void UGA_SwordAttack::StartNextCombo()
 {
 	bNextComboQueued = false;
 	CurrentComboCount++;
 
-	//콤보카운트가 넘어가거나, Montage Section이름이 이상하다면? 콤보시작 x
-	if (CurrentComboCount > MaxComboCount || !ComboSectionNames.IsValidIndex(CurrentComboCount - 1))
+	if (CurrentComboCount > ComboMontages.Num())
 	{
 		return;
 	}
 
-	/* 다음섹션 값이 있다면?! 다음 섹션으로 점프 */
-	FName NextSection = ComboSectionNames[CurrentComboCount - 1];
-	MontageJumpToSection(NextSection);
-
+	bIsTransitioningCombo = true;
+	PlayComboMontage(CurrentComboCount - 1);
+	bIsTransitioningCombo = false;
 
 }
 
@@ -190,4 +205,5 @@ void UGA_SwordAttack::ResetCombo()
 	CurrentComboCount = 0;
 	bComboWindowOpen = false;
 	bNextComboQueued = false;
+	bIsTransitioningCombo = false;
 }

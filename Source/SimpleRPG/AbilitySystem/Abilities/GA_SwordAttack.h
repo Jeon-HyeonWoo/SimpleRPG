@@ -67,19 +67,18 @@ protected:
 
 private:
 
+	void PlayComboMontage(int32 MontageIndex);
+
 	void StartNextCombo();
 	void ResetCombo();
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combo")
-	TObjectPtr<UAnimMontage> ComboMontage;
+	TArray<TObjectPtr<UAnimMontage>> ComboMontages;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Combo")
-	TArray<FName> ComboSectionNames;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Combo")
-	int32 MaxComboCount = 3;
+	UPROPERTY(BlueprintReadOnly, Category = "Combo")
+	bool bIsTransitioningCombo = false;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
 	int32 CurrentComboCount = 0;
