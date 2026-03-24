@@ -5,15 +5,25 @@
 #include "../Character/PawnData.h"
 #include "AbilitySystemComponent.h"
 #include "../AbilitySystem/SimpleRPGAbilitySet.h"
+#include "../AbilitySystem/SimpleRPGAttributeSet.h"
 
 ASimpleRPGPlayerState::ASimpleRPGPlayerState(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
 {
+	//Create AbilitySystemComponent
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 
 	if(IsValid(AbilitySystemComponent))
 	{
 		UE_LOG(LogTemp, Log, TEXT("ASC Created Successfully"));
+	}
+
+	//CreateAttributeSet
+	AttributeSet = CreateDefaultSubobject<USimpleRPGAttributeSet>(TEXT("AttributeSet"));
+
+	if (!IsValid(AttributeSet))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs AttributeSet Create Failed"), __LINE__, __FUNCTION__);
 	}
 }
 

@@ -89,5 +89,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
 	bool bNextComboQueued = false;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Combo")
+	TSubclassOf<UGameplayEffect> BlockMovementEffect;
 
+	FActiveGameplayEffectHandle BlockMovementEffectHandle;
 };

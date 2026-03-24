@@ -15,6 +15,7 @@
 
 class UPawnData;
 class UAbilitySystemComponent;
+class USimpleRPGAttributeSet;
 
 UCLASS()
 class SIMPLERPG_API ASimpleRPGPlayerState : public APlayerState, public IAbilitySystemInterface
@@ -27,6 +28,7 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
+	USimpleRPGAttributeSet* GetAttributeSet() const { return AttributeSet; }
 public:
 
 	void SetPawnData(UPawnData* InPawnData);
@@ -40,5 +42,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<USimpleRPGAttributeSet> AttributeSet;
 
 };

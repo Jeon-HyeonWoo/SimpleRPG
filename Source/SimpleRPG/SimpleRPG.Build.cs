@@ -14,6 +14,7 @@ public class SimpleRPG : ModuleRules
 			"Engine",
 			"InputCore",
 			"EnhancedInput",
+			"NetCore",
 			"GameplayAbilities",
 			"GameplayTags",
 			"GameplayTasks",

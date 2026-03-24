@@ -4,6 +4,7 @@
 #include "GA_SwordAttack.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "AbilitySystemComponent.h"
 
 UGA_SwordAttack::UGA_SwordAttack()
 {
@@ -64,6 +65,13 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 	ResetCombo();
 	CurrentComboCount = 1;
 
+	if (BlockMovementEffect)
+	{
+		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
+			Handle, ActorInfo, ActivationInfo, BlockMovementEffect.GetDefaultObject(), 1.0f
+		);
+	}
+
 	PlayComboMontage(0);
 
 	UAbilityTask_WaitGameplayEvent* WaitOpenTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
@@ -91,6 +99,12 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	UE_LOG(LogTemp, Warning, TEXT("GA_SwordAttack::EndAbility - WasCancelled : %s"), bWasCancelled ? TEXT("true") : TEXT("false"));
+
+	if (BlockMovementEffectHandle.IsValid())
+	{
+		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
+	}
+
 	/*
 	* bReplicateEndAbility : 멀티플레이어에서 종료를 네트워크로 전파할지 여부
 	* bWasCancelled : 정상 종료인지, Cancel인지 구분하는 Flag, OnMotageCompleted에서 호출하면 False, OnMontageCancelled = true

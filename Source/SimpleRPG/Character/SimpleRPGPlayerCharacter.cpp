@@ -18,6 +18,7 @@
 #include "../AbilitySystem/SimpleRPGAbilitySet.h"
 #include "../Input/SimpleRPGInputConfig.h"
 #include "../Input/SimpleRPGInputComponent.h"
+#include "../AbilitySystem/SimpleRPGAttributeSet.h"
 
 
 
@@ -77,6 +78,14 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 	{
 		AbilitySystemComponent = SimpleRPGPlayerState->GetAbilitySystemComponent();
 		AbilitySystemComponent->InitAbilityActorInfo(SimpleRPGPlayerState, this);
+
+		/* AttributeSet(Character Stat) Initialize */
+		if (USimpleRPGAttributeSet* AS = const_cast<USimpleRPGAttributeSet*>(SimpleRPGPlayerState->GetAttributeSet()))
+		{
+			AS->InitMovementSpeed(600.0f);
+			AS->InitHealth(100.0f); 
+			AS->InitMaxHealth(100.0f);
+		}
 
 		if (HasAuthority())
 		{
@@ -151,6 +160,15 @@ void ASimpleRPGPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 
 void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value)
 {
+	if (AbilitySystemComponent)
+	{
+		const USimpleRPGAttributeSet* AS = AbilitySystemComponent->GetSet<USimpleRPGAttributeSet>();
+		if (AS && (AS->GetMovementSpeed() <= 0.0f))
+		{
+			return;
+		}
+	}
+
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 	const FRotator MovementRotation(0.0f, GetControlRotation().Yaw, 0.0f);
 
