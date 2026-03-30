@@ -14,6 +14,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UAnimInstance;
 class USimpleRPGInputConfig;
+class USimpleRPGEquipmentComponent;
 class UInputAction;
 struct FInputActionValue;
 
@@ -42,8 +43,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Animation")
-	TSubclassOf<UAnimInstance> UnArmedAnimLayer;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Equipment")
+	TObjectPtr<USimpleRPGEquipmentComponent> EquipmentComponent;
 
 
 //Native Input Handler Func

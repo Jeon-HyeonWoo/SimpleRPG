@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "../Input/SimpleRPGAbilityInputID.h"
+#include "GameplayAbilitySpec.h"
 #include "SimpleRPGAbilitySet.generated.h"
 
 /**
@@ -26,6 +27,23 @@ struct FSimpleRPGAbilitySetEntry
 	ESimpleRPGAbilityInputID InputID = ESimpleRPGAbilityInputID::None;
 };
 
+/*
+* GiveToAbilitySystem의 결과를 보관하는 구조체. Granted된 쪽이 소유
+*/
+USTRUCT(BlueprintType)
+struct FSimpleRPGAbilitySet_GrantedHandles
+{
+	GENERATED_BODY()
+
+	void AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle);
+	void RemoveFromAbilitySystem(UAbilitySystemComponent* ASC);
+
+private:
+	UPROPERTY()
+	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
+
+};
+
 UCLASS()
 class SIMPLERPG_API USimpleRPGAbilitySet : public UPrimaryDataAsset
 {
@@ -33,7 +51,7 @@ class SIMPLERPG_API USimpleRPGAbilitySet : public UPrimaryDataAsset
 	
 public:
 
-	void GiveToAbilitySystem(UAbilitySystemComponent* ASC) const;
+	void GiveToAbilitySystem(UAbilitySystemComponent* ASC, FSimpleRPGAbilitySet_GrantedHandles* OutGrantedHandles = nullptr) const;
 
 public:
 

@@ -11,6 +11,7 @@
  */
 class USimpleRPGAbilitySet;
 class USimpleRPGInputConfig;
+class UWeaponData;
 
 UCLASS(BlueprintType, Const, Meta = (DisplayName = "SimpleRPG Pawn Data"))
 class SIMPLERPG_API UPawnData : public UPrimaryDataAsset
@@ -27,6 +28,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Input")
 	TObjectPtr<USimpleRPGInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Weapon")
+	TObjectPtr<UWeaponData> DefaultWeaponData;
 
 	/*
 	* TODO

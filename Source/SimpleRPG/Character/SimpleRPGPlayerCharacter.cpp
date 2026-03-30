@@ -19,6 +19,8 @@
 #include "../Input/SimpleRPGInputConfig.h"
 #include "../Input/SimpleRPGInputComponent.h"
 #include "../AbilitySystem/SimpleRPGAttributeSet.h"
+#include "../Equipment/SimpleRPGEquipmentComponent.h"
+#include "../Weapon/WeaponData.h"
 
 
 
@@ -61,6 +63,13 @@ ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%d, %hs, CameraComponent is invalid"), __LINE__, __FUNCTION__);
 	}
+
+	//Create EquipmentComponent
+	EquipmentComponent = CreateDefaultSubobject<USimpleRPGEquipmentComponent>(TEXT("EQUIPMENTCOMPONENT"));
+	if (!IsValid(EquipmentComponent))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, EquipmentComponent is invalid"), __LINE__, __FUNCTION__);
+	}
 	
 }
 
@@ -97,9 +106,10 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 				{
 					PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
 				}
-				else
+				
+				if (IsValid(PawnData->DefaultWeaponData) && IsValid(EquipmentComponent))
 				{
-					UE_LOG(LogTemp, Error, TEXT("%d, %hs, PawnData or AbilitySet is invalid"), __LINE__, __FUNCTION__);
+					EquipmentComponent->EquipWeapon(PawnData->DefaultWeaponData);
 				}
 			}
 			else
@@ -113,25 +123,6 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 	{
 		UE_LOG(LogTemp, Error, TEXT("PlayerState is invalid"));
 	}
-
-	/*
-	* LinkAnimClassLayer Test code
-	*/
-	if (USkeletalMeshComponent* MeshComponent = GetMesh())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UnArmedAnimLayer: %s"),
-			UnArmedAnimLayer ? *UnArmedAnimLayer->GetName() : TEXT("nullptr"));
-		MeshComponent->LinkAnimClassLayers(UnArmedAnimLayer);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("MeshComponent is invalid"));
-	}
-	
-	/*
-	* 
-	*/
-	
 
 }
 
