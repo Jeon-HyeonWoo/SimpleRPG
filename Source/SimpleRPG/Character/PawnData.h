@@ -31,7 +31,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Weapon")
 	TObjectPtr<UWeaponData> DefaultWeaponData;
-
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Weapon")
+	TArray<TObjectPtr<UWeaponData>> WeaponSlots;
+	
 	/*
 	* TODO
 	* AbilitySet //DO

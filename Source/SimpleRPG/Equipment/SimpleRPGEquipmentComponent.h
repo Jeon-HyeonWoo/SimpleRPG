@@ -10,6 +10,7 @@
 
 class UWeaponData;
 class UAbilitySystemComponent;
+class USimpleRPGGameplayAbility;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -23,10 +24,17 @@ public:
 
 public:
 
+	/* PawnData의 WeaponSlot을 받아서 초기화 */
+	void InitializeWeaponSlot(const TArray<TObjectPtr<UWeaponData>>& InWeaponSlots);
+
+	/* 입력 시 호출, PendingWeaponData 세팅 후 GA_WeaponSwap 활성화*/
+	void RequestWeaponSwap(int32 SlotIndex);
+
 	void EquipWeapon(const UWeaponData* NewWeaponData);
 	void UnEquipWeapon();
 
 	const UWeaponData* GetCurrentWeaponData() const { return CurrentWeaponData; }
+	const UWeaponData* GetPendingWeaponData() const { return PendingWeaponData; }
 
 private:
 
@@ -35,7 +43,18 @@ private:
 private:
 
 	UPROPERTY()
+	TArray<TObjectPtr<UWeaponData>> WeaponSlots;
+
+	UPROPERTY()
 	TObjectPtr<const UWeaponData> CurrentWeaponData;
+
+	UPROPERTY()
+	TObjectPtr<const UWeaponData> PendingWeaponData;
+
+	/* RequestWepaonSwap에서 활성화 할 GA class */
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Ability")
+	TSubclassOf<USimpleRPGGameplayAbility> WeaponSwapAbilityClass;
+
 
 	FSimpleRPGAbilitySet_GrantedHandles GrantedHandles;
 		

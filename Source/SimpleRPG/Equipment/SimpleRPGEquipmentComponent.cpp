@@ -9,6 +9,7 @@
 #include "../AbilitySystem/Abilities/SimpleRPGGameplayAbility.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerState.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values for this component's properties
 
@@ -16,6 +17,61 @@ USimpleRPGEquipmentComponent::USimpleRPGEquipmentComponent(const FObjectInitiali
 	: Super(ObjectInitializer)
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void USimpleRPGEquipmentComponent::InitializeWeaponSlot(const TArray<TObjectPtr<UWeaponData>>& InWeaponSlots)
+{
+	WeaponSlots = InWeaponSlots;
+}
+
+void USimpleRPGEquipmentComponent::RequestWeaponSwap(int32 SlotIndex)
+{
+	//slot index 유효성 검사
+	if (!WeaponSlots.IsValidIndex(SlotIndex))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, invalid slot index"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//Swap 대상 Weapon Data
+	const UWeaponData* TargetWeaponData = WeaponSlots[SlotIndex];
+
+	if (!IsValid(TargetWeaponData))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, TargetWaeponData is invalid"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//현재 무기와 다음 교체 무기가 같다면 무시
+	if (CurrentWeaponData == TargetWeaponData)
+	{
+		return;
+	}
+
+	UAbilitySystemComponent* ASC = GetASC();
+	if (IsValid(ASC))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, ASC is invalid"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//GA_WeaponSwap 이 읽어갈 변수값 세팅
+	PendingWeaponData = TargetWeaponData;
+
+	if (WeaponSwapAbilityClass)
+	{
+		/* 활성화 실패시 PendingData 정리 */
+		if (!ASC->TryActivateAbilityByClass(WeaponSwapAbilityClass))
+		{
+			PendingWeaponData = nullptr;
+			UE_LOG(LogTemp, Error, TEXT("%d, %hs, Faild to activate Weapon Swap Ability"), __LINE__, __FUNCTION__);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%d, %hs, WeaponSwapAbilityClass is not Set"), __LINE__, __FUNCTION__);
+	}
+
 }
 
 void USimpleRPGEquipmentComponent::EquipWeapon(const UWeaponData* NewWeaponData)
@@ -62,6 +118,9 @@ void USimpleRPGEquipmentComponent::EquipWeapon(const UWeaponData* NewWeaponData)
 
 	/* 4. 현재 Weapon을 새로운 Weapon Data로 변경 */
 	CurrentWeaponData = NewWeaponData;
+
+	//GA에서 사용된 PendingData 정리
+	PendingWeaponData = nullptr;
 }
 
 void USimpleRPGEquipmentComponent::UnEquipWeapon()
