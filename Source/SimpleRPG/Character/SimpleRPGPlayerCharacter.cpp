@@ -107,9 +107,10 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 					PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
 				}
 				
-				if (IsValid(PawnData->DefaultWeaponData) && IsValid(EquipmentComponent))
+				if (IsValid(EquipmentComponent) && PawnData->WeaponSlots.Num() > 0)
 				{
-					EquipmentComponent->EquipWeapon(PawnData->DefaultWeaponData);
+					EquipmentComponent->InitializeWeaponSlot(PawnData->WeaponSlots);
+					EquipmentComponent->EquipWeapon(PawnData->WeaponSlots[0]);
 				}
 			}
 			else
@@ -145,11 +146,17 @@ void ASimpleRPGPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 	SRPGIC->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag(FName("Input.Look")),
 		ETriggerEvent::Triggered, this, &ThisClass::LookHandler);
 
+	//Weapon Slot Bind
+	SRPGIC->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag(FName("Input.WeaponSwap1")),
+		ETriggerEvent::Started, this, &ThisClass::WeaponslotHandler);
+	SRPGIC->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag(FName("Input.WeaponSwap2")),
+		ETriggerEvent::Started, this, &ThisClass::WeaponslotHandler);
+
 	//Ability Bind Pressed and Released
 	SRPGIC->BindAbilityActions(InputConfig, this, &ThisClass::OnAbilityInputPressed, &ThisClass::OnAbilityInputReleased);
 }
 
-void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value)
+void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value, FGameplayTag InputTag)
 {
 	if (AbilitySystemComponent)
 	{
@@ -176,7 +183,7 @@ void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value)
 	}
 }
 
-void ASimpleRPGPlayerCharacter::LookHandler(const FInputActionValue& Value)
+void ASimpleRPGPlayerCharacter::LookHandler(const FInputActionValue& Value, FGameplayTag InputTag)
 {
 	const FVector2D LookVector = Value.Get<FVector2D>();
 
@@ -187,6 +194,22 @@ void ASimpleRPGPlayerCharacter::LookHandler(const FInputActionValue& Value)
 	if (LookVector.Y != 0.0f)
 	{
 		AddControllerPitchInput(-LookVector.Y);
+	}
+}
+
+void ASimpleRPGPlayerCharacter::WeaponslotHandler(const FInputActionValue& Value, FGameplayTag InputTag)
+{
+	static const FGameplayTag Slot1 = FGameplayTag::RequestGameplayTag(FName("Input.WeaponSwap1"));
+	static const FGameplayTag Slot2 = FGameplayTag::RequestGameplayTag(FName("Input.WeaponSwap2"));
+
+	int SlotIndex = -1;
+
+	if (InputTag == Slot1) SlotIndex = 0;
+	else if (InputTag == Slot2) SlotIndex = 1;
+
+	if (SlotIndex >= 0 && IsValid(EquipmentComponent))
+	{
+		EquipmentComponent->RequestWeaponSwap(SlotIndex);
 	}
 }
 

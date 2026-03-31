@@ -8,8 +8,9 @@
 #include "../AbilitySystem/SimpleRPGAbilitySet.h"
 #include "../AbilitySystem/Abilities/SimpleRPGGameplayAbility.h"
 #include "GameFramework/Controller.h"
-#include "GameFramework/PlayerState.h"
+#include "../Player/SimpleRPGPlayerState.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "../Character/SimpleRPGPlayerCharacter.h"
 
 // Sets default values for this component's properties
 
@@ -49,7 +50,10 @@ void USimpleRPGEquipmentComponent::RequestWeaponSwap(int32 SlotIndex)
 	}
 
 	UAbilitySystemComponent* ASC = GetASC();
-	if (IsValid(ASC))
+	UE_LOG(LogTemp, Warning, TEXT("ASC ptr %p, Class : %s"),
+		ASC, ASC ? *ASC->GetClass()->GetName() : TEXT("null")
+		);
+	if (!ASC)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%d, %hs, ASC is invalid"), __LINE__, __FUNCTION__);
 		return;
@@ -158,30 +162,11 @@ void USimpleRPGEquipmentComponent::UnEquipWeapon()
 
 UAbilitySystemComponent* USimpleRPGEquipmentComponent::GetASC() const
 {
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-
-	if (!IsValid(OwnerPawn))
+	ASimpleRPGPlayerCharacter* OwnerCharacter = Cast<ASimpleRPGPlayerCharacter>(GetOwner());
+	if (!OwnerCharacter)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%d, %hs, OwnerPawn is invalid"), __LINE__, __FUNCTION__);
 		return nullptr;
 	}
 
-	AController* Controller = OwnerPawn->GetController();
-
-	if (!IsValid(Controller))
-	{
-		UE_LOG(LogTemp, Error, TEXT("%d, %hs, Controller is invalid"), __LINE__, __FUNCTION__);
-		return nullptr;
-	}
-
-	APlayerState* PS = Controller->GetPlayerState<APlayerState>();
-
-	if (!IsValid(PS))
-	{
-		UE_LOG(LogTemp, Error, TEXT("%d, %hs, PlayerState is invalid"), __LINE__, __FUNCTION__);
-		return nullptr;
-	}
-
-
-	return PS->FindComponentByClass<UAbilitySystemComponent>();
+	return OwnerCharacter->GetAbilitySystemComponent();
 }

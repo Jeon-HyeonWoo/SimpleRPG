@@ -27,7 +27,6 @@ public:
 		FuncType Func
 		);
 
-
 	template<class UserClass>
 	void BindAbilityActions(
 		const USimpleRPGInputConfig* InputConfig,
@@ -44,7 +43,7 @@ inline void USimpleRPGInputComponent::BindNativeAction(const USimpleRPGInputConf
 
 	if (const UInputAction* IA = InputConfig->FindNativeInputActionByTag(InputTag))
 	{
-		BindAction(IA, TriggerEvent, Object, Func);
+		BindAction(IA, TriggerEvent, Object, Func, InputTag);
 	}
 }
 

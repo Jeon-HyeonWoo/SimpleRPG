@@ -50,8 +50,9 @@ public:
 //Native Input Handler Func
 public:
 
-	void MoveHandler(const FInputActionValue& Value);
-	void LookHandler(const FInputActionValue& Value);
+	void MoveHandler(const FInputActionValue& Value, FGameplayTag InputTag);
+	void LookHandler(const FInputActionValue& Value, FGameplayTag InputTag);
+	void WeaponslotHandler(const FInputActionValue& Value, FGameplayTag InputTag);
 
 //Ability Input Handler Func
 public:
