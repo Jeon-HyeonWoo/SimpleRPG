@@ -27,7 +27,15 @@ public:
 		const FGameplayAbilityActorInfo* Actorinfo,
 		const FGameplayAbilityActivationInfo ActivationInfo,
 		const FGameplayEventData* TriggerEventData
-	);
+	) override;
+
+	virtual void EndAbility(
+		const FGameplayAbilitySpecHandle Handle,
+		const FGameplayAbilityActorInfo* Actorinfo,
+		const FGameplayAbilityActivationInfo ActivationInfo,
+		bool bReplicateEndAbility,
+		bool bWasCancelled
+	) override;
 	
 private:
 
@@ -53,4 +61,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<const UWeaponData> PendingWeaponData;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Effect")
+	TSubclassOf<UGameplayEffect> BlockMovementEffect;
+
+	FActiveGameplayEffectHandle BlockMovementEffectHandle;
 };

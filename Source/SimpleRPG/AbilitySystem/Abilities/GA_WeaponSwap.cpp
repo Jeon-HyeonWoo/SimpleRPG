@@ -5,6 +5,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "../../Equipment/SimpleRPGEquipmentComponent.h"
 #include "../../Weapon/WeaponData.h"
+#include "AbilitySystemComponent.h"
 
 UGA_WeaponSwap::UGA_WeaponSwap()
 {
@@ -47,9 +48,26 @@ void UGA_WeaponSwap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return;
 	}
 
+	//이동 제한 적용
+	if (BlockMovementEffect)
+	{
+		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
+			Handle, Actorinfo, ActivationInfo, BlockMovementEffect.GetDefaultObject(), 1.0f);
+	}
+
 	PlaySheathMontage();
 
 
+}
+
+void UGA_WeaponSwap::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	if (BlockMovementEffectHandle.IsValid())
+	{
+		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
+	}
+
+	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UGA_WeaponSwap::PlaySheathMontage()
