@@ -30,7 +30,12 @@ UGA_SwordAttack::UGA_SwordAttack()
 
 	// 캐릭터에 이 Tag가 붙어있으면 Ability활성화 차단
 	ActivationBlockedTags.AddTag(SwordAttackTag);
-	
+
+
+	//Acting 계열 상호 차단
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Acting.Attacking")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Acting")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing")));
 }
 
 void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
