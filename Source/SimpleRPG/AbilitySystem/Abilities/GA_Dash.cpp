@@ -32,6 +32,18 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		return;
 	}
 
+	//이동 제한 GE 적용
+	if (BlockMovementEffect)
+	{
+		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
+			Handle,
+			Actorinfo,
+			ActivationInfo,
+			BlockMovementEffect.GetDefaultObject(),
+			1.0f
+		);
+	}
+
 	FVector DashDirection = GetDashDirection();
 
 	if (!DashDirection.IsNearlyZero())
