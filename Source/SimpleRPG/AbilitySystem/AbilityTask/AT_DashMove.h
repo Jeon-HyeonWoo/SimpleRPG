@@ -50,4 +50,5 @@ private:
 	float ElapsedTime;			//Reach for Duration
 
 	bool bOriginalOrientRotationToMovement;	//Back up
+	bool bOriginalUseControllerRotationYaw;	//Back up
 };

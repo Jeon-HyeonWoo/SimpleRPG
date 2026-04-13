@@ -34,6 +34,9 @@ void UAT_DashMove::Activate()
 	bOriginalOrientRotationToMovement = MovementComp->bOrientRotationToMovement;
 	MovementComp->bOrientRotationToMovement = false;
 
+	bOriginalUseControllerRotationYaw = Character->bUseControllerRotationYaw;
+	Character->bUseControllerRotationYaw = false;
+
 	if (!DashDirection.IsNearlyZero())
 	{
 		FRotator DashRotation = DashDirection.Rotation();
@@ -87,6 +90,7 @@ void UAT_DashMove::OnDestroy(bool bInOwnerFinished)
 		{
 			//회전 설정 복원
 			MovementComp->bOrientRotationToMovement = bOriginalOrientRotationToMovement;
+			Character->bUseControllerRotationYaw = bOriginalUseControllerRotationYaw;
 
 			//잔여 속도 제거
 			MovementComp->Velocity = FVector::ZeroVector;

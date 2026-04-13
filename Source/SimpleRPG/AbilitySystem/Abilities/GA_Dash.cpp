@@ -6,6 +6,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../AbilityTask/AT_DashMove.h"
 
 UGA_Dash::UGA_Dash()
 {
@@ -44,20 +45,15 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		);
 	}
 
-	FVector DashDirection = GetDashDirection();
-
-	if (!DashDirection.IsNearlyZero())
-	{
-		FRotator DashRotation = DashDirection.Rotation();
-		Character->SetActorRotation(FRotator(0.0f, DashRotation.Yaw, 0.0f));
-	}
-
 	if (DashMontage)
 	{
+		DashDuration = DashMontage->GetPlayLength();
+
 		UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this,
 			NAME_None,
-			DashMontage
+			DashMontage,
+			2.0f
 		);
 
 		MontageTask->OnCompleted.AddDynamic(this, &UGA_Dash::OnMontageCompleted);
@@ -68,9 +64,13 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		MontageTask->ReadyForActivation();
 	}
 
-	float DashSpeed = DashDistance / DashDuration;
-	Character->LaunchCharacter(DashDirection * DashSpeed, true, true);
 
+	/* Owning Ability, Direction Vector, Distance, Duration */
+	UAT_DashMove* AT_DashMove = UAT_DashMove::CreateDashMove(this, GetDashDirection(), DashDistance, DashDuration);
+	if (AT_DashMove)
+	{
+		AT_DashMove->ReadyForActivation();
+	}
 }
 
 void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)

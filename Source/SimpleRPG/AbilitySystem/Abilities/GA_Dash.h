@@ -49,10 +49,10 @@ private:
 	TObjectPtr<UAnimMontage> DashMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
-	float DashDistance = 600.0f;
+	float DashDistance = 1800.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
-	float DashDuration = 0.3f;
+	float DashDuration;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
 	TSubclassOf<UGameplayEffect> CoolDownEffect;
