@@ -33,6 +33,8 @@ public:
 		bool bWasCancelled
 	) override;
 
+	virtual UGameplayEffect* GetCooldownGameplayEffect() const override;
+
 private:
 
 	UFUNCTION()

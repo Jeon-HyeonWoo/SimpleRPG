@@ -84,6 +84,11 @@ void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGamepl
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
+UGameplayEffect* UGA_Dash::GetCooldownGameplayEffect() const
+{
+	return CoolDownEffect.GetDefaultObject();
+}
+
 void UGA_Dash::OnMontageCompleted()
 {
 	EndAbility(
