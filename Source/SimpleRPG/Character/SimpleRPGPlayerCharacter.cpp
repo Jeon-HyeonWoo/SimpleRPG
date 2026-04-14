@@ -158,6 +158,15 @@ void ASimpleRPGPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 
 void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value, FGameplayTag InputTag)
 {
+	const FVector2D MovementVector = Value.Get<FVector2D>();
+	const FRotator MovementRotation(0.0f, GetControlRotation().Yaw, 0.0f);
+
+	FVector InputRightVector = MovementRotation.RotateVector(FVector::RightVector) * MovementVector.X;
+	FVector InputForwardVector = MovementRotation.RotateVector(FVector::ForwardVector) * MovementVector.Y;
+
+	LastInputDirection = (InputRightVector + InputForwardVector).GetSafeNormal();
+	LastInputTime = GetWorld()->GetTimeSeconds();
+
 	if (AbilitySystemComponent)
 	{
 		const USimpleRPGAttributeSet* AS = AbilitySystemComponent->GetSet<USimpleRPGAttributeSet>();
@@ -166,9 +175,6 @@ void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value, FGam
 			return;
 		}
 	}
-
-	const FVector2D MovementVector = Value.Get<FVector2D>();
-	const FRotator MovementRotation(0.0f, GetControlRotation().Yaw, 0.0f);
 
 	if (MovementVector.X != 0.0f)
 	{

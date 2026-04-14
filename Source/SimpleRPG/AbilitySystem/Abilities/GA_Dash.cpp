@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../AbilityTask/AT_DashMove.h"
+#include "../../Character/SimpleRPGPlayerCharacter.h"
 
 UGA_Dash::UGA_Dash()
 {
@@ -57,7 +58,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		);
 
 		MontageTask->OnCompleted.AddDynamic(this, &UGA_Dash::OnMontageCompleted);
-		MontageTask->OnBlendOut.AddDynamic(this, &UGA_Dash::OnMontageCompleted);
+		//MontageTask->OnBlendOut.AddDynamic(this, &UGA_Dash::OnMontageCompleted);
 		MontageTask->OnInterrupted.AddDynamic(this, &UGA_Dash::OnMontageCancelled);
 		MontageTask->OnCancelled.AddDynamic(this, &UGA_Dash::OnMontageCancelled);
 
@@ -114,29 +115,17 @@ FVector UGA_Dash::GetDashDirection() const
 		return FVector::ZeroVector;
 	}
 
-	AController* Controller = Character->GetController();
-
-	if (!Controller)
+	ASimpleRPGPlayerCharacter* PlayerCharacter = Cast<ASimpleRPGPlayerCharacter>(Character);
+	if (!PlayerCharacter)
 	{
 		return Character->GetActorForwardVector();
 	}
 
-	FRotator ControlRotation = Controller->GetControlRotation();
-	FRotator YawRotation(0.0f, ControlRotation.Yaw, 0.0f);
+	FVector LastInput = PlayerCharacter->GetLastInputDirection();
 
-	FVector ForwardDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	FVector RightDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	float TimeSinceInput = GetWorld()->GetTimeSeconds() - PlayerCharacter->GetLastInputTime();
 
-	UCharacterMovementComponent* MovementComp = Character->GetCharacterMovement();
-
-	if (!MovementComp)
-	{
-		return Character->GetActorForwardVector();
-	}
-
-	FVector LastInput = MovementComp->GetLastInputVector();
-
-	if (LastInput.IsNearlyZero())
+	if (TimeSinceInput > 0.1f || LastInput.IsNearlyZero())
 	{
 		return Character->GetActorForwardVector();
 	}

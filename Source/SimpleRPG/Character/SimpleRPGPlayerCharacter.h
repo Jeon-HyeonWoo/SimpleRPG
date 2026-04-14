@@ -71,4 +71,17 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Input")
 	TObjectPtr<UInputAction> IA_Look;
+
+
+public:
+
+	FVector GetLastInputDirection() const { return LastInputDirection; }
+	float GetLastInputTime() const { return LastInputTime; }
+private:
+
+	UPROPERTY()
+	FVector LastInputDirection;
+
+	UPROPERTY()
+	float LastInputTime;
 };
