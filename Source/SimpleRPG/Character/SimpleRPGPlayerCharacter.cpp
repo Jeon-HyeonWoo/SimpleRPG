@@ -94,6 +94,9 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 			AS->InitMovementSpeed(600.0f);
 			AS->InitHealth(100.0f); 
 			AS->InitMaxHealth(100.0f);
+			AS->InitPower(10.0f);
+			AS->InitMp(100.0f);
+			AS->InitMaxMp(100.0f);
 		}
 
 		if (HasAuthority())

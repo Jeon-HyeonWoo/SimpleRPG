@@ -40,5 +40,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Vital")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MaxHealth)
-	
+
+	UPROPERTY(BlueprintReadOnly, Category = "Power")
+	FGameplayAttributeData Power;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, Power)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Mp")
+	FGameplayAttributeData Mp;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, Mp)
+
+	UPROPERTY(BlueprintReadOnly, Category = "MaxMp")
+	FGameplayAttributeData MaxMp;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MaxMp)
 };
