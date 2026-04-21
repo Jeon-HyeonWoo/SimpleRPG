@@ -62,7 +62,7 @@ void UGA_SwordPowerUp::PlayPowerUpMontage()
 		1.0f
 	);
 
-	Task->OnBlendOut.AddDynamic(this, &UGA_SwordPowerUp::OnMontageCompleted);
+	//Task->OnBlendOut.AddDynamic(this, &UGA_SwordPowerUp::OnMontageCompleted);
 	Task->OnCompleted.AddDynamic(this, &UGA_SwordPowerUp::OnMontageCompleted);
 	Task->OnInterrupted.AddDynamic(this, &UGA_SwordPowerUp::OnMontageCancelled);
 	Task->OnCancelled.AddDynamic(this, &UGA_SwordPowerUp::OnMontageCancelled);
@@ -72,7 +72,12 @@ void UGA_SwordPowerUp::PlayPowerUpMontage()
 
 void UGA_SwordPowerUp::PowerUpEvent()
 {
-	
+	UAbilityTask_WaitGameplayEvent* Task =
+		UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FGameplayTag::RequestGameplayTag(FName("Event.PowerUp.Activate")));
+
+	Task->EventReceived.AddDynamic(this, &UGA_SwordPowerUp::OnPowerUpActivated);
+
+	Task->ReadyForActivation();
 }
 
 void UGA_SwordPowerUp::OnMontageCompleted()
@@ -99,4 +104,11 @@ void UGA_SwordPowerUp::OnMontageCancelled()
 
 void UGA_SwordPowerUp::OnPowerUpActivated(FGameplayEventData PayLoad)
 {
+	ApplyGameplayEffectToOwner(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		BuffEffect.GetDefaultObject(),
+		1.0f
+	);
 }
