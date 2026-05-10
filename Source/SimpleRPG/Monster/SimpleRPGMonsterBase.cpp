@@ -4,6 +4,7 @@
 #include "SimpleRPGMonsterBase.h"
 #include "AbilitySystemComponent.h"
 #include "../AbilitySystem/SimpleRPGMonsterAttributeSet.h"
+#include "../Monster/Data/MonsterData.h"
 
 
 ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
@@ -38,5 +39,21 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(this, this);
 
-	//AttributeSet 초기 값은 각 객체에 맞게 설정
+	if (!IsValid(MonsterData))
+	{
+		UE_LOG(LogTemp, Error, TEXT("MonsterData is unvalid %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	if (!IsValid(MonsterData->InitStatsEffect))
+	{
+		UE_LOG(LogTemp, Error, TEXT("MontserData->InitStatsEffect is unvalid, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(
+		MonsterData->InitStatsEffect.GetDefaultObject(),	//GameplayEffect CDO
+		1.0f,												//Level
+		GetAbilitySystemComponent()->MakeEffectContext()			//Context
+		);
 }

@@ -8,6 +8,7 @@
 
 class UAttributeSet;
 class USimpleRPGMonsterAttributeSet;
+class UMonsterData;
 /**
  * 
  */
@@ -31,4 +32,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<USimpleRPGMonsterAttributeSet> AttributeSet;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG")
+	TObjectPtr<UMonsterData> MonsterData;
+	
 };
