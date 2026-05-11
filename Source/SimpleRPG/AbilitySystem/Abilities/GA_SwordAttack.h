@@ -65,9 +65,14 @@ protected:
 	UFUNCTION()
 	void OnComboWindowClose(FGameplayEventData PayLoad);
 
+	UFUNCTION()
+	void OnDamageEvent(FGameplayEventData PayLoad);
+
 private:
 
 	void PlayComboMontage(int32 MontageIndex);
+
+	void DamageEventTask();
 
 	void StartNextCombo();
 	void ResetCombo();
@@ -93,4 +98,9 @@ protected:
 	TSubclassOf<UGameplayEffect> BlockMovementEffect;
 
 	FActiveGameplayEffectHandle BlockMovementEffectHandle;
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|DamageEffect")
+	TSubclassOf<UGameplayEffect> DamageEffect;
 };

@@ -5,6 +5,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 UGA_SwordAttack::UGA_SwordAttack()
 {
@@ -99,6 +100,8 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		&UGA_SwordAttack::OnComboWindowClose
 	);
 	WaitCloseTask->ReadyForActivation();
+
+	DamageEventTask();
 }
 
 void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -169,6 +172,33 @@ void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 	CloseComboWindow();
 }
 
+void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
+{
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(const_cast<AActor*>(PayLoad.Target.Get()));
+
+	/* DamageEffect Validation */
+	if (!DamageEffect)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Need a DamageEffect, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	/* TargetASC Validation */
+	if (!TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetASC is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectToTarget(
+		DamageEffect.GetDefaultObject(),
+		TargetASC,
+		1.0f,
+		GetAbilitySystemComponentFromActorInfo()->MakeEffectContext()
+	);
+
+}
+
 void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
 {
 	/* ComboMontages의 IndexValid check */
@@ -201,6 +231,18 @@ void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
 
 	/* Task 실행 */
 	MontageTask->ReadyForActivation();
+}
+
+void UGA_SwordAttack::DamageEventTask()
+{
+	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+		this,
+		FGameplayTag::RequestGameplayTag(FName("Event.Hit.Melee")) //기다릴 Event Tag,
+	);
+
+	Task->EventReceived.AddDynamic(this, &UGA_SwordAttack::OnDamageEvent);
+
+	Task->ReadyForActivation();
 }
 
 void UGA_SwordAttack::StartNextCombo()
