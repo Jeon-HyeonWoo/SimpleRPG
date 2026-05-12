@@ -6,6 +6,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "../Data/DamageDataTableRow.h"
 
 UGA_SwordAttack::UGA_SwordAttack()
 {
@@ -174,7 +175,28 @@ void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 
 void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 {
+	//1. Target ASC 가져오기
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(const_cast<AActor*>(PayLoad.Target.Get()));
+
+	//2. Target ASC 유효성 검사
+	if (!TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetASC is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//3. DT에 저장된 RowName
+	FName RowName = FName(*FString::Printf(TEXT("SwordAttack_Combo%d"), CurrentComboCount));
+
+	//4. DT에서 RowName으로 Row가져오기
+	FDamageDataTableRow* Row = DamageDataTable->FindRow<FDamageDataTableRow>(RowName, TEXT(""));
+
+	//5. Row 유효성 검사
+	if (!Row)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Row is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
 
 	/* DamageEffect Validation */
 	if (!DamageEffect)
@@ -183,19 +205,25 @@ void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 		return;
 	}
 
-	/* TargetASC Validation */
-	if (!TargetASC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("TargetASC is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectToTarget(
-		DamageEffect.GetDefaultObject(),
-		TargetASC,
-		1.0f,
-		GetAbilitySystemComponentFromActorInfo()->MakeEffectContext()
+	//5. GameplayEffect 데이터를 바탕으로 만든 인스턴스 정보 생성
+	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(
+		DamageEffect,
+		1.0f
 	);
+
+	//6. 값 변환
+	SpecHandle.Data->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Min")),
+		Row->MinMultiplier
+	);
+
+	SpecHandle.Data->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Max")),
+		Row->MaxMultiplier
+	);
+
+	//7. 대상 적용
+	TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 
 }
 
