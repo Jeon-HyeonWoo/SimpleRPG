@@ -4,6 +4,7 @@
 #include "ANS_SwordHitTrace.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GameFramework/Pawn.h"
 
 void UANS_SwordHitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
@@ -43,17 +44,21 @@ void UANS_SwordHitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 	if (bHit)
 	{
-		for (const auto& HitActor : OutHits)
+		for (const auto& HitResult : OutHits)
 		{
-			if ((HitActor.GetActor() != nullptr) && !HitActors.Contains(HitActor.GetActor()))
-			{
-				HitActors.Add(HitActor.GetActor());
-				FGameplayEventData PayLoad;			
-				PayLoad.Instigator = OwnerActor;		//Event 시작 주체
-				PayLoad.Target = HitActor.GetActor();	//Event 판정 대상
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, HitTag, PayLoad);
-				
-			}
+			AActor* HitActor = HitResult.GetActor();
+
+			if (HitActor == nullptr) continue;
+			if (!Cast<APawn>(HitActor)) continue;
+			if (HitActors.Contains(HitActor)) continue;
+			
+			HitActors.Add(HitActor);
+			UE_LOG(LogTemp, Warning, TEXT("Hit Pawn : %s"), *HitActor->GetName());
+			FGameplayEventData PayLoad;
+			PayLoad.Instigator = OwnerActor;
+			PayLoad.Target = HitActor;
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, HitTag, PayLoad);
+
 		}
 	}
 }

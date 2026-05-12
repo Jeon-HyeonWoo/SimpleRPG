@@ -28,6 +28,26 @@ UDamageExecCalc::UDamageExecCalc()
 
 void UDamageExecCalc::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
+	UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
+	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
+	
+	if (SourceASC)
+	{
+		const USimpleRPGAttributeSet* AS = SourceASC->GetSet<USimpleRPGAttributeSet>();
+		if (AS)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Direct Source Power: %f"), AS->GetPower());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Source has no SimpleRPGAttributeSet"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Source ASC"));
+	}
+
 	//1. 캡쳐된 Player Stat Power 값 읽기
 	float Power = 0.0f;
 
@@ -36,11 +56,13 @@ void UDamageExecCalc::Execute_Implementation(const FGameplayEffectCustomExecutio
 	* 생성자에서 등록한 캡처 정의를 기반으로 값을 읽어 마지막 파라미터에 전달
 	* 평가파라미터는 버프/디버프 같은 모디파이어 평가
 	*/
-	ExecutionParams.AttemptCalculateCapturedAttributeBonusMagnitude(
+
+	bool bSuccess = ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		PlayerStatPower,					//생성자에서 정의한 캡처
 		FAggregatorEvaluateParameters(),	//평가 파라미터 
 		Power								//결과 값을 해당 변수에 저장
 	);
+	UE_LOG(LogTemp, Warning, TEXT("ExecCalc - Power Capture Success : %s, Power : %f"), bSuccess ? TEXT("true") : TEXT("False"), Power);
 
 	//2. SetByCaller로 Ability에서 넘긴 배율 범위 읽기
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
@@ -57,9 +79,13 @@ void UDamageExecCalc::Execute_Implementation(const FGameplayEffectCustomExecutio
 		0.0f
 	);
 
+	UE_LOG(LogTemp, Warning, TEXT("ExecCalc - Min: %f, Max: %f"), MinMultiplier, MaxMultiplier);
+
 	//3. 랜덤 데미지 계산
 	float Multiplier = FMath::RandRange(MinMultiplier, MaxMultiplier);
 	float FinalDamage = FMath::TruncToFloat(Power * Multiplier);
+
+	UE_LOG(LogTemp, Warning, TEXT("Execalc - finalDamage %f"), FinalDamage);
 
 	//4. 결과 출력
 	/* 

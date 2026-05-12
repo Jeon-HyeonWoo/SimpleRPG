@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "../Data/DamageDataTableRow.h"
+#include "../../AbilitySystem/SimpleRPGMonsterAttributeSet.h"
 
 UGA_SwordAttack::UGA_SwordAttack()
 {
@@ -223,8 +224,20 @@ void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 	);
 
 	//7. 대상 적용
-	TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	//TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 
+	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
+		*SpecHandle.Data.Get(),
+		TargetASC
+	);
+
+
+	//8. Debug
+	const USimpleRPGMonsterAttributeSet* MonsterAS = TargetASC->GetSet<USimpleRPGMonsterAttributeSet>();
+	if (MonsterAS)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Monster HP : %f"), MonsterAS->GetHP());
+	}
 }
 
 void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
