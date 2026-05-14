@@ -52,6 +52,14 @@ private:
 	UFUNCTION()
 	void OnMontageCancelled();
 
+	//Damage
+private:
+	
+	void DamageEventTask();
+
+	UFUNCTION()
+	void OnDamageEvent(FGameplayEventData PayLoad);
+
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|ChargeAttack")
@@ -82,4 +90,16 @@ private:
 	FActiveGameplayEffectHandle UnderChargeAttackEffectHandle;
 
 	FActiveGameplayEffectHandle FullChargeAttackEffectHandle;
+
+
+	//Relate Damage
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|DamageEffect")
+	TSubclassOf<UGameplayEffect> DamageEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Data")
+	TObjectPtr<UDataTable> DamageDataTable;
+
+	bool bIsFullCharge = false;
 };

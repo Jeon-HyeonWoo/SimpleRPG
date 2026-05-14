@@ -5,6 +5,9 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "../Data/DamageDataTableRow.h"
 
 UGA_SwordChargeAttack::UGA_SwordChargeAttack()
 {
@@ -35,6 +38,7 @@ void UGA_SwordChargeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	PlayMontage();
 	WaitInputRelease();
+	DamageEventTask();
 }
 
 void UGA_SwordChargeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -85,12 +89,14 @@ void UGA_SwordChargeAttack::WaitInputReleaseCallBack(float TimeHeld)
 
 	if (TimeHeld >= FullChargeTime)
 	{
+		bIsFullCharge = true;
 		FullChargeAttackEffectHandle = ApplyGameplayEffectToOwner(
 			CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, FullChargeAttackEffect.GetDefaultObject(), 1.0, 1
 		);
 	}
 	else
 	{
+		bIsFullCharge = false;
 		UnderChargeAttackEffectHandle = ApplyGameplayEffectToOwner(
 			CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, UnderChargeAttackEffect.GetDefaultObject(), 1.0f, 1
 		);
@@ -118,5 +124,76 @@ void UGA_SwordChargeAttack::OnMontageCancelled()
 		CurrentActivationInfo,
 		true,
 		true
+	);
+}
+
+void UGA_SwordChargeAttack::DamageEventTask()
+{
+	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+		this,
+		FGameplayTag::RequestGameplayTag(FName("Event.Hit.Melee"))
+	);
+
+	Task->EventReceived.AddDynamic(this, &UGA_SwordChargeAttack::OnDamageEvent);
+
+	Task->ReadyForActivation();
+}
+
+void UGA_SwordChargeAttack::OnDamageEvent(FGameplayEventData PayLoad)
+{
+	//1. DamageEffect valid check
+	if (!DamageEffect)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DamageEffect is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+	
+	//2. TargetActor valid check
+	AActor* TargetActor = const_cast<AActor*>(PayLoad.Target.Get());
+	if (!TargetActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetActor is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//3. Target ASC valid check
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	if (!TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargerASC is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+
+	//4. Choose RowName
+	FName RowName = bIsFullCharge ? FName("Sword_ChargeAttack_Full") : FName("Sword_ChargeAttack_Under");
+
+
+	//5. Find Row through RowName in the DataTable
+	FDamageDataTableRow * Row = DamageDataTable->FindRow<FDamageDataTableRow>(RowName, TEXT(""));
+	if (!Row)
+	{
+		UE_LOG(LogTemp, Error, TEXT("DamageDataTable Can not find RowName, %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//6. Make DamageEffect Data Instance
+	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, 1.0f);
+
+	//7. Delegate the calculation to DamageExecCalc (Min, Max)
+	SpecHandle.Data->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Min")),
+		Row->MinMultiplier
+	);
+
+	SpecHandle.Data->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Max")),
+		Row->MaxMultiplier
+	);
+
+	//8. 대상 적용
+	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
+		*SpecHandle.Data.Get(),
+		TargetASC
 	);
 }
