@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "../AbilitySystem/SimpleRPGMonsterAttributeSet.h"
 #include "../Monster/Data/MonsterData.h"
+#include "SimpleRPG/Monster/AI/MonsterAIController.h"
 
 
 ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
@@ -30,7 +31,10 @@ ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
 			return;
 		}
 	}
-	
+
+	//Set Default AIController
+	AIControllerClass = AMonsterAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)

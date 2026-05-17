@@ -27,6 +27,8 @@ public:
 
 	USimpleRPGMonsterAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
+	UMonsterData* GetMonsterData() { return MonsterData; }
+
 public:
 
 	UFUNCTION()
