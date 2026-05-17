@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayEffect.h"
 #include "SimpleRPGMonsterAttributeSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -16,10 +17,15 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHPDepleted, AActor*, Instigator);
+
 UCLASS()
 class SIMPLERPG_API USimpleRPGMonsterAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
+public:
+
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data);
 
 public:
 	
@@ -43,5 +49,8 @@ public:
 	FGameplayAttributeData Defense;
 	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, Defense)
 	
+public:
 
+	UPROPERTY(BlueprintAssignable) 
+	FOnHPDepleted OnHPDepleted;
 };

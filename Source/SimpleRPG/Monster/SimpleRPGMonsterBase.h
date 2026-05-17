@@ -29,10 +29,18 @@ public:
 
 public:
 
+	UFUNCTION()
+	void HandleDeath(AActor* Actor);
+
+public:
+
 	UPROPERTY()
 	TObjectPtr<USimpleRPGMonsterAttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG")
 	TObjectPtr<UMonsterData> MonsterData;
 	
+private:
+
+	bool bIsDead = false;
 };

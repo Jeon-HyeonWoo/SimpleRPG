@@ -51,9 +51,25 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 		return;
 	}
 
+	//초기 스탯 부여
 	GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(
 		MonsterData->InitStatsEffect.GetDefaultObject(),	//GameplayEffect CDO
 		1.0f,												//Level
-		GetAbilitySystemComponent()->MakeEffectContext()			//Context
+		GetAbilitySystemComponent()->MakeEffectContext()	//Context
 		);
+	
+	//Test용 Death 함수 바인딩
+	AttributeSet->OnHPDepleted.AddDynamic(this, &ASimpleRPGMonsterBase::HandleDeath);
+	
+}
+
+void ASimpleRPGMonsterBase::HandleDeath(AActor* Actor)
+{
+	if (bIsDead) 
+	{
+		return;
+	}
+	bIsDead = true;
+	Destroy();
+
 }

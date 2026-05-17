@@ -22,6 +22,7 @@
 /**
  * 
  */
+
 UCLASS()
 class SIMPLERPG_API USimpleRPGAttributeSet : public UAttributeSet
 {
