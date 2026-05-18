@@ -9,6 +9,9 @@
 /**
  * 
  */
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
+
 UCLASS()
 class SIMPLERPG_API AMonsterAIController : public AAIController
 {
@@ -16,9 +19,12 @@ class SIMPLERPG_API AMonsterAIController : public AAIController
 	
 public:
 
-	virtual void OnPossess(APawn* InPawn) override;
+	AMonsterAIController();
 
+	virtual void OnPossess(APawn* InPawn) override;
 
 public:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|AI")
+	TObjectPtr<UAISenseConfig_Sight> SenseConfigSight;
 };
