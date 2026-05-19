@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "MonsterDamageTableRow.generated.h"
+#include "MonsterDamageDataTableRow.generated.h"
 
 USTRUCT(BlueprintType)
-struct FMonsterDamageTableRow : public FTableRowBase
+struct FMonsterDamageDataTableRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
