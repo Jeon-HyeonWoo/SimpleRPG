@@ -9,12 +9,19 @@
 /**
  * 
  */
+class ASimpleRPGCharacterBase;
+
 UCLASS()
 class SIMPLERPG_API USimpleRPGGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
 
+//Helper Function
 public:
 
+	UFUNCTION(BlueprintCallable, Category = "SimpleRPG|Ability")
+	ASimpleRPGCharacterBase* GetOwnerCharacter() const;
+
+	UAbilitySystemComponent* GetSimpleRPGASC() const;
 };
