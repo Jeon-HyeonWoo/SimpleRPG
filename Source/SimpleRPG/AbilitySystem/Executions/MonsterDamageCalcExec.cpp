@@ -30,7 +30,8 @@ void UMonsterDamageCalcExec::Execute_Implementation(const FGameplayEffectCustomE
 	float Multiplier = GESpec.GetSetByCallerMagnitude(
 		FGameplayTag::RequestGameplayTag(FName("Data.Damage.Multiplier")),
 		true,
-		0.0f);
+		0.0f
+	);
 
 	//Capture된 Damage값 꺼내기
 	FAggregatorEvaluateParameters EvalParams;
@@ -38,8 +39,8 @@ void UMonsterDamageCalcExec::Execute_Implementation(const FGameplayEffectCustomE
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageCapture, EvalParams, DamageValue);
 
 	//Final Damage 계산
-	float FinalDamage = DamageValue * Multiplier;
-
+	float FinalDamage = FMath::RoundToFloat(DamageValue * Multiplier);
+	
 	//Output으로 내보내기
 	OutExecutionOutput.AddOutputModifier(
 		FGameplayModifierEvaluatedData(
