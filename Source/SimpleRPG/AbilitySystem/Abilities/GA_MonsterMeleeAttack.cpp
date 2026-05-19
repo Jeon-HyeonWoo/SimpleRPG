@@ -16,6 +16,7 @@ UGA_MonsterMeleeAttack::UGA_MonsterMeleeAttack()
 
 void UGA_MonsterMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("GA_MonsterMeleeAttack Activated"));
 	//CommitAbility üũ
 	if (!CommitAbility(Handle, Actorinfo, ActivationInfo))
 	{
@@ -57,6 +58,7 @@ void UGA_MonsterMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle,
 
 void UGA_MonsterMeleeAttack::PlayMontage()
 {
+	UE_LOG(LogTemp, Warning, TEXT("PlayMontage Called, Montage : %s"), *GetNameSafe(AttackMontageDataArray[MontageDataIndex].AnimMontage));
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,

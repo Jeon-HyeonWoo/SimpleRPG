@@ -6,6 +6,7 @@
 #include "../AbilitySystem/SimpleRPGMonsterAttributeSet.h"
 #include "../Monster/Data/MonsterData.h"
 #include "SimpleRPG/Monster/AI/MonsterAIController.h"
+#include "SimpleRPG/AbilitySystem/SimpleRPGAbilitySet.h"
 
 
 ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
@@ -48,6 +49,8 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 		UE_LOG(LogTemp, Error, TEXT("MonsterData is unvalid %d, %hs"), __LINE__, __FUNCTION__);
 		return;
 	}
+
+	MonsterData->AbilitySet->GiveToAbilitySystem(GetAbilitySystemComponent());
 
 	if (!IsValid(MonsterData->InitStatsEffect))
 	{
