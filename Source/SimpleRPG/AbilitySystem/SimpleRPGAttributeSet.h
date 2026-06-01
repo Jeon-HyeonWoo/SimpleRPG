@@ -23,10 +23,16 @@
  * 
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthDepleted, AActor*, Instigator);
+
 UCLASS()
 class SIMPLERPG_API USimpleRPGAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
+
+public:
+
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
 public:
 
@@ -53,4 +59,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "MaxMp")
 	FGameplayAttributeData MaxMp;
 	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MaxMp)
+
+public:
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthDepleted OnPlayerHealthDepleted;
 };
