@@ -17,5 +17,6 @@ void USimpleRPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 			OnPlayerHealthDepleted.Broadcast(Data.EffectSpec.GetContext().GetInstigator());
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Player Health : %f / %f ") , GetHealth(), GetMaxHealth());
 }
 

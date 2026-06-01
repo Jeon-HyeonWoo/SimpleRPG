@@ -45,6 +45,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|HitTrace")
 	float TraceRadius;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|HitTrace")
+	float TraceStartZOffset;
+
 	UPROPERTY()
 	TSet<AActor*> HitActors;
 

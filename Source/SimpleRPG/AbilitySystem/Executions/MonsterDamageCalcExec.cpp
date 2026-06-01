@@ -32,6 +32,7 @@ void UMonsterDamageCalcExec::Execute_Implementation(const FGameplayEffectCustomE
 		true,
 		0.0f
 	);
+	UE_LOG(LogTemp, Warning, TEXT("Exec Multiplier: %f"), Multiplier);
 
 	//CaptureµÈ Damage°ª ²¨³»±â
 	FAggregatorEvaluateParameters EvalParams;

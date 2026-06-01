@@ -21,7 +21,7 @@ void UANS_SwordHitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 		return;
 	}
 
-	FVector TraceStart = OwnerActor->GetActorLocation();
+	FVector TraceStart = OwnerActor->GetActorLocation() + FVector(0, 0, TraceStartZOffset);
 	FVector TraceEnd = TraceStart + (OwnerActor->GetActorForwardVector() * TraceDistance);
 
 	TArray<AActor*> IgnoreActors;
@@ -29,12 +29,15 @@ void UANS_SwordHitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 	TArray<FHitResult> OutHits;
 
-	bool bHit = UKismetSystemLibrary::SphereTraceMulti(
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
 		OwnerActor->GetWorld(),
 		TraceStart,
 		TraceEnd,
 		TraceRadius,
-		UEngineTypes::ConvertToTraceType(ECC_Visibility),
+		ObjectTypes,
 		false,
 		IgnoreActors,
 		EDrawDebugTrace::ForOneFrame,
@@ -49,6 +52,7 @@ void UANS_SwordHitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 			AActor* HitActor = HitResult.GetActor();
 
 			if (HitActor == nullptr) continue;
+			UE_LOG(LogTemp, Warning, TEXT("Hit Pawn : %s"), *HitActor->GetName());
 			if (!Cast<APawn>(HitActor)) continue;
 			if (HitActors.Contains(HitActor)) continue;
 			

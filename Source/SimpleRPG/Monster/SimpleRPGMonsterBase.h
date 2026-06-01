@@ -9,6 +9,7 @@
 class UAttributeSet;
 class USimpleRPGMonsterAttributeSet;
 class UMonsterData;
+class UWidgetComponent;
 /**
  * 
  */
@@ -33,6 +34,8 @@ public:
 
 	UFUNCTION()
 	void HandleDeath(AActor* Actor);
+	
+	void UpdateHPBar();
 
 public:
 
@@ -42,6 +45,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG")
 	TObjectPtr<UMonsterData> MonsterData;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG")
+	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;
+
 private:
 
 	bool bIsDead = false;

@@ -89,6 +89,9 @@ void UGA_MonsterMeleeAttack::WaitForHitEvent()
 
 void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 {
+	//Test Log
+	UE_LOG(LogTemp, Warning, TEXT("OnHitEventReceived Called"));
+
 	//Target(Player)가져오기
 	AActor* TargetActor = const_cast<AActor*>(PayLoad.Target.Get());
 	if (!TargetActor)
@@ -118,8 +121,15 @@ void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 
 	//SpecHandle 만들기
 	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel());
+	UE_LOG(LogTemp, Warning, TEXT("Ratio: %f"), Ratio);
+	SpecHandle.Data.Get()->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(FName("Data.Damage.Multiplier")), Ratio);
+	UE_LOG(LogTemp, Warning, TEXT("SetByCaller Tag: %s, Value: %f"),
+		*FGameplayTag::RequestGameplayTag(FName("Data.Damage.Multiplier")).ToString(), Ratio);
+	
 
-	SpecHandle.Data.Get()->SetSetByCallerMagnitude(FName("Data.Damage.Multiplier"), Ratio);
+	//Test Log
+	UE_LOG(LogTemp, Warning, TEXT("Applying Damage to Target : %s"), *GetNameSafe(TargetActor));
 
 	//Target에 SpecHandle Data값 적용(MonsterCalcExec가 최종적으로 계산하여 Target의 AttributeSet 값 조절)
 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(

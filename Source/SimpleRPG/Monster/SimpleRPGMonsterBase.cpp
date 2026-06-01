@@ -7,6 +7,8 @@
 #include "../Monster/Data/MonsterData.h"
 #include "SimpleRPG/Monster/AI/MonsterAIController.h"
 #include "SimpleRPG/AbilitySystem/SimpleRPGAbilitySet.h"
+#include "Components/WidgetComponent.h"
+#include "SimpleRPG/UI/MonsterHPBarWidget.h"
 
 
 ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
@@ -36,6 +38,15 @@ ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
 	//Set Default AIController
 	AIControllerClass = AMonsterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	//CreateHPWidgetComponent
+	{
+		HPBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidgetComponent"));
+		HPBarWidgetComponent->SetupAttachment(RootComponent);
+		HPBarWidgetComponent->SetRelativeLocation(FVector(0, 0, 100));
+		HPBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		HPBarWidgetComponent->SetDrawSize(FVector2D(150, 15));
+	}
 }
 
 void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
@@ -79,4 +90,16 @@ void ASimpleRPGMonsterBase::HandleDeath(AActor* Actor)
 	bIsDead = true;
 	Destroy();
 
+}
+
+void ASimpleRPGMonsterBase::UpdateHPBar()
+{
+	UMonsterHPBarWidget* W_MonsterHPBar = Cast<UMonsterHPBarWidget>(HPBarWidgetComponent->GetWidget());
+	if (!W_MonsterHPBar)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MonsterHPBar is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	W_MonsterHPBar->SetHP(GetAttributeSet()->GetHP(), GetAttributeSet()->GetMaxHP());
 }
