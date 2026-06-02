@@ -9,10 +9,18 @@
 #include "SimpleRPG/AbilitySystem/SimpleRPGAbilitySet.h"
 #include "Components/WidgetComponent.h"
 #include "SimpleRPG/UI/MonsterHPBarWidget.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
 {
+	//Base Setting
+	{
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->RotationRate = FRotator(0, 480, 0);
+	}
+
 	//Create ASC
 	{
 		AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));

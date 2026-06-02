@@ -54,11 +54,13 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	{
 		BBComp->SetValueAsObject(TargetActorKey.SelectedKeyName, ClosestActor);
 		BBComp->SetValueAsFloat(TargetDistanceKey.SelectedKeyName, ClosestDist);
+		AIController->SetFocus(ClosestActor);
 	}
 	else
 	{
 		BBComp->ClearValue(TargetActorKey.SelectedKeyName);
 		BBComp->ClearValue(TargetDistanceKey.SelectedKeyName);
+		AIController->ClearFocus(EAIFocusPriority::Gameplay);
 	}
 	
 }
