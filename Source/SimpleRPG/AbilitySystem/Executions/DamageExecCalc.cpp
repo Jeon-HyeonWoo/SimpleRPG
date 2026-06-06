@@ -3,7 +3,7 @@
 
 #include "DamageExecCalc.h"
 #include "../SimpleRPGAttributeSet.h"
-#include "../SimpleRPGMonsterAttributeSet.h"
+#include "SimpleRPG/Monster/AbilitySystem/AttributeSet/SimpleRPGMonsterAttributeSet.h"
 
 UDamageExecCalc::UDamageExecCalc()
 {

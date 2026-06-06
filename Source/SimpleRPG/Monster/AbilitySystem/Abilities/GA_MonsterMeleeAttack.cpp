@@ -6,8 +6,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "SimpleRPG/AbilitySystem/Data/MonsterDamageDataTableRow.h"
-
+#include "SimpleRPG/Monster/Data/MonsterDamageDataTableRow.h"
 
 UGA_MonsterMeleeAttack::UGA_MonsterMeleeAttack()
 {

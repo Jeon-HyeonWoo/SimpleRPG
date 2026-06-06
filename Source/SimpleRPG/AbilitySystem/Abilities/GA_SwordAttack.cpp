@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "../Data/DamageDataTableRow.h"
-#include "../../AbilitySystem/SimpleRPGMonsterAttributeSet.h"
+#include "SimpleRPG/Monster/AbilitySystem/AttributeSet/SimpleRPGMonsterAttributeSet.h"
 
 UGA_SwordAttack::UGA_SwordAttack()
 {

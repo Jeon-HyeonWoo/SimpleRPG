@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SimpleRPGGameplayAbility.h"
+#include "SimpleRPG/AbilitySystem/Abilities/SimpleRPGGameplayAbility.h"
 #include "GA_MonsterMeleeAttack.generated.h"
+
 
 /**
  * 

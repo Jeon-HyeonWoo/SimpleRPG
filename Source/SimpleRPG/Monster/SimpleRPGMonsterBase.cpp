@@ -3,13 +3,14 @@
 
 #include "SimpleRPGMonsterBase.h"
 #include "AbilitySystemComponent.h"
-#include "../AbilitySystem/SimpleRPGMonsterAttributeSet.h"
+#include "SimpleRPG/Monster/AbilitySystem/AttributeSet/SimpleRPGMonsterAttributeSet.h"
 #include "../Monster/Data/MonsterData.h"
 #include "SimpleRPG/Monster/AI/MonsterAIController.h"
 #include "SimpleRPG/AbilitySystem/SimpleRPGAbilitySet.h"
 #include "Components/WidgetComponent.h"
 #include "SimpleRPG/UI/MonsterHPBarWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
 
 
 ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
