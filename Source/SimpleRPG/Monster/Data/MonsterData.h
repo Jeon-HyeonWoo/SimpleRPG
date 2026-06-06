@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "EMonsterTier.h"
+#include "MonsterAIConfig.h"
 #include "MonsterData.generated.h"
 
 class UGameplayEffect;
@@ -20,27 +21,37 @@ class SIMPLERPG_API UMonsterData : public UPrimaryDataAsset
 	
 public:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
-	TSubclassOf<UGameplayEffect> InitStatsEffect;
+#pragma region Identity
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
-	EMonsterTier MonsterTier;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Identity")
 	FText DisplayName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Identity")
+	EMonsterTier MonsterTier;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Identity")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Identity")
 	TObjectPtr<USimpleRPGAbilitySet> AbilitySet;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
-	float PatrolSpeed;
+#pragma endregion
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
-	float ChaseSpeed;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
-	float ReturnSpeed;
+#pragma region Stat
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Stat")
+	TSubclassOf<UGameplayEffect> InitStatsEffect;
+
+#pragma endregion
+
+
+#pragma region AI
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|AI")
+	FMonsterAIConfig AIConfig;
+
+#pragma endregion
+
+	
 };
