@@ -29,25 +29,50 @@ public:
 
 public:
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FGameplayAttributeData MovementSpeed;
-	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, MovementSpeed)
-
-	UPROPERTY(BlueprintReadOnly, Category = "Vital")
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
 	FGameplayAttributeData MaxHP;
 	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, MaxHP)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Vital")
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
 	FGameplayAttributeData HP;
 	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, HP)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AD_AttackPower;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, AD_AttackPower)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AP_AttackPower;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, AP_AttackPower)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AttackSpeed;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, AttackSpeed)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AD_Defense;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, AD_Defense)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AP_Defense;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, AP_Defense)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData CriticalChance;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, CriticalChance)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData CriticalMultiplier;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, CriticalMultiplier)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FGameplayAttributeData MovementSpeedMultiplier;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, MovementSpeedMultiplier)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat")
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, Damage)
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Stat")
-	FGameplayAttributeData Defense;
-	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, Defense)
 	
 public:
 
