@@ -35,4 +35,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
 	TObjectPtr<USimpleRPGAbilitySet> AbilitySet;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
+	float PatrolSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
+	float ChaseSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Data")
+	float ReturnSpeed;
 };

@@ -6,6 +6,9 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "SimpleRPG/Monster/Data/MonsterData.h"
 
 UBTService_UpdateTarget::UBTService_UpdateTarget()
 {
@@ -33,11 +36,27 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 		return;
 	}
 
-	//GetBlackboard
+	//Get Blackboard
 	UBlackboardComponent* BBComp = OwnerComp.GetBlackboardComponent();
 	if (!BBComp)
 	{
 		UE_LOG(LogTemp, Error, TEXT("BlackBoardComponent is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//Get OwnerActor
+	ASimpleRPGMonsterBase* MonsterBase = Cast<ASimpleRPGMonsterBase>(OwnerComp.GetAIOwner()->GetPawn());
+	if (!MonsterBase)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MonsterBase is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//Get MonsterBaseData
+	UMonsterData* MonsterData = MonsterBase->GetMonsterData();
+	if (!MonsterData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MonsterData is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
 		return;
 	}
 
