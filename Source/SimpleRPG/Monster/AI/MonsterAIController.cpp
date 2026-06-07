@@ -56,7 +56,7 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	//InPawn valid check
 	if (!InPawn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InPawn is unvalid : %d, %hs"), __LINE__, __FUNCTION__);
+		UE_LOG(LogTemp, Warning, TEXT("InPawn is invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		return;
 	}
 
@@ -65,7 +65,7 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	ASimpleRPGMonsterBase* MonsterPawn = Cast<ASimpleRPGMonsterBase>(InPawn);
 	if (!MonsterPawn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MonsterPawn is unvalid : %d, %hs"), __LINE__, __FUNCTION__);
+		UE_LOG(LogTemp, Warning, TEXT("MonsterPawn is invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		return;
 	}
 
@@ -73,7 +73,7 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	UMonsterData* MonsterData = MonsterPawn->GetMonsterData();
 	if (!MonsterData)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MonsterData is unvalid : %d, %hs"), __LINE__, __FUNCTION__);
+		UE_LOG(LogTemp, Warning, TEXT("MonsterData is invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		return;
 	}
 
@@ -81,7 +81,7 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	UBehaviorTree* BehaviorTree = MonsterData->BehaviorTree;
 	if (!BehaviorTree)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BehaviorTree is unvalid : %d, %hs"), __LINE__, __FUNCTION__);
+		UE_LOG(LogTemp, Warning, TEXT("BehaviorTree is invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		return;
 	}
 
