@@ -37,6 +37,14 @@ public:
 	
 	void UpdateHPBar();
 
+	
+protected:
+	//Helper Function
+
+	void GiveAbility();
+	void InitializeStats();
+	void BindDelegate();
+
 public:
 
 	UPROPERTY()

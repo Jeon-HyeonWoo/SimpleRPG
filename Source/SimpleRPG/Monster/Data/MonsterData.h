@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Engine/DataTable.h"
 #include "EMonsterTier.h"
 #include "MonsterAIConfig.h"
 #include "MonsterData.generated.h"
@@ -39,6 +40,10 @@ public:
 
 
 #pragma region Stat
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Stat",
+		meta = (RowType = "/Script/SimpleRPG.MonsterStatRow"))
+	FDataTableRowHandle StatRowHandle;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Stat")
 	TSubclassOf<UGameplayEffect> InitStatsEffect;

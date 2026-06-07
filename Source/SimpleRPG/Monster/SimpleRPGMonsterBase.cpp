@@ -10,6 +10,7 @@
 #include "Components/WidgetComponent.h"
 #include "SimpleRPG/UI/MonsterHPBarWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "SimpleRPG/Monster/Data/MonsterStatRow.h"
 
 
 
@@ -64,30 +65,9 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(this, this);
 
-	if (!IsValid(MonsterData))
-	{
-		UE_LOG(LogTemp, Error, TEXT("MonsterData is unvalid %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	MonsterData->AbilitySet->GiveToAbilitySystem(GetAbilitySystemComponent());
-
-	if (!IsValid(MonsterData->InitStatsEffect))
-	{
-		UE_LOG(LogTemp, Error, TEXT("MontserData->InitStatsEffect is unvalid, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	//초기 스탯 부여
-	GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(
-		MonsterData->InitStatsEffect.GetDefaultObject(),	//GameplayEffect CDO
-		1.0f,												//Level
-		GetAbilitySystemComponent()->MakeEffectContext()	//Context
-		);
-	
-	//Test용 Death 함수 바인딩
-	AttributeSet->OnHPDepleted.AddDynamic(this, &ASimpleRPGMonsterBase::HandleDeath);
-	
+	GiveAbility();
+	InitializeStats();
+	BindDelegate();
 }
 
 void ASimpleRPGMonsterBase::HandleDeath(AActor* Actor)
@@ -111,4 +91,75 @@ void ASimpleRPGMonsterBase::UpdateHPBar()
 	}
 
 	W_MonsterHPBar->SetHP(GetAttributeSet()->GetHP(), GetAttributeSet()->GetMaxHP());
+}
+
+void ASimpleRPGMonsterBase::GiveAbility()
+{
+	if (!IsValid(MonsterData))
+	{
+		UE_LOG(LogTemp, Error, TEXT("MonsterData is invalid %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	if (!IsValid(MonsterData->AbilitySet))
+	{
+		UE_LOG(LogTemp, Error, TEXT("AbilitySet is invalid %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	MonsterData->AbilitySet->GiveToAbilitySystem(GetAbilitySystemComponent());
+}
+
+void ASimpleRPGMonsterBase::InitializeStats()
+{
+	//1. AttributeSet 유효성 검사
+	if (!IsValid(AttributeSet))
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttributeSet is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//2. MonsterData 유효성 검사
+	if (!IsValid(MonsterData))
+	{
+		UE_LOG(LogTemp, Error, TEXT("MonsterData is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+	
+	//3. StatRow 가져오기 및 검사
+	const FMonsterStatRow* StatRow =
+		MonsterData->StatRowHandle.GetRow<FMonsterStatRow>(TEXT("InitializeStats"));
+	if (!StatRow) 
+	{
+		UE_LOG(LogTemp, Error, TEXT("StatRow not found : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//4. AttributeSet에 StatRow값 Initialize 적용
+	{
+		AttributeSet->InitMaxHP(StatRow->MaxHP);
+		AttributeSet->InitHP(StatRow->MaxHP);
+		AttributeSet->InitAD_AttackPower(StatRow->AD_AttackPower);
+		AttributeSet->InitAP_AttackPower(StatRow->AP_AttackPower);
+		AttributeSet->InitAD_Defense(StatRow->AD_Defense);
+		AttributeSet->InitAP_Defense(StatRow->AP_Defense);
+		AttributeSet->InitAttackSpeed(StatRow->AttackSpeed);
+		AttributeSet->InitCriticalChance(StatRow->CriticalChance);
+		AttributeSet->InitCriticalMultiplier(StatRow->CriticalMultiplier);
+	}
+	
+	//5. Runtime debug 
+	UE_LOG(LogTemp, Warning, TEXT("[%s] MaxHp = %.1f, AD_AP=%.1f"), *GetName(), AttributeSet->GetMaxHP(), AttributeSet->GetAD_AttackPower());
+}
+
+void ASimpleRPGMonsterBase::BindDelegate()
+{
+	if (!IsValid(AttributeSet))
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttributeSet is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//Test용 Death 판정 Delegate
+	AttributeSet->OnHPDepleted.AddDynamic(this, &ASimpleRPGMonsterBase::HandleDeath);
 }
