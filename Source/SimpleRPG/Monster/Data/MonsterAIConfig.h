@@ -20,6 +20,10 @@ struct FMonsterAIConfig
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = "0.0"))
 	float LeashRange = 800.0f;
 
+	//PartolRagne < LeashRange
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = "0.0"))
+	float PatrolRange = 400.0f;
+
 #pragma endregion
 
 
