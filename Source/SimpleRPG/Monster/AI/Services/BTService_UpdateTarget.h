@@ -22,7 +22,8 @@ public:
 	UBTService_UpdateTarget();
 
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-	
+
+	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
 
 private:
 	
@@ -35,4 +36,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector TargetDistanceKey;
+
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector ReachAttackableKey;
 };

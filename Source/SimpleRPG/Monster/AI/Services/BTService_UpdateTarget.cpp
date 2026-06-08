@@ -20,6 +20,7 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
+#pragma region valid check
 	//Get AIController
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!AIController)
@@ -45,7 +46,7 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	}
 
 	//Get OwnerActor
-	ASimpleRPGMonsterBase* MonsterBase = Cast<ASimpleRPGMonsterBase>(OwnerComp.GetAIOwner()->GetPawn());
+	ASimpleRPGMonsterBase* MonsterBase = Cast<ASimpleRPGMonsterBase>(AIController->GetPawn());
 	if (!MonsterBase)
 	{
 		UE_LOG(LogTemp, Error, TEXT("MonsterBase is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
@@ -60,28 +61,52 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 		return;
 	}
 
-	//Get PercivedActors
-	TArray<AActor*> PerceivedActors;
+#pragma endregion
 
 	AActor* ClosestActor = nullptr;
 	float ClosestDist = 0.0f;
-	FVector OwnerLocation = OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation();
+	FVector OwnerLocation = MonsterBase->GetActorLocation();
 
 	ClosestActor = FindClosestPerceivedActor(PerceptionComp, OwnerLocation, ClosestDist);
 
 	if (ClosestActor != nullptr)
 	{
+		//TargetActor, TargetDistance 판단
 		BBComp->SetValueAsObject(TargetActorKey.SelectedKeyName, ClosestActor);
 		BBComp->SetValueAsFloat(TargetDistanceKey.SelectedKeyName, ClosestDist);
 		AIController->SetFocus(ClosestActor);
+
+		//ReachAttackable 거리 판단
+		const float AttackRange = MonsterData->AIConfig.AttackRange;
+		bool bReachAttackable = (ClosestDist <= AttackRange);
+		BBComp->SetValueAsBool(ReachAttackableKey.SelectedKeyName, bReachAttackable);
 	}
 	else
 	{
 		BBComp->ClearValue(TargetActorKey.SelectedKeyName);
 		BBComp->ClearValue(TargetDistanceKey.SelectedKeyName);
 		AIController->ClearFocus(EAIFocusPriority::Gameplay);
+		
+		BBComp->SetValueAsBool(ReachAttackableKey.SelectedKeyName, false);
 	}
 	
+}
+
+void UBTService_UpdateTarget::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+
+	//이 Task를 사용하는 BT로 BB데이터 가져오기
+	UBlackboardData* BBData = GetBlackboardAsset();
+	if (BBData == nullptr)
+	{
+		return;
+	}
+
+	//Selector를 이 BB에 연결 (DropDown, Type이 동작)
+	TargetActorKey.ResolveSelectedKey(*BBData);
+	TargetDistanceKey.ResolveSelectedKey(*BBData);
+	ReachAttackableKey.ResolveSelectedKey(*BBData);
 }
 
 AActor* UBTService_UpdateTarget::FindClosestPerceivedActor(UAIPerceptionComponent* PerceptionComp, const FVector& Origin, float& OutDistance)
