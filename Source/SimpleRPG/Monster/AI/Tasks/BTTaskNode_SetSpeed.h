@@ -9,6 +9,14 @@
 /**
  * 
  */
+UENUM(BlueprintType)
+enum class ESpeedType : uint8
+{
+	Patrol,
+	Chase,
+	Return
+};
+
 UCLASS()
 class SIMPLERPG_API UBTTaskNode_SetSpeed : public UBTTaskNode
 {
@@ -23,5 +31,5 @@ public:
 public:
 
 	UPROPERTY(EditAnywhere, Category = "SimpleRPG|Speed")
-	float SpeedValue = 0.0f;
+	ESpeedType SpeedType;
 };
