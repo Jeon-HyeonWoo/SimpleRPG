@@ -100,6 +100,12 @@ void ASimpleRPGMonsterBase::UpdateHPBar()
 	W_MonsterHPBar->SetHP(GetAttributeSet()->GetHP(), GetAttributeSet()->GetMaxHP());
 }
 
+void ASimpleRPGMonsterBase::RestoreHP()
+{
+	AttributeSet->SetHP(AttributeSet->GetMaxHP());
+	UpdateHPBar();
+}
+
 void ASimpleRPGMonsterBase::GiveAbility()
 {
 	if (!IsValid(MonsterData))

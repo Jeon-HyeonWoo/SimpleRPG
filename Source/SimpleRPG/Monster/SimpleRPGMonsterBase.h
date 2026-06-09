@@ -25,12 +25,14 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 public:
+	//Getter, Setter
 
 	USimpleRPGMonsterAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	UMonsterData* GetMonsterData() { return MonsterData; }
 
 public:
+	//Binding, Handle Function
 
 	void HandleDamaged(AActor* _Instigator);
 
@@ -39,7 +41,11 @@ public:
 	
 	void UpdateHPBar();
 
+public:
+	//Rel. Stat, Status Function
 	
+	void RestoreHP();
+
 protected:
 	//Helper Function
 
