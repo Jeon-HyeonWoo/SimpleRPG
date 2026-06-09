@@ -92,12 +92,17 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	
 	//Set IsOutOfLeash for return
 	{
-		FVector SpawnLocation = BBComp->GetValueAsVector(SpawnLocationKey.SelectedKeyName);
-		float DistFromSpawn = FVector::Dist(OwnerLocation, SpawnLocation);
-		bool bIsOutOfLeash = DistFromSpawn > MonsterData->AIConfig.LeashRange;
-		BBComp->SetValueAsBool(IsOutOfLeashKey.SelectedKeyName, bIsOutOfLeash);
+		bool bPrevIsOutOfLeash = BBComp->GetValueAsBool(IsOutOfLeashKey.SelectedKeyName);
+
+		if (!bPrevIsOutOfLeash)
+		{
+			FVector SpawnLocation = BBComp->GetValueAsVector(SpawnLocationKey.SelectedKeyName);
+			float DistFromSpawn = FVector::Dist(OwnerLocation, SpawnLocation);
+			bool bIsOutOfLeash = DistFromSpawn > MonsterData->AIConfig.LeashRange;
+			BBComp->SetValueAsBool(IsOutOfLeashKey.SelectedKeyName, bIsOutOfLeash);
+		}
+
 	}
-	
 
 }
 
