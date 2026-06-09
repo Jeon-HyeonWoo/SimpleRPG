@@ -90,6 +90,15 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 		BBComp->SetValueAsBool(ReachAttackableKey.SelectedKeyName, false);
 	}
 	
+	//Set IsOutOfLeash for return
+	{
+		FVector SpawnLocation = BBComp->GetValueAsVector(SpawnLocationKey.SelectedKeyName);
+		float DistFromSpawn = FVector::Dist(OwnerLocation, SpawnLocation);
+		bool bIsOutOfLeash = DistFromSpawn > MonsterData->AIConfig.LeashRange;
+		BBComp->SetValueAsBool(IsOutOfLeashKey.SelectedKeyName, bIsOutOfLeash);
+	}
+	
+
 }
 
 void UBTService_UpdateTarget::InitializeFromAsset(UBehaviorTree& Asset)
@@ -107,6 +116,8 @@ void UBTService_UpdateTarget::InitializeFromAsset(UBehaviorTree& Asset)
 	TargetActorKey.ResolveSelectedKey(*BBData);
 	TargetDistanceKey.ResolveSelectedKey(*BBData);
 	ReachAttackableKey.ResolveSelectedKey(*BBData);
+	IsOutOfLeashKey.ResolveSelectedKey(*BBData);
+	SpawnLocationKey.ResolveSelectedKey(*BBData);
 }
 
 AActor* UBTService_UpdateTarget::FindClosestPerceivedActor(UAIPerceptionComponent* PerceptionComp, const FVector& Origin, float& OutDistance)
