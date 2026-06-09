@@ -32,6 +32,8 @@ public:
 
 public:
 
+	void HandleDamaged(AActor* _Instigator);
+
 	UFUNCTION()
 	void HandleDeath(AActor* Actor);
 	
@@ -44,6 +46,7 @@ protected:
 	void GiveAbility();
 	void InitializeStats();
 	void BindDelegate();
+	void ReportDamageToPerception(AActor* _Instigator);
 
 public:
 

@@ -4,6 +4,7 @@
 #include "SimpleRPGMonsterAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
+#include "Perception/AISenseConfig_Damage.h"
 
 void USimpleRPGMonsterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
@@ -13,6 +14,7 @@ void USimpleRPGMonsterAttributeSet::PostGameplayEffectExecute(const FGameplayEff
 	{
 		SetHP(FMath::Clamp(GetHP(), 0.0f, GetMaxHP()));
 
+		//Get Casted DamagedActor(Monster, this)
 		ASimpleRPGMonsterBase* Monster = Cast<ASimpleRPGMonsterBase>(GetOwningActor());
 		if (!Monster)
 		{
@@ -20,11 +22,21 @@ void USimpleRPGMonsterAttributeSet::PostGameplayEffectExecute(const FGameplayEff
 			return;
 		}
 
-		Monster->UpdateHPBar();
+		//Get Instigator(Player)
+		AActor* Instigator = Data.EffectSpec.GetContext().GetInstigator();
+		if (!Instigator)
+		{
+			UE_LOG(LogTemp, Error, TEXT("instigator is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+		}
+		else
+		{
+			//UpdateHP, Report DamageSense to Monster
+			Monster->HandleDamaged(Instigator);
+		}
 
 		if (GetHP() <= 0.0f)
 		{
-			OnHPDepleted.Broadcast(Data.EffectSpec.GetContext().GetInstigator());
+			OnHPDepleted.Broadcast(Instigator);
 		}
 	}
 

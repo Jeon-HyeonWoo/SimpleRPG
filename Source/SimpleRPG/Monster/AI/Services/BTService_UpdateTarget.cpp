@@ -126,8 +126,9 @@ AActor* UBTService_UpdateTarget::FindClosestPerceivedActor(UAIPerceptionComponen
 
 	//인식된 액터들을 담는 배열
 	TArray<AActor*> PerceivedActors;
-	//인식 방법 : Sight(시야)에 담긴 액터들을 Array에 담는 함수
-	PerceptionComp->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PerceivedActors);
+	//특정 감각 인식 방법 : Sight(시야)에 담긴 액터들을 Array에 담는 함수
+	//모든 감각 인식 방법 : nullptr
+	PerceptionComp->GetCurrentlyPerceivedActors(nullptr, PerceivedActors);
 
 	//인식된 액터들이 없다면 nullptr 반환
 	if (PerceivedActors.IsEmpty())

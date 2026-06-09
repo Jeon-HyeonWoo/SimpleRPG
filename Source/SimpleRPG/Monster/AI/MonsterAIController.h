@@ -11,6 +11,7 @@
  */
 class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
+class UAISenseConfig_Damage;
 
 UCLASS()
 class SIMPLERPG_API AMonsterAIController : public AAIController
@@ -23,8 +24,17 @@ public:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
+private:
+	//Helper Functions
+
+	void SetupSightSense();
+	void SetupDamageSense();
+
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|AI")
 	TObjectPtr<UAISenseConfig_Sight> SenseConfigSight;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|AI")
+	TObjectPtr<UAISenseConfig_Damage> SenseConfigDamage;
 };

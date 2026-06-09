@@ -11,6 +11,7 @@
 #include "SimpleRPG/UI/MonsterHPBarWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SimpleRPG/Monster/Data/MonsterStatRow.h"
+#include "Perception/AISenseConfig_Damage.h"
 
 
 
@@ -68,6 +69,12 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 	GiveAbility();
 	InitializeStats();
 	BindDelegate();
+}
+
+void ASimpleRPGMonsterBase::HandleDamaged(AActor* _Instigator)
+{
+	UpdateHPBar();
+	ReportDamageToPerception(_Instigator);
 }
 
 void ASimpleRPGMonsterBase::HandleDeath(AActor* Actor)
@@ -162,4 +169,25 @@ void ASimpleRPGMonsterBase::BindDelegate()
 
 	//Test용 Death 판정 Delegate
 	AttributeSet->OnHPDepleted.AddDynamic(this, &ASimpleRPGMonsterBase::HandleDeath);
+}
+
+void ASimpleRPGMonsterBase::ReportDamageToPerception(AActor* _Instigator)
+{
+	if (!_Instigator)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Instigator is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	UAISense_Damage::ReportDamageEvent(
+		GetWorld(),
+		this,			//DamagedActor(Monster)
+		_Instigator,		//InstigatorActor(Player)
+		1.0f,
+		_Instigator->GetActorLocation(),
+		GetActorLocation()
+		//Tag : Default Name_None, 필요하면 추가
+	);
+
+	UE_LOG(LogTemp, Warning, TEXT("Reporting Instigator"));
 }

@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Damage.h"
 
 AMonsterAIController::AMonsterAIController()
 {
@@ -20,34 +21,9 @@ AMonsterAIController::AMonsterAIController()
 		}
 	}
 	
-	//Create SenseConfig_Sight
-	{
-		
-		SenseConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SenseConfigSight"));
-		if (!SenseConfigSight)
-		{
-			UE_LOG(LogTemp, Error, TEXT("SenseConfigSight is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-			return;
-		}
-	}
-	
-	//Setting SenseConfigSight Default variable
-	{
-		SenseConfigSight->SightRadius = 1000.0f;								//감지범위
-		SenseConfigSight->LoseSightRadius = 1500.0f;							//감지해제범위
-		SenseConfigSight->PeripheralVisionAngleDegrees = 360.0f;				//감지 각도
-		//TODO : IGenericTeamAgentInterface 설정 이후 중립, 아군 감지 해제
-		SenseConfigSight->DetectionByAffiliation.bDetectEnemies = true;			//적 감지
-		SenseConfigSight->DetectionByAffiliation.bDetectNeutrals = true;		//중립 감지
-		SenseConfigSight->DetectionByAffiliation.bDetectFriendlies = true;		//아군 감지
-	}
+	SetupSightSense();
+	SetupDamageSense();
 
-	//Set SenseConfig, Default DomiantSence
-	{
-		PerceptionComponent->ConfigureSense(*SenseConfigSight);
-		PerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
-	}
-	
 }
 
 void AMonsterAIController::OnPossess(APawn* InPawn)
@@ -92,4 +68,48 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 
 	RunBehaviorTree(BehaviorTree);
 
+}
+
+void AMonsterAIController::SetupSightSense()
+{
+	//Create SenseConfig Sight and valid check
+	{
+		SenseConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SenseConfigSight"));
+		if (!IsValid(SenseConfigSight))
+		{
+			UE_LOG(LogTemp, Error, TEXT("SenseConfigSight is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+			return;
+		}
+	}
+	
+	//Setup
+	{
+		SenseConfigSight->SightRadius = 1000.0f;								//감지범위
+		SenseConfigSight->LoseSightRadius = 1500.0f;							//감지해제범위
+		SenseConfigSight->PeripheralVisionAngleDegrees = 360.0f;				//감지 각도
+		//TODO : IGenericTeamAgentInterface 설정 이후 중립, 아군 감지 해제
+		SenseConfigSight->DetectionByAffiliation.bDetectEnemies = true;			//적 감지
+		SenseConfigSight->DetectionByAffiliation.bDetectNeutrals = true;		//중립 감지
+		SenseConfigSight->DetectionByAffiliation.bDetectFriendlies = true;		//아군 감지
+	}
+
+	//Reigst SightSense with PerceptionComponent
+	{
+		PerceptionComponent->ConfigureSense(*SenseConfigSight);
+		PerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
+	}
+}
+
+void AMonsterAIController::SetupDamageSense()
+{
+	SenseConfigDamage = CreateDefaultSubobject<UAISenseConfig_Damage>(TEXT("SenseConfig_Damage"));
+	if (!IsValid(SenseConfigDamage))
+	{
+		UE_LOG(LogTemp, Error, TEXT("DamageConfigSense is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	{
+		PerceptionComponent->ConfigureSense(*SenseConfigDamage);
+	}
 }
