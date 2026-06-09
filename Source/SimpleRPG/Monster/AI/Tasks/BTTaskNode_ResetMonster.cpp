@@ -2,8 +2,10 @@
 
 
 #include "BTTaskNode_ResetMonster.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "SimpleRPG/Monster/AI/MonsterAIController.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
+
 
 UBTTaskNode_ResetMonster::UBTTaskNode_ResetMonster()
 {
@@ -27,11 +29,37 @@ EBTNodeResult::Type UBTTaskNode_ResetMonster::ExecuteTask(UBehaviorTreeComponent
 		UE_LOG(LogTemp, Error, TEXT("MonsterPawn is invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		return EBTNodeResult::Failed;
 	}
+
+	UBlackboardComponent* BBComp = OwnerComp.GetBlackboardComponent();
+	if (!BBComp)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BlackboardComponent is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return EBTNodeResult::Failed;
+	}
+
 #pragma endregion
 
 	//Recover full Hp
 	MonsterPawn->RestoreHP();
 
+	//IsOutOfLeashKey 해제
+	BBComp->SetValueAsBool(IsOutOfLeashKey.SelectedKeyName, false);
 
 	return EBTNodeResult::Succeeded;
+}
+
+void UBTTaskNode_ResetMonster::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+
+	//이 Task를 사용하는 BT로 BB데이터 가져오기
+	UBlackboardData* BBData = GetBlackboardAsset();
+	if (BBData == nullptr)
+	{
+		return;
+	}
+
+	//Selector를 이 BB에 연결 (DropDown, Type이 동작)
+	IsOutOfLeashKey.ResolveSelectedKey(*BBData);
+	
 }
