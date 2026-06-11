@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../Character/SimpleRPGCharacterBase.h"
+#include "GameplayEffect.h"
 #include "SimpleRPGMonsterBase.generated.h"
 
 class UAttributeSet;
@@ -45,6 +46,8 @@ public:
 	//Rel. Stat, Status Function
 	
 	void RestoreHP();
+	void ApplyInvulnerability(); 
+	void RemoveInvulnerability();
 
 protected:
 	//Helper Function
@@ -64,6 +67,14 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG")
 	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	TSubclassOf<UGameplayEffect> InvulnerabilityEffect;
+
+private:
+
+	UPROPERTY()
+	FActiveGameplayEffectHandle InvulnerabilityEffectHandle;
 
 private:
 

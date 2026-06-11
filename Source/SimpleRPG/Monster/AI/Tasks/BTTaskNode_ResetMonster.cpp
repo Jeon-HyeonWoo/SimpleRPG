@@ -41,7 +41,7 @@ EBTNodeResult::Type UBTTaskNode_ResetMonster::ExecuteTask(UBehaviorTreeComponent
 
 	//Recover full Hp
 	MonsterPawn->RestoreHP();
-
+	MonsterPawn->RemoveInvulnerability();
 	//IsOutOfLeashKey ÇØÁ¦
 	BBComp->SetValueAsBool(IsOutOfLeashKey.SelectedKeyName, false);
 

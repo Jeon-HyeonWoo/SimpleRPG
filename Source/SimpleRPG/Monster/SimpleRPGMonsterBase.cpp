@@ -106,6 +106,49 @@ void ASimpleRPGMonsterBase::RestoreHP()
 	UpdateHPBar();
 }
 
+void ASimpleRPGMonsterBase::ApplyInvulnerability()
+{
+	//1. ASC 유효성 검사
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+	if (!IsValid(ASC))
+	{
+		UE_LOG(LogTemp, Error, TEXT("ASC is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//2.EffectContext만들기
+	FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+	if (!ContextHandle.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("ContextHandle is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//3. EffectSpecHandle 만들기
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(InvulnerabilityEffect, 1.0f, ContextHandle);
+	if (!SpecHandle.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpecHandle is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	//4. EffectHandle에 저장(추후 제거용)
+	InvulnerabilityEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	
+}
+
+void ASimpleRPGMonsterBase::RemoveInvulnerability()
+{
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+	if (!IsValid(ASC))
+	{
+		UE_LOG(LogTemp, Error, TEXT("ASC is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	ASC->RemoveActiveGameplayEffect(InvulnerabilityEffectHandle);
+}
+
 void ASimpleRPGMonsterBase::GiveAbility()
 {
 	if (!IsValid(MonsterData))
