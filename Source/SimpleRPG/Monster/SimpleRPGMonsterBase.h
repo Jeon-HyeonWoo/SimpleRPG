@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../Character/SimpleRPGCharacterBase.h"
 #include "GameplayEffect.h"
+#include "SimpleRPG/Monster/Data/MonsterAnimSet.h"
 #include "SimpleRPGMonsterBase.generated.h"
 
 class UAttributeSet;
@@ -31,6 +32,8 @@ public:
 	USimpleRPGMonsterAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	UMonsterData* GetMonsterData() { return MonsterData; }
+	
+	const FMonsterAnimSet& GetAnimSet() const { return MonsterAnimSet; }
 
 public:
 	//Binding, Handle Function
@@ -57,6 +60,8 @@ protected:
 	void BindDelegate();
 	void ReportDamageToPerception(AActor* _Instigator);
 
+	void PlayHitReaction();
+
 public:
 
 	UPROPERTY()
@@ -70,6 +75,17 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	TSubclassOf<UGameplayEffect> InvulnerabilityEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Anim")
+	FMonsterAnimSet MonsterAnimSet;
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Anim")
+	FGameplayTag HitReactTag;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Anim")
+	FGameplayTag DeathTag;
 
 private:
 

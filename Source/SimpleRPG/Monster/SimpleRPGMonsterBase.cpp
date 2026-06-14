@@ -73,6 +73,7 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 
 void ASimpleRPGMonsterBase::HandleDamaged(AActor* _Instigator)
 {
+	PlayHitReaction();
 	UpdateHPBar();
 	ReportDamageToPerception(_Instigator);
 }
@@ -239,4 +240,13 @@ void ASimpleRPGMonsterBase::ReportDamageToPerception(AActor* _Instigator)
 	);
 
 	UE_LOG(LogTemp, Warning, TEXT("Reporting Instigator"));
+}
+
+void ASimpleRPGMonsterBase::PlayHitReaction()
+{
+	UAnimMontage* Montage = GetAnimSet().GetAnimMontageByTag(HitReactTag);
+	if (Montage)
+	{
+		PlayAnimMontage(Montage, 1.0f, NAME_None);
+	}
 }
