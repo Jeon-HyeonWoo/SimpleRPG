@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SimpleRPG/Monster/Data/MonsterStatRow.h"
 #include "Perception/AISenseConfig_Damage.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 
 
@@ -73,7 +74,9 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 
 void ASimpleRPGMonsterBase::HandleDamaged(AActor* _Instigator)
 {
-	PlayHitReaction();
+	FGameplayEventData PayLoad;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, StaggerEventTag, PayLoad);
+
 	UpdateHPBar();
 	ReportDamageToPerception(_Instigator);
 }
@@ -242,11 +245,3 @@ void ASimpleRPGMonsterBase::ReportDamageToPerception(AActor* _Instigator)
 	UE_LOG(LogTemp, Warning, TEXT("Reporting Instigator"));
 }
 
-void ASimpleRPGMonsterBase::PlayHitReaction()
-{
-	UAnimMontage* Montage = GetAnimSet().GetAnimMontageByTag(HitReactTag);
-	if (Montage)
-	{
-		PlayAnimMontage(Montage, 1.0f, NAME_None);
-	}
-}

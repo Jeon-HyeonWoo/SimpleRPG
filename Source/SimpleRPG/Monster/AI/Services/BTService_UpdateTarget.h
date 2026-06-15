@@ -45,5 +45,13 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector SpawnLocationKey;
+
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector IsStaggeredKey;
+
+public:
+
+	UPROPERTY(EditAnywhere, Category = "SimpleRPG|Tag")
+	FGameplayTag StaggerStateTag;
 };
 

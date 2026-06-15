@@ -60,8 +60,6 @@ protected:
 	void BindDelegate();
 	void ReportDamageToPerception(AActor* _Instigator);
 
-	void PlayHitReaction();
-
 public:
 
 	UPROPERTY()
@@ -86,6 +84,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Anim")
 	FGameplayTag DeathTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Event")
+	FGameplayTag StaggerEventTag;
 
 private:
 

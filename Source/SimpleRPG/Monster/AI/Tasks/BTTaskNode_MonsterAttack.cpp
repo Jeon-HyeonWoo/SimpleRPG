@@ -62,6 +62,8 @@ EBTNodeResult::Type UBTTaskNode_MonsterAttack::AbortTask(UBehaviorTreeComponent&
 
 void UBTTaskNode_MonsterAttack::OnAbilityEnded(const FAbilityEndedData& AbilityEndedData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnAbilityEnded by: %s"), *GetNameSafe(AbilityEndedData.AbilityThatEnded));
+
 	if (!CachedOwnerComp)
 	{
 		UE_LOG(LogTemp, Error, TEXT("CachedOwnerComp is nullptr : %d, %hs"), __LINE__, __FUNCTION__);

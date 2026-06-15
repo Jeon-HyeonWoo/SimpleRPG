@@ -9,6 +9,7 @@
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SimpleRPG/Monster/Data/MonsterData.h"
+#include "AbilitySystemComponent.h"
 
 UBTService_UpdateTarget::UBTService_UpdateTarget()
 {
@@ -104,6 +105,16 @@ void UBTService_UpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 
 	}
 
+	//
+	{
+		UAbilitySystemComponent* ASC = MonsterBase->GetAbilitySystemComponent();
+		if (ASC)
+		{
+			bool bIsStaggered = ASC->HasMatchingGameplayTag(StaggerStateTag);
+			BBComp->SetValueAsBool(IsStaggeredKey.SelectedKeyName, bIsStaggered);
+		}
+	}
+
 }
 
 void UBTService_UpdateTarget::InitializeFromAsset(UBehaviorTree& Asset)
@@ -123,6 +134,7 @@ void UBTService_UpdateTarget::InitializeFromAsset(UBehaviorTree& Asset)
 	ReachAttackableKey.ResolveSelectedKey(*BBData);
 	IsOutOfLeashKey.ResolveSelectedKey(*BBData);
 	SpawnLocationKey.ResolveSelectedKey(*BBData);
+	IsStaggeredKey.ResolveSelectedKey(*BBData);
 }
 
 AActor* UBTService_UpdateTarget::FindClosestPerceivedActor(UAIPerceptionComponent* PerceptionComp, const FVector& Origin, float& OutDistance)
