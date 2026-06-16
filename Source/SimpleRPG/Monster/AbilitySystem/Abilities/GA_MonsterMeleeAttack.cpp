@@ -62,7 +62,9 @@ void UGA_MonsterMeleeAttack::PlayMontage()
 		this,
 		NAME_None,
 		AttackMontageDataArray[MontageDataIndex].AnimMontage,
-		1.0f
+		1.0f,
+		NAME_None,
+		false		//bStopWhenAbilityEnd
 	);
 
 	Task->OnBlendOut.AddDynamic(this, &UGA_MonsterMeleeAttack::OnMontageCompleted);

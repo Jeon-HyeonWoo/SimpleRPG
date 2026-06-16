@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 
 UGA_MonsterStagger::UGA_MonsterStagger()
 {
@@ -21,18 +22,23 @@ void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Stagger Activated : %d, %hs"), __LINE__, __FUNCTION__);
 	TaskPlayMontageAndWait();
+	TaskWaitForStaggerEvent();
 }
 
 void UGA_MonsterStagger::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stagger EndAbility, bWasCancelled : %d"), bWasCancelled);
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UGA_MonsterStagger::TaskPlayMontageAndWait()
 {
+	if (MontageTask)
+	{
+		MontageTask->EndTask();
+	}
+
+
 	ASimpleRPGMonsterBase* Pawn = Cast<ASimpleRPGMonsterBase>(GetAvatarActorFromActorInfo());
 	if (!IsValid(Pawn))
 	{
@@ -53,9 +59,24 @@ void UGA_MonsterStagger::TaskPlayMontageAndWait()
 
 	//Task->OnBlendOut.AddDynamic(this, &UGA_MonsterStagger::OnMontageCompleted);
 	Task->OnCompleted.AddDynamic(this, &UGA_MonsterStagger::OnMontageCompleted);
-	Task->OnInterrupted.AddDynamic(this, &UGA_MonsterStagger::OnMontageCancelled);
+	Task->OnInterrupted.AddDynamic(this, &UGA_MonsterStagger::OnMontageInterupted);
 	Task->OnCancelled.AddDynamic(this, &UGA_MonsterStagger::OnMontageCancelled);
 
+	Task->ReadyForActivation();
+
+	MontageTask = Task;
+}
+
+void UGA_MonsterStagger::TaskWaitForStaggerEvent()
+{
+	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+		this,
+		StaggerEventTag,
+		nullptr,
+		false
+	);
+
+	Task->EventReceived.AddDynamic(this, &UGA_MonsterStagger::OnStaggeredAgain);
 	Task->ReadyForActivation();
 }
 
@@ -83,3 +104,21 @@ void UGA_MonsterStagger::OnMontageCancelled()
 		true
 	);
 }
+
+void UGA_MonsterStagger::OnMontageInterupted()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Stagger Montage INTERUPTED"));
+	EndAbility(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		true,
+		true
+	);
+}
+
+void UGA_MonsterStagger::OnStaggeredAgain(FGameplayEventData PayLoad)
+{
+	TaskPlayMontageAndWait();
+}
+

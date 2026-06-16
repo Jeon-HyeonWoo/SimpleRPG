@@ -52,12 +52,10 @@ void UANS_SwordHitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 			AActor* HitActor = HitResult.GetActor();
 
 			if (HitActor == nullptr) continue;
-			UE_LOG(LogTemp, Warning, TEXT("Hit Pawn : %s"), *HitActor->GetName());
 			if (!Cast<APawn>(HitActor)) continue;
 			if (HitActors.Contains(HitActor)) continue;
 			
 			HitActors.Add(HitActor);
-			UE_LOG(LogTemp, Warning, TEXT("Hit Pawn : %s"), *HitActor->GetName());
 			FGameplayEventData PayLoad;
 			PayLoad.Instigator = OwnerActor;
 			PayLoad.Target = HitActor;
