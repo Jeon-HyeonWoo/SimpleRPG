@@ -14,6 +14,8 @@ UGA_MonsterDeath::UGA_MonsterDeath()
 
 void UGA_MonsterDeath::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+
+#pragma region valid check
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
@@ -21,18 +23,33 @@ void UGA_MonsterDeath::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 	}
 
 	ASimpleRPGMonsterBase* Pawn = Cast<ASimpleRPGMonsterBase>(GetAvatarActorFromActorInfo());
-	if (Pawn)
+	if (!ensureMsgf(IsValid(Pawn), TEXT("MonsterDeath : Pawn invalid")))
 	{
-		Pawn->StopMovement();
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}	
+	
+
+	AAIController* AIController = Cast<AAIController>(Pawn->GetController());
+	if (!ensureMsgf(IsValid(AIController), TEXT("MonsterDeath : AIController invalid")))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+	
+	UBrainComponent* BrainComp = AIController->GetBrainComponent();
+	if (!ensureMsgf(IsValid(BrainComp), TEXT("MonsterDeath : BrainComp invalid")))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
 	}
 
-	if (AAIController* AIController = Cast<AAIController>(Pawn->GetController()))
-	{
-		if (UBrainComponent* Brain = AIController->GetBrainComponent())
-		{
-			Brain->StopLogic(TEXT("Death"));
-		}
-	}
+#pragma endregion
+
+	//CharacterMovement Stop
+	Pawn->StopMovement();
+	//Behavior Tree Stop
+	BrainComp->StopLogic(TEXT("Death"));
 
 	TaskPlayDeathMontage();
 }
