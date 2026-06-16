@@ -76,58 +76,32 @@ ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter()
 void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	//1. PlayerState의 ASC 가져와서 연결
+	ASimpleRPGPlayerState* PS = Cast<ASimpleRPGPlayerState>(GetPlayerState());
+	if (!ensureMsgf(IsValid(PS), TEXT("PlayerCharacter : PlayerState invalid")))
+	{
+		return;
+	}
+	InitializeAbilitySystem(PS);
 	
-	/*
-	* 1. Connecting CharacterBase's ASC to PlayerState's ASC
-	* 2. GiveToAbilitySystem from GameMode's PawnData
-	*/
-	ASimpleRPGPlayerState* SimpleRPGPlayerState = Cast<ASimpleRPGPlayerState>(GetPlayerState());
-
-	if (IsValid(SimpleRPGPlayerState))
+	//2. Default PawnData 지정 / Ability부여 / 기본 무기 부여
+	if (HasAuthority())
 	{
-		AbilitySystemComponent = SimpleRPGPlayerState->GetAbilitySystemComponent();
-		AbilitySystemComponent->InitAbilityActorInfo(SimpleRPGPlayerState, this);
-
-		/* AttributeSet(Character Stat) Initialize */
-		if (USimpleRPGAttributeSet* AS = const_cast<USimpleRPGAttributeSet*>(SimpleRPGPlayerState->GetAttributeSet()))
+		ASimpleRPGGameMode* GameMode = Cast<ASimpleRPGGameMode>(GetWorld()->GetAuthGameMode());
+		if (!ensureMsgf(IsValid(GameMode), TEXT("PlayerCharacter : GameMode invalid")))
 		{
-			AS->InitMovementSpeed(600.0f);
-			AS->InitHealth(100.0f); 
-			AS->InitMaxHealth(100.0f);
-			AS->InitPower(10.0f);
-			AS->InitMp(100.0f);
-			AS->InitMaxMp(100.0f);
+			return;
 		}
 
-		if (HasAuthority())
+		const UPawnData* PawnData = GameMode->DefaultPawnData;
+		if (!ensureMsgf(IsValid(PawnData), TEXT("PlayerCharacter : PawnData invalid")))
 		{
-			ASimpleRPGGameMode* SimpleRPGGameMode = Cast<ASimpleRPGGameMode>(GetWorld()->GetAuthGameMode());
-			if (IsValid(SimpleRPGGameMode))
-			{
-				const UPawnData* PawnData = SimpleRPGGameMode->DefaultPawnData;
-				if (IsValid(PawnData) && IsValid(PawnData->AbilitySet))
-				{
-					PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
-				}
-				
-				if (IsValid(EquipmentComponent) && PawnData->WeaponSlots.Num() > 0)
-				{
-					EquipmentComponent->InitializeWeaponSlot(PawnData->WeaponSlots);
-					EquipmentComponent->EquipWeapon(PawnData->WeaponSlots[0]);
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("%d, %hs, GameMode is invalid"), __LINE__, __FUNCTION__);
-			}
-			
+			return;
 		}
+		GrantDefaultAbilities(PawnData);
+		InitializeEquipment(PawnData);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("PlayerState is invalid"));
-	}
-
 }
 
 void ASimpleRPGPlayerCharacter::BeginPlay()
@@ -157,6 +131,63 @@ void ASimpleRPGPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 
 	//Ability Bind Pressed and Released
 	SRPGIC->BindAbilityActions(InputConfig, this, &ThisClass::OnAbilityInputPressed, &ThisClass::OnAbilityInputReleased);
+}
+
+void ASimpleRPGPlayerCharacter::InitializeAbilitySystem(ASimpleRPGPlayerState* PS)
+{
+	if (!ensureMsgf(IsValid(PS), TEXT("PlayerCharacter : PlayerState invalid")))
+	{
+		return;
+	}
+
+	//Get ASC
+	AbilitySystemComponent = PS->GetAbilitySystemComponent();
+
+	if (!ensureMsgf(IsValid(AbilitySystemComponent), TEXT("PlayerCharacter : AbilitySystemComponent invalid")))
+	{
+		return;
+	}
+
+	//Init ActorInfo, Init Stat
+	AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+	PS->InitializeStats();
+}
+
+void ASimpleRPGPlayerCharacter::GrantDefaultAbilities(const UPawnData* PawnData)
+{
+	if (!ensureMsgf(IsValid(PawnData), TEXT("PlayerCharacter : PawnData invalid")))
+	{
+		return;
+	}
+
+	if (!ensureMsgf(IsValid(PawnData->AbilitySet), TEXT("PlayerCharacter : AbilitySet invalid")))
+	{
+		return;
+	}
+
+	PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
+}
+
+void ASimpleRPGPlayerCharacter::InitializeEquipment(const UPawnData* PawnData)
+{
+	if (!ensureMsgf(IsValid(PawnData), TEXT("PlayerCharacter : PawnData invalid")))
+	{
+		return;
+	}
+
+	if (!ensureMsgf(IsValid(EquipmentComponent), TEXT("PlayerCharacter : EquipmentComponent invalid")))
+	{
+		return;
+	}
+
+	if (!ensureMsgf(PawnData->WeaponSlots.Num() > 0, TEXT("PlayerCharacter : WeaponSlots empty")))
+	{
+		return;
+	}
+
+	EquipmentComponent->InitializeWeaponSlot(PawnData->WeaponSlots);
+	EquipmentComponent->EquipWeapon(PawnData->WeaponSlots[0]);
+
 }
 
 void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value, FGameplayTag InputTag)

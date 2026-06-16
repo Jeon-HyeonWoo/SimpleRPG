@@ -78,10 +78,10 @@ void UGA_MonsterDeath::TaskPlayDeathMontage()
 
 UAnimMontage* UGA_MonsterDeath::GetDeathMontage()
 {
+	
 	ASimpleRPGMonsterBase* Pawn = Cast<ASimpleRPGMonsterBase>(GetAvatarActorFromActorInfo());
-	if (!IsValid(Pawn))
+	if (!ensureMsgf(IsValid(Pawn), TEXT("MonsterDeath : MonsterPawn invalid")))
 	{
-		UE_LOG(LogTemp, Error, TEXT("MonsterPawn is invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		return nullptr;
 	}
 	

@@ -50,3 +50,22 @@ void ASimpleRPGPlayerState::SetPawnData(UPawnData* InPawnData)
 	PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
 	
 }
+
+void ASimpleRPGPlayerState::InitializeStats()
+{
+	//1.Get AS and valid check
+	USimpleRPGAttributeSet* AS = GetAttributeSet();
+	if (!ensureMsgf(IsValid(AS), TEXT("PlayerState : AS invalid")))
+	{
+		return;
+	}
+	
+	//2. Init Stat
+	AS->InitMovementSpeed(600.0f);
+	AS->InitHealth(100.0f);
+	AS->InitMaxHealth(100.0f);
+	AS->InitPower(10.0f);
+	AS->InitMp(100.0f);
+	AS->InitMaxMp(100.0f);
+	
+}

@@ -28,10 +28,15 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
-	USimpleRPGAttributeSet* GetAttributeSet() const { return AttributeSet; }
 public:
 
+	USimpleRPGAttributeSet* GetAttributeSet() const { return AttributeSet; }
+
 	void SetPawnData(UPawnData* InPawnData);
+
+public:
+
+	void InitializeStats();
 
 public:
 

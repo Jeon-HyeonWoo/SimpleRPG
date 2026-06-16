@@ -16,6 +16,8 @@ class UAnimInstance;
 class USimpleRPGInputConfig;
 class USimpleRPGEquipmentComponent;
 class UInputAction;
+class ASimpleRPGPlayerState;
+class UPawnData;
 struct FInputActionValue;
 
 UCLASS()
@@ -34,6 +36,14 @@ public:
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
+public:
+	//Helper Function
+
+	//Initialze Helper Function
+	void InitializeAbilitySystem(ASimpleRPGPlayerState* PS);
+	void GrantDefaultAbilities(const UPawnData* PawnData);
+	void InitializeEquipment(const UPawnData* PawnData);
+
 //Components
 public:
 
