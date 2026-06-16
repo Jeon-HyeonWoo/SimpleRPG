@@ -15,7 +15,6 @@ UGA_MonsterMeleeAttack::UGA_MonsterMeleeAttack()
 
 void UGA_MonsterMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("GA_MonsterMeleeAttack Activated"));
 	//CommitAbility üũ
 	if (!CommitAbility(Handle, Actorinfo, ActivationInfo))
 	{

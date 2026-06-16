@@ -45,6 +45,8 @@ public:
 	
 	void UpdateHPBar();
 
+	void StopMovement();
+
 public:
 	//Rel. Stat, Status Function
 	
@@ -88,6 +90,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Event")
 	FGameplayTag StaggerEventTag;
 
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Event")
+	FGameplayTag DeathEventTag;
 private:
 
 	UPROPERTY()

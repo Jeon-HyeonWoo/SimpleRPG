@@ -28,15 +28,15 @@ void USimpleRPGMonsterAttributeSet::PostGameplayEffectExecute(const FGameplayEff
 		{
 			UE_LOG(LogTemp, Error, TEXT("instigator is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
 		}
-		else
-		{
-			//UpdateHP, Report DamageSense to Monster
-			Monster->HandleDamaged(Instigator);
-		}
 
 		if (GetHP() <= 0.0f)
 		{
+			UE_LOG(LogTemp, Error, TEXT("OnHandleDeath was called?"));
 			OnHPDepleted.Broadcast(Instigator);
+		}
+		else
+		{
+			Monster->HandleDamaged(Instigator);
 		}
 	}
 

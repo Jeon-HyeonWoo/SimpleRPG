@@ -88,7 +88,11 @@ void ASimpleRPGMonsterBase::HandleDeath(AActor* Actor)
 		return;
 	}
 	bIsDead = true;
-	Destroy();
+	
+	UE_LOG(LogTemp, Error, TEXT("HandleDeath was called? 2"));
+
+	FGameplayEventData PayLoad;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, DeathEventTag, PayLoad);
 
 }
 
@@ -102,6 +106,11 @@ void ASimpleRPGMonsterBase::UpdateHPBar()
 	}
 
 	W_MonsterHPBar->SetHP(GetAttributeSet()->GetHP(), GetAttributeSet()->GetMaxHP());
+}
+
+void ASimpleRPGMonsterBase::StopMovement()
+{
+	GetCharacterMovement()->StopMovementImmediately();
 }
 
 void ASimpleRPGMonsterBase::RestoreHP()
