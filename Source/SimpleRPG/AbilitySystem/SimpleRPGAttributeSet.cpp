@@ -8,15 +8,14 @@ void USimpleRPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	if (Data.EvaluatedData.Attribute == GetHPAttribute())
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		SetHP(FMath::Clamp(GetHP(), 0.0f, GetMaxHP()));
 
-		if (GetHealth() <= 0.0f)
+		if (GetHP() <= 0.0f)
 		{
-			OnPlayerHealthDepleted.Broadcast(Data.EffectSpec.GetContext().GetInstigator());
+			OnHPDepleted.Broadcast(Data.EffectSpec.GetContext().GetInstigator());
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Player Health : %f / %f ") , GetHealth(), GetMaxHealth());
 }
 

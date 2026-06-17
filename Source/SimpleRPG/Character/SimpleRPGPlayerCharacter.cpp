@@ -204,7 +204,7 @@ void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value, FGam
 	if (AbilitySystemComponent)
 	{
 		const USimpleRPGAttributeSet* AS = AbilitySystemComponent->GetSet<USimpleRPGAttributeSet>();
-		if (AS && (AS->GetMovementSpeed() <= 0.0f))
+		if (AS && (AS->GetMovementSpeedMultiplier() <= 0.0f))
 		{
 			return;
 		}

@@ -4,9 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-
 #include "AbilitySystemInterface.h"
-
 #include "SimpleRPGPlayerState.generated.h"
 
 /**

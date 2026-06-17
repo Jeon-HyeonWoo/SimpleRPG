@@ -46,7 +46,7 @@ void UMonsterDamageCalcExec::Execute_Implementation(const FGameplayEffectCustomE
 	//Output으로 내보내기
 	OutExecutionOutput.AddOutputModifier(
 		FGameplayModifierEvaluatedData(
-			USimpleRPGAttributeSet::GetHealthAttribute(),
+			USimpleRPGAttributeSet::GetHPAttribute(),
 			EGameplayModOp::Additive,
 			-FinalDamage
 		)

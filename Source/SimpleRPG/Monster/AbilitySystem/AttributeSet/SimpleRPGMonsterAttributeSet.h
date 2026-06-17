@@ -17,7 +17,7 @@
 /**
  * 
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHPDepleted, AActor*, Instigator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMonsterHPDepleted, AActor*, Instigator);
 
 UCLASS()
 class SIMPLERPG_API USimpleRPGMonsterAttributeSet : public UAttributeSet
@@ -77,5 +77,5 @@ public:
 public:
 
 	UPROPERTY(BlueprintAssignable) 
-	FOnHPDepleted OnHPDepleted;
+	FOnMonsterHPDepleted OnHPDepleted;
 };

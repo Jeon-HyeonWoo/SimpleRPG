@@ -23,7 +23,7 @@
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthDepleted, AActor*, Instigator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerHPDepleted, AActor*, Instigator);
 
 UCLASS()
 class SIMPLERPG_API USimpleRPGAttributeSet : public UAttributeSet
@@ -36,32 +36,60 @@ public:
 
 public:
 
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FGameplayAttributeData MovementSpeed;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MovementSpeed)
+	UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData MaxHP;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MaxHP)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Vital")
-	FGameplayAttributeData Health;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, Health)
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData HP;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, HP)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Vital")
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MaxHealth)
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData MaxMP;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MaxMP)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Power")
-	FGameplayAttributeData Power;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, Power)
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData MP;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MP)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Mp")
-	FGameplayAttributeData Mp;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, Mp)
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AD_AttackPower;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, AD_AttackPower)
 
-	UPROPERTY(BlueprintReadOnly, Category = "MaxMp")
-	FGameplayAttributeData MaxMp;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MaxMp)
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AP_AttackPower;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, AP_AttackPower)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AttackSpeed;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, AttackSpeed)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AD_Defense;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, AD_Defense)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData AP_Defense;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, AP_Defense)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData CriticalChance;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, CriticalChance)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData CriticalMultiplier;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, CriticalMultiplier)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FGameplayAttributeData MovementSpeedMultiplier;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MovementSpeedMultiplier)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Stat")
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, Damage)
 
 public:
 
 	UPROPERTY(BlueprintAssignable)
-	FOnHealthDepleted OnPlayerHealthDepleted;
+	FOnPlayerHPDepleted OnHPDepleted;
 };

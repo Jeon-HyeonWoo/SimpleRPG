@@ -61,11 +61,16 @@ void ASimpleRPGPlayerState::InitializeStats()
 	}
 	
 	//2. Init Stat
-	AS->InitMovementSpeed(600.0f);
-	AS->InitHealth(100.0f);
-	AS->InitMaxHealth(100.0f);
-	AS->InitPower(10.0f);
-	AS->InitMp(100.0f);
-	AS->InitMaxMp(100.0f);
+	//Vital
+	AS->InitHP(100);
+	AS->InitMaxHP(100);
+
+	AS->InitMP(100);
+	AS->InitMaxMP(100);
+
+	//Power
+	AS->InitAD_AttackPower(10);
 	
+	//Utility
+	AS->InitMovementSpeedMultiplier(1.0f);
 }

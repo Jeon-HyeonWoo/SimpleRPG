@@ -8,7 +8,7 @@
 UDamageExecCalc::UDamageExecCalc()
 {
 	PlayerStatPower = FGameplayEffectAttributeCaptureDefinition(
-		USimpleRPGAttributeSet::GetPowerAttribute(),			//Capture Attribute
+		USimpleRPGAttributeSet::GetAD_AttackPowerAttribute(),			//Capture Attribute
 		EGameplayEffectAttributeCaptureSource::Source,			//From Source(Player)
 		false													//None Snap shot (적용 시점 실시간 값)
 	);
@@ -36,7 +36,7 @@ void UDamageExecCalc::Execute_Implementation(const FGameplayEffectCustomExecutio
 		const USimpleRPGAttributeSet* AS = SourceASC->GetSet<USimpleRPGAttributeSet>();
 		if (AS)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Direct Source Power: %f"), AS->GetPower());
+			UE_LOG(LogTemp, Warning, TEXT("Direct Source Power: %f"), AS->GetAD_AttackPower());
 		}
 		else
 		{
