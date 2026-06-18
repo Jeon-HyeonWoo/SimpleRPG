@@ -42,13 +42,6 @@ void ASimpleRPGPlayerState::SetPawnData(UPawnData* InPawnData)
 
 	PawnData = InPawnData;
 
-	if (!IsValid(PawnData->AbilitySet))
-	{
-		UE_LOG(LogTemp, Error, TEXT("%d, %hs, AbilitySet in PawnData is invalid"), __LINE__, __FUNCTION__);
-		return;
-	}
-	PawnData->AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
-	
 }
 
 const UPawnData* ASimpleRPGPlayerState::GetPawnData() const
@@ -70,10 +63,10 @@ void ASimpleRPGPlayerState::InitializeStats()
 		return;
 	}
 
-	const UPawnData* PawnData = GetPawnData();
-	if (!IsValid(PawnData)) return;
+	const UPawnData* PD = GetPawnData();
+	if (!IsValid(PD)) return;
 
-	FPlayerStat PlayerStat = PawnData->DefaultStats;
+	FPlayerStat PlayerStat = PD->DefaultStats;
 
 	AS->InitMaxHP(PlayerStat.MaxHP);
 	AS->InitHP(PlayerStat.MaxHP);

@@ -35,7 +35,7 @@ public:
 	const UPawnData* GetPawnData() const;
 
 public:
-
+	//왜 GE로 안했나? = GE_initStat는 너무 귀찮았다. 런타임 조정일 때만 GE를 써서 특정 AttributeSet을 뽑아 쓰는게 더 나을 것 같다.
 	void InitializeStats();
 
 public:
