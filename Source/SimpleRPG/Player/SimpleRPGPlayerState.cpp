@@ -51,6 +51,16 @@ void ASimpleRPGPlayerState::SetPawnData(UPawnData* InPawnData)
 	
 }
 
+const UPawnData* ASimpleRPGPlayerState::GetPawnData() const
+{
+	if (!ensureMsgf(IsValid(PawnData), TEXT("PlayerState : PawnData invalid")))
+	{
+		return nullptr;
+	}
+
+	return PawnData;
+}
+
 void ASimpleRPGPlayerState::InitializeStats()
 {
 	//1.Get AS and valid check
@@ -59,18 +69,30 @@ void ASimpleRPGPlayerState::InitializeStats()
 	{
 		return;
 	}
-	
-	//2. Init Stat
-	//Vital
-	AS->InitHP(100);
-	AS->InitMaxHP(100);
 
-	AS->InitMP(100);
-	AS->InitMaxMP(100);
+	const UPawnData* PawnData = GetPawnData();
+	if (!IsValid(PawnData)) return;
 
-	//Power
-	AS->InitAD_AttackPower(10);
-	
-	//Utility
-	AS->InitMovementSpeedMultiplier(1.0f);
+	FPlayerStat PlayerStat = PawnData->DefaultStats;
+
+	AS->InitMaxHP(PlayerStat.MaxHP);
+	AS->InitHP(PlayerStat.MaxHP);
+
+	AS->InitMaxMP(PlayerStat.MaxMP);
+	AS->InitMP(PlayerStat.MaxMP);
+
+	AS->InitAD_AttackPower(PlayerStat.AD_AttackPower);
+	AS->InitAP_AttackPower(PlayerStat.AP_AttackPower);
+
+	AS->InitAttackSpeed(PlayerStat.AttackSpeed);
+
+	AS->InitCriticalChance(PlayerStat.CriticalChance);
+	AS->InitCriticalMultiplier(PlayerStat.CriticalMultiplier);
+
+	AS->InitAD_Defense(PlayerStat.AD_Defense);
+	AS->InitAP_Defense(PlayerStat.AP_Defense);
+
+	AS->InitMovementSpeedMultiplier(PlayerStat.MovementSpeedMultiplier);
+
+
 }

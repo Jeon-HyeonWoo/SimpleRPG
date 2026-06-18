@@ -32,6 +32,8 @@ public:
 
 	void SetPawnData(UPawnData* InPawnData);
 
+	const UPawnData* GetPawnData() const;
+
 public:
 
 	void InitializeStats();

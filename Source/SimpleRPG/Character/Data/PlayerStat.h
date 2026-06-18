@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "PlayerStat.generated.h"
 
 /**
@@ -18,10 +17,13 @@ struct FPlayerStat
 	float MaxHP = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float AD_AttackPower = 1.0f;
+	float MaxMP = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float AP_AttackPower = 1.0f;
+	float AD_AttackPower = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AP_AttackPower = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AD_Defense = 0.0f;

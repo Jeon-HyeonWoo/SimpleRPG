@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "SimpleRPG/Character/Data/PlayerStat.h"
 #include "PawnData.generated.h"
 
 /**
@@ -35,6 +36,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Weapon")
 	TArray<TObjectPtr<UWeaponData>> WeaponSlots;
 	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Stat")
+	FPlayerStat DefaultStats;
+
 	/*
 	* TODO
 	* AbilitySet //DO
