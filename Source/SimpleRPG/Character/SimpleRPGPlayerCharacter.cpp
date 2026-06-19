@@ -21,7 +21,7 @@
 #include "../AbilitySystem/SimpleRPGAttributeSet.h"
 #include "../Equipment/SimpleRPGEquipmentComponent.h"
 #include "../Weapon/WeaponData.h"
-
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 
 
 
@@ -201,13 +201,10 @@ void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value, FGam
 	LastInputDirection = (InputRightVector + InputForwardVector).GetSafeNormal();
 	LastInputTime = GetWorld()->GetTimeSeconds();
 
-	if (AbilitySystemComponent)
+	//Movement_Blocked Tag½Ã return
+	if (AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(SimpleRPGGameplayTags::State_Movement_Blocked))
 	{
-		const USimpleRPGAttributeSet* AS = AbilitySystemComponent->GetSet<USimpleRPGAttributeSet>();
-		if (AS && (AS->GetMovementSpeedMultiplier() <= 0.0f))
-		{
-			return;
-		}
+		return;
 	}
 
 	if (MovementVector.X != 0.0f)
