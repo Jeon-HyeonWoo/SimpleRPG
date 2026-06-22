@@ -2,6 +2,7 @@
 
 
 #include "GA_SwordAttack.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystemComponent.h"
@@ -214,14 +215,10 @@ void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 
 	//6. 값 변환
 	SpecHandle.Data->SetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Min")),
-		Row->MinMultiplier
+		SimpleRPGGameplayTags::SetByCaller_Skill_Ratio,
+		Row->SkillRatio
 	);
 
-	SpecHandle.Data->SetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Max")),
-		Row->MaxMultiplier
-	);
 
 	//7. 대상 적용
 	//TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());

@@ -10,10 +10,7 @@ struct FDamageDataTableRow : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MinMultiplier = 0.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MaxMultiplier = 0.0f;
+	float SkillRatio = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float CoolDown = 0.0f;

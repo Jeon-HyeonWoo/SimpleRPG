@@ -2,6 +2,7 @@
 
 
 #include "GA_SwordChargeAttack.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
@@ -180,15 +181,10 @@ void UGA_SwordChargeAttack::OnDamageEvent(FGameplayEventData PayLoad)
 	//6. Make DamageEffect Data Instance
 	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, 1.0f);
 
-	//7. Delegate the calculation to DamageExecCalc (Min, Max)
+	//7. Delegate the calculation to DamageExecCalc
 	SpecHandle.Data->SetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Min")),
-		Row->MinMultiplier
-	);
-
-	SpecHandle.Data->SetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(FName("Damage.Multiplier.Max")),
-		Row->MaxMultiplier
+		SimpleRPGGameplayTags::SetByCaller_Skill_Ratio,
+		Row->SkillRatio
 	);
 
 	//8. 대상 적용
