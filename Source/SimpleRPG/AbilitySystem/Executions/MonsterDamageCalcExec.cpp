@@ -9,7 +9,7 @@
 UMonsterDamageCalcExec::UMonsterDamageCalcExec()
 {
 	//어떤 Attribute를 캡쳐할 것인가?
-	DamageCapture.AttributeToCapture = USimpleRPGMonsterAttributeSet::GetDamageAttribute();
+	DamageCapture.AttributeToCapture = USimpleRPGMonsterAttributeSet::GetIncomingDamageAttribute();
 
 	//어디서 캡쳐할 것인가?
 	DamageCapture.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;

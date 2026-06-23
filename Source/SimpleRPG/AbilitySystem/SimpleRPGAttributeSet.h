@@ -85,8 +85,8 @@ public:
 	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MovementSpeedMultiplier)
 
 		UPROPERTY(BlueprintReadOnly, Category = "Stat")
-	FGameplayAttributeData Damage;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, Damage)
+	FGameplayAttributeData InComingDamage;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, InComingDamage)
 
 public:
 
