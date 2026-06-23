@@ -2,6 +2,7 @@
 
 
 #include "GA_Dash.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "GameFramework/Character.h"
@@ -13,9 +14,9 @@ UGA_Dash::UGA_Dash()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing")));
+	ActivationOwnedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
 
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing")));
+	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
 }
 
 void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

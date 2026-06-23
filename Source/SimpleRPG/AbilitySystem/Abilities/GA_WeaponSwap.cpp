@@ -2,6 +2,7 @@
 
 
 #include "GA_WeaponSwap.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "../../Equipment/SimpleRPGEquipmentComponent.h"
 #include "../../Weapon/WeaponData.h"
@@ -12,9 +13,9 @@ UGA_WeaponSwap::UGA_WeaponSwap()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	// Acting 계열 상호 차단
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Acting.Swapping")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Acting")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing")));
+	ActivationOwnedTags.AddTag(SimpleRPGGameplayTags::State_Acting_Swapping);
+	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Acting);
+	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
 }
 
 void UGA_WeaponSwap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

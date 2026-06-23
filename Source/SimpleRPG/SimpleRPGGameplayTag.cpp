@@ -9,6 +9,13 @@ namespace SimpleRPGGameplayTags
 
 	UE_DEFINE_GAMEPLAY_TAG(State_Movement_Blocked, "State.Movement.Blocked");
 
+	UE_DEFINE_GAMEPLAY_TAG(State_Dashing, "State.Dasing");
+
+	UE_DEFINE_GAMEPLAY_TAG(State_Acting, "State.Acting");
+	UE_DEFINE_GAMEPLAY_TAG(State_Acting_Attacking, "State.Acting.Attacking");
+	UE_DEFINE_GAMEPLAY_TAG(State_Acting_Swapping, "State.Acting.Swapping");
+	
+
 #pragma endregion
 	
 #pragma region SetByCaller Tag

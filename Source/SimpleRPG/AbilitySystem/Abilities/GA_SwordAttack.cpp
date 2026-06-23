@@ -37,9 +37,9 @@ UGA_SwordAttack::UGA_SwordAttack()
 
 
 	//Acting 계열 상호 차단
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Acting.Attacking")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Acting")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing")));
+	ActivationOwnedTags.AddTag(SimpleRPGGameplayTags::State_Acting_Attacking);
+	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Acting);
+	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
 }
 
 void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
