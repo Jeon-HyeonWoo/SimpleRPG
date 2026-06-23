@@ -27,6 +27,10 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data);
 
+protected:
+
+	void HandleIncomingDamage(const FGameplayEffectModCallbackData& Data);
+
 public:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Stat")

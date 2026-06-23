@@ -10,34 +10,50 @@ void USimpleRPGMonsterAttributeSet::PostGameplayEffectExecute(const FGameplayEff
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if (Data.EvaluatedData.Attribute == GetHPAttribute())
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		SetHP(FMath::Clamp(GetHP(), 0.0f, GetMaxHP()));
+		HandleIncomingDamage(Data);
+	}
 
-		//Get Casted DamagedActor(Monster, this)
+}
+
+void USimpleRPGMonsterAttributeSet::HandleIncomingDamage(const FGameplayEffectModCallbackData& Data)
+{
+	//1. IncomingDamage를 Local 변수에 저장
+	const float LocalDamage = GetIncomingDamage();
+	
+	//2. IncomingDamage 초기화
+	SetIncomingDamage(0.0f);
+
+	//3. Local Damage가 0 이하면 적용할 필요가 없으니 return
+	if (LocalDamage <= 0.0f) { return; }
+
+	//4. 실제 HP 차감
+	SetHP(FMath::Clamp(GetHP() - LocalDamage, 0.0f, GetMaxHP()));
+
+	//5. 공격자 추출 및 유효성 검사
+	AActor* Instigator = Data.EffectSpec.GetContext().GetInstigator();
+	if (!IsValid(Instigator))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Instigator invalid : %d, %hs"), __LINE__, __FUNCTION__);
+	}
+
+	//6. 사망 및 피격 분기
+	if (GetHP() <= 0.0f)
+	{
+		OnHPDepleted.Broadcast(Instigator);
+	}
+	else
+	{
 		ASimpleRPGMonsterBase* Monster = Cast<ASimpleRPGMonsterBase>(GetOwningActor());
-		if (!Monster)
-		{
-			UE_LOG(LogTemp, Error, TEXT("Casted Monster is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-			return;
-		}
-
-		//Get Instigator(Player)
-		AActor* Instigator = Data.EffectSpec.GetContext().GetInstigator();
-		if (!Instigator)
-		{
-			UE_LOG(LogTemp, Error, TEXT("instigator is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-		}
-
-		if (GetHP() <= 0.0f)
-		{
-			UE_LOG(LogTemp, Error, TEXT("OnHandleDeath was called?"));
-			OnHPDepleted.Broadcast(Instigator);
-		}
-		else
+		if (IsValid(Monster))
 		{
 			Monster->HandleDamaged(Instigator);
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Monster cast failed : %d, %hs"), __LINE__, __FUNCTION__);
+		}
+		
 	}
-
 }
