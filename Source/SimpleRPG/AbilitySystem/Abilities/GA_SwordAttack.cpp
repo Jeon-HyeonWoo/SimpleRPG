@@ -85,9 +85,9 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 	UAbilityTask_WaitGameplayEvent* WaitOpenTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this,		//소유 Ability
-		FGameplayTag::RequestGameplayTag(FName("Event.ComboWindow.Open")) //기다릴 Event Tag
+		SimpleRPGGameplayTags::Event_Combat_ComboWindow_Open // 기다릴 태그
 	);
-
+	
 
 	/* Event 도착시 호출될 callback Function */
 	WaitOpenTask->EventReceived.AddDynamic(this, &UGA_SwordAttack::OnComboWindowOpen);	
@@ -96,7 +96,7 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 	UAbilityTask_WaitGameplayEvent* WaitCloseTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this,
-		FGameplayTag::RequestGameplayTag(FName("Event.ComboWindow.Close"))
+		SimpleRPGGameplayTags::Event_Combat_ComboWindow_Close
 	);
 	WaitCloseTask->EventReceived.AddDynamic(
 		this,
