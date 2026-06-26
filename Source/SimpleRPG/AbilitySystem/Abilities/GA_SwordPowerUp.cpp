@@ -2,6 +2,7 @@
 
 
 #include "GA_SwordPowerUp.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystemComponent.h"
@@ -73,7 +74,7 @@ void UGA_SwordPowerUp::PlayPowerUpMontage()
 void UGA_SwordPowerUp::PowerUpEvent()
 {
 	UAbilityTask_WaitGameplayEvent* Task =
-		UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FGameplayTag::RequestGameplayTag(FName("Event.PowerUp.Activate")));
+		UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, SimpleRPGGameplayTags::Event_Skill_Sword_PowerUp);
 
 	Task->EventReceived.AddDynamic(this, &UGA_SwordPowerUp::OnPowerUpActivated);
 

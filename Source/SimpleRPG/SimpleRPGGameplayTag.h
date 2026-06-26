@@ -37,6 +37,6 @@ namespace SimpleRPGGameplayTags
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Combat_AttackTrigger);
 
 //Event_Skill 액티브 스킬 발동
-	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Evnet_Skill_Sword_PowerUp);
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Skill_Sword_PowerUp);
 }
 
