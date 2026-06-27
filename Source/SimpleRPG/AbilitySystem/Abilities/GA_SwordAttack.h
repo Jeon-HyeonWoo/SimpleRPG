@@ -39,15 +39,6 @@ public:
 		bool bWasCancelled
 	) override;
 
-	//Controlled Combo Window (Called by AnimNotify), NofityState의 Open, Close를 담당하는 함수
-public:
-
-	UFUNCTION(BlueprintCallable, Category = "Combo")
-	void OpenComboWindow();
-
-	UFUNCTION(BlueprintCallable, Category = "Combo")
-	void CloseComboWindow();
-
 	//Montage Callback
 public: 
 
@@ -81,7 +72,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combo")
 	TArray<TObjectPtr<UAnimMontage>> ComboMontages;
-
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
 	int32 CurrentComboCount = 0;
 

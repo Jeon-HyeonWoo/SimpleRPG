@@ -123,19 +123,6 @@ void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UGA_SwordAttack::OpenComboWindow()
-{
-	bComboWindowOpen = true;
-}
-
-void UGA_SwordAttack::CloseComboWindow()
-{
-	bComboWindowOpen = false;
-	if (bNextComboQueued)
-	{
-		StartNextCombo();
-	}
-}
 
 void UGA_SwordAttack::OnMontageCompleted()
 {
@@ -151,12 +138,16 @@ void UGA_SwordAttack::OnMontageCancelled()
 
 void UGA_SwordAttack::OnComboWindowOpen(FGameplayEventData PayLoad)
 {
-	OpenComboWindow(); 
+	bComboWindowOpen = true;
 }
 
 void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 {
-	CloseComboWindow();
+	bComboWindowOpen = false;
+	if (bNextComboQueued)
+	{
+		StartNextCombo();
+	}
 }
 
 void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
