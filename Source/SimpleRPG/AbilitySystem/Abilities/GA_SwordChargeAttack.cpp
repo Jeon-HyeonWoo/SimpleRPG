@@ -142,54 +142,11 @@ void UGA_SwordChargeAttack::DamageEventTask()
 
 void UGA_SwordChargeAttack::OnDamageEvent(FGameplayEventData PayLoad)
 {
-	//1. DamageEffect valid check
-	if (!DamageEffect)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("DamageEffect is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-	
-	//2. TargetActor valid check
-	AActor* TargetActor = const_cast<AActor*>(PayLoad.Target.Get());
-	if (!TargetActor)
-	{
-		UE_LOG(LogTemp, Error, TEXT("TargetActor is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	//3. Target ASC valid check
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-	if (!TargetASC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("TargerASC is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-
-	//4. Choose RowName
 	FName RowName = bIsFullCharge ? FName("Sword_ChargeAttack_Full") : FName("Sword_ChargeAttack_Under");
 
+	float Ratio;
 
-	//5. Find Row through RowName in the DataTable
-	FDamageDataTableRow * Row = DamageDataTable->FindRow<FDamageDataTableRow>(RowName, TEXT(""));
-	if (!Row)
-	{
-		UE_LOG(LogTemp, Error, TEXT("DamageDataTable Can not find RowName, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
+	if (!GetSkillRatio(DamageDataTable, RowName, Ratio)) return;
 
-	//6. Make DamageEffect Data Instance
-	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, 1.0f);
-
-	//7. Delegate the calculation to DamageExecCalc
-	SpecHandle.Data->SetSetByCallerMagnitude(
-		SimpleRPGGameplayTags::SetByCaller_Skill_Ratio,
-		Row->SkillRatio
-	);
-
-	//8. 대상 적용
-	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
-		*SpecHandle.Data.Get(),
-		TargetASC
-	);
+	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
 }

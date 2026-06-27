@@ -24,4 +24,10 @@ public:
 	ASimpleRPGCharacterBase* GetOwnerCharacter() const;
 
 	UAbilitySystemComponent* GetSimpleRPGASC() const;
+
+protected:
+
+	bool GetSkillRatio(UDataTable* DataTable, FName RowName, float& OutRatio) const;
+	
+	void ApplyDamageToTarget(AActor* Target, TSubclassOf<UGameplayEffect> DamageEffect, float SkillRatio);
 };

@@ -177,64 +177,13 @@ void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 
 void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 {
-	//1. Target ASC 가져오기
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(const_cast<AActor*>(PayLoad.Target.Get()));
-
-	//2. Target ASC 유효성 검사
-	if (!TargetASC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("TargetASC is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	//3. DT에 저장된 RowName
 	FName RowName = FName(*FString::Printf(TEXT("SwordAttack_Combo%d"), CurrentComboCount));
 
-	//4. DT에서 RowName으로 Row가져오기
-	FDamageDataTableRow* Row = DamageDataTable->FindRow<FDamageDataTableRow>(RowName, TEXT(""));
+	float Ratio;
 
-	//5. Row 유효성 검사
-	if (!Row)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Row is nullptr, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
+	if (!GetSkillRatio(DamageDataTable, RowName, Ratio)) return;
 
-	/* DamageEffect Validation */
-	if (!DamageEffect)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Need a DamageEffect, %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	//5. GameplayEffect 데이터를 바탕으로 만든 인스턴스 정보 생성
-	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(
-		DamageEffect,
-		1.0f
-	);
-
-	//6. 값 변환
-	SpecHandle.Data->SetSetByCallerMagnitude(
-		SimpleRPGGameplayTags::SetByCaller_Skill_Ratio,
-		Row->SkillRatio
-	);
-
-
-	//7. 대상 적용
-	//TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-
-	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
-		*SpecHandle.Data.Get(),
-		TargetASC
-	);
-
-
-	//8. Debug
-	const USimpleRPGMonsterAttributeSet* MonsterAS = TargetASC->GetSet<USimpleRPGMonsterAttributeSet>();
-	if (MonsterAS)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Monster HP : %f"), MonsterAS->GetHP());
-	}
+	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
 }
 
 void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
