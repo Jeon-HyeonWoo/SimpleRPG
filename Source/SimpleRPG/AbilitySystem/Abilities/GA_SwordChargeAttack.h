@@ -98,8 +98,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|DamageEffect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Data")
-	TObjectPtr<UDataTable> DamageDataTable;
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Damage")
+	FDataTableRowHandle FullChargeRow;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Damage")
+	FDataTableRowHandle UnderChargeRow;
+
 
 	bool bIsFullCharge = false;
 };

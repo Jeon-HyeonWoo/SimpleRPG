@@ -140,11 +140,11 @@ void UGA_SwordChargeAttack::DamageEventTask()
 
 void UGA_SwordChargeAttack::OnDamageEvent(FGameplayEventData PayLoad)
 {
-	FName RowName = bIsFullCharge ? FName("Sword_ChargeAttack_Full") : FName("Sword_ChargeAttack_Under");
+	const FDataTableRowHandle& DamageRow = bIsFullCharge ? FullChargeRow : UnderChargeRow;
 
 	float Ratio;
 
-	if (!GetSkillRatio(DamageDataTable, RowName, Ratio)) return;
+	if (!GetSkillRatio(DamageRow, Ratio)) return;
 
 	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
 }

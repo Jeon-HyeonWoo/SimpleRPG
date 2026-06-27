@@ -27,7 +27,7 @@ public:
 
 protected:
 
-	bool GetSkillRatio(UDataTable* DataTable, FName RowName, float& OutRatio) const;
+	bool GetSkillRatio(const FDataTableRowHandle& DTRowHandle, float& OutRatio) const;
 	
 	void ApplyDamageToTarget(AActor* Target, TSubclassOf<UGameplayEffect> DamageEffect, float SkillRatio);
 };

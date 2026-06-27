@@ -152,11 +152,12 @@ void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 
 void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 {
-	FName RowName = FName(*FString::Printf(TEXT("SwordAttack_Combo%d"), CurrentComboCount));
+	int32 Index = CurrentComboCount - 1;
+	if (!ComboSteps.IsValidIndex(Index)) return;
 
 	float Ratio;
 
-	if (!GetSkillRatio(DamageDataTable, RowName, Ratio)) return;
+	if (!GetSkillRatio(ComboSteps[Index].DamageRow, Ratio)) return;
 
 	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
 }
@@ -164,7 +165,7 @@ void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
 {
 	/* ComboMontages의 IndexValid check */
-	if (!ComboMontages.IsValidIndex(MontageIndex))
+	if (!ComboSteps[MontageIndex].Montage)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
@@ -174,7 +175,7 @@ void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
 	UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,							/* Task를 소유하고 있는 Ability */
 		NAME_None,						/* Task Instance 이름, Debug용도 */
-		ComboMontages[MontageIndex],	/* 재생할 Montage */
+		ComboSteps[MontageIndex].Montage,	/* 재생할 Montage */
 		1.0f,							/* 재생 속도 */
 		NAME_None						/* 시작 섹션 이름 -> 단일 Montage라 필요없음 */
 	);
@@ -208,8 +209,8 @@ void UGA_SwordAttack::StartNextCombo()
 {
 	bNextComboQueued = false;
 	CurrentComboCount++;
-
-	if (CurrentComboCount > ComboMontages.Num())
+	
+	if (CurrentComboCount > ComboSteps.Num())
 	{
 		return;
 	}

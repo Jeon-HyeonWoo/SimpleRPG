@@ -6,6 +6,18 @@
 #include "SimpleRPGGameplayAbility.h"
 #include "GA_SwordAttack.generated.h"
 
+USTRUCT(BlueprintType)
+struct FComboStep
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAnimMontage> Montage;
+
+	UPROPERTY(EditDefaultsOnly)
+	FDataTableRowHandle DamageRow;
+};
+
 /**
  * 
  */
@@ -71,7 +83,8 @@ private:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combo")
-	TArray<TObjectPtr<UAnimMontage>> ComboMontages;
+	TArray<FComboStep> ComboSteps;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
 	int32 CurrentComboCount = 0;
 
@@ -90,9 +103,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|DamageEffect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
-
-public:
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Data")
-	TObjectPtr<UDataTable> DamageDataTable;
 };

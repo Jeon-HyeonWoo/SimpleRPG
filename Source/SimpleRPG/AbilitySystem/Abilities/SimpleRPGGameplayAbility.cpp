@@ -24,19 +24,13 @@ UAbilitySystemComponent* USimpleRPGGameplayAbility::GetSimpleRPGASC() const
     return GetAbilitySystemComponentFromActorInfo();
 }
 
-bool USimpleRPGGameplayAbility::GetSkillRatio(UDataTable* DataTable, FName RowName, float& OutRatio) const
+bool USimpleRPGGameplayAbility::GetSkillRatio(const FDataTableRowHandle& DTRowHandle, float& OutRatio) const
 {
-    //0. init Outratio 
+    //1. init Outratio 
     OutRatio = 0.0f;
 
-    //1. DT null check
-    if (!ensureMsgf(IsValid(DataTable), TEXT("Data Table is invalid")))
-    {
-        return false;
-    }
-
-    //2. Row null check
-    FDamageDataTableRow* Row = DataTable->FindRow<FDamageDataTableRow>(RowName, TEXT(""));
+    //2. Row null check 
+    FDamageDataTableRow* Row = DTRowHandle.GetRow<FDamageDataTableRow>(TEXT(""));
     if (!ensureMsgf(Row, TEXT("Row is invalid")))
     {
         return false;
