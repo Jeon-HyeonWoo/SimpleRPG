@@ -45,7 +45,6 @@ UGA_SwordAttack::UGA_SwordAttack()
 void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	//Window 상태를 안 따지고 무조건 저장
-	UE_LOG(LogTemp, Warning, TEXT(">>> InputPressed"));
 	bNextComboQueued = true;
 }
 
@@ -103,8 +102,6 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	UE_LOG(LogTemp, Warning, TEXT("GA_SwordAttack::EndAbility - WasCancelled : %s"), bWasCancelled ? TEXT("true") : TEXT("false"));
-
 	if (BlockMovementEffectHandle.IsValid())
 	{
 		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
@@ -134,7 +131,6 @@ void UGA_SwordAttack::OpenComboWindow()
 void UGA_SwordAttack::CloseComboWindow()
 {
 	bComboWindowOpen = false;
-	UE_LOG(LogTemp, Warning, TEXT("CloseWindow : Queued : %d, Count = %d"), bNextComboQueued, CurrentComboCount);
 	if (bNextComboQueued)
 	{
 		StartNextCombo();
@@ -148,26 +144,18 @@ void UGA_SwordAttack::OnMontageCompleted()
 }
 
 void UGA_SwordAttack::OnMontageCancelled()
-{
-	UE_LOG(LogTemp, Warning, TEXT("<<< OnMontageCancelled: ..."));
-	/* 콤보 전환 시 무시 */
-	if (bIsTransitioningCombo)
-	{
-		return;
-	}
+{	
 	/* 비정상 종료, 피격 및 다른 Ability나 행동으로 의해 끊길 경우 */
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void UGA_SwordAttack::OnComboWindowOpen(FGameplayEventData PayLoad)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ComboWindow Opened"));
 	OpenComboWindow(); 
 }
 
 void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ComboWindow Close"));
 	CloseComboWindow();
 }
 
@@ -229,17 +217,13 @@ void UGA_SwordAttack::StartNextCombo()
 {
 	bNextComboQueued = false;
 	CurrentComboCount++;
-	UE_LOG(LogTemp, Warning, TEXT("StartNextCombo: Count=%d, MontageNum=%d"), CurrentComboCount, ComboMontages.Num());
 
 	if (CurrentComboCount > ComboMontages.Num())
 	{
 		return;
 	}
 
-	bIsTransitioningCombo = true;
 	PlayComboMontage(CurrentComboCount - 1);
-	bIsTransitioningCombo = false;
-
 }
 
 void UGA_SwordAttack::ResetCombo()
@@ -247,5 +231,4 @@ void UGA_SwordAttack::ResetCombo()
 	CurrentComboCount = 0;
 	bComboWindowOpen = false;
 	bNextComboQueued = false;
-	bIsTransitioningCombo = false;
 }

@@ -83,9 +83,6 @@ protected:
 	TArray<TObjectPtr<UAnimMontage>> ComboMontages;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
-	bool bIsTransitioningCombo = false;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Combo")
 	int32 CurrentComboCount = 0;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
