@@ -44,19 +44,13 @@ UGA_SwordAttack::UGA_SwordAttack()
 
 void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	UE_LOG(LogTemp, Warning, TEXT("InputPressed - ComboWindowOpen : %s"), bComboWindowOpen ? TEXT("true") : TEXT("false"));
-
-	if (bComboWindowOpen)
-	{
-		bNextComboQueued = true;
-		StartNextCombo();
-		UE_LOG(LogTemp, Warning, TEXT("Combo Queued"));
-	}
+	//Window 상태를 안 따지고 무조건 저장
+	UE_LOG(LogTemp, Warning, TEXT(">>> InputPressed"));
+	bNextComboQueued = true;
 }
 
 void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("GA_SworldAttack::AtivateAbility Called"));
 	/*
 	* SpecHandle : Spec 포인터라고 생각, ClearAbility 할 때 Handle번호를 받아서 제거
 	* ActorInfo : Ability를 소유한 Actor 정보, ActorInfo->AvatarActor로 Character에 접근, ActorInfo->ASC로 ASC에 접근 등등
@@ -140,9 +134,10 @@ void UGA_SwordAttack::OpenComboWindow()
 void UGA_SwordAttack::CloseComboWindow()
 {
 	bComboWindowOpen = false;
+	UE_LOG(LogTemp, Warning, TEXT("CloseWindow : Queued : %d, Count = %d"), bNextComboQueued, CurrentComboCount);
 	if (bNextComboQueued)
 	{
-		bNextComboQueued = false;
+		StartNextCombo();
 	}
 }
 
@@ -154,6 +149,7 @@ void UGA_SwordAttack::OnMontageCompleted()
 
 void UGA_SwordAttack::OnMontageCancelled()
 {
+	UE_LOG(LogTemp, Warning, TEXT("<<< OnMontageCancelled: ..."));
 	/* 콤보 전환 시 무시 */
 	if (bIsTransitioningCombo)
 	{
@@ -207,9 +203,6 @@ void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
 	/* Montage의 정상적 재생 종료 */
 	MontageTask->OnCompleted.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
 
-	/* Montage가 BlendOut 처리, 정상적인 재생과 다음 Montage와의 Blend */
-	MontageTask->OnBlendOut.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
-
 	/* 다른 Montage에 의해 끊길 시 ex)피격시 피격 Montage 재생 */
 	MontageTask->OnInterrupted.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
 
@@ -236,6 +229,7 @@ void UGA_SwordAttack::StartNextCombo()
 {
 	bNextComboQueued = false;
 	CurrentComboCount++;
+	UE_LOG(LogTemp, Warning, TEXT("StartNextCombo: Count=%d, MontageNum=%d"), CurrentComboCount, ComboMontages.Num());
 
 	if (CurrentComboCount > ComboMontages.Num())
 	{

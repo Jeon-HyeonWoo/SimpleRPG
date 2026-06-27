@@ -86,8 +86,6 @@ void UGA_SwordChargeAttack::WaitInputRelease()
 
 void UGA_SwordChargeAttack::WaitInputReleaseCallBack(float TimeHeld)
 {
-	UE_LOG(LogTemp, Warning, TEXT("WaitInputReleaseCallBack : TimeHeld = %f"), TimeHeld);
-
 	if (TimeHeld >= FullChargeTime)
 	{
 		bIsFullCharge = true;
