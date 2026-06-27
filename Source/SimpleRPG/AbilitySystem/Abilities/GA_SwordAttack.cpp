@@ -275,9 +275,9 @@ void UGA_SwordAttack::DamageEventTask()
 {
 	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this,
-		FGameplayTag::RequestGameplayTag(FName("Event.Hit.Melee")) //±â´Ù¸± Event Tag,
+		SimpleRPGGameplayTags::Event_Combat_HitDetect
 	);
-
+	
 	Task->EventReceived.AddDynamic(this, &UGA_SwordAttack::OnDamageEvent);
 
 	Task->ReadyForActivation();
