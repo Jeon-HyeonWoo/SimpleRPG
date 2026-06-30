@@ -6,6 +6,19 @@
 #include "SimpleRPGGameplayAbility.h"
 #include "GA_Dash.generated.h"
 
+UENUM()
+enum class EDashDirection : uint8
+{
+	Forward,
+	ForwardRight,
+	Right,
+	BackwardRight,
+	Backward,
+	BackwardLeft,
+	Left,
+	ForwardLeft
+};
+
 /**
  * 
  */
@@ -45,16 +58,14 @@ private:
 
 	FVector GetDashDirection() const;
 
+	EDashDirection GetDashDirectionEnum() const;
+
+	void PlayMontage();
+
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
-	TObjectPtr<UAnimMontage> DashMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
-	float DashDistance = 1200.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
-	float DashDuration;
+	TMap<EDashDirection, TObjectPtr<UAnimMontage>> DashMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
 	TSubclassOf<UGameplayEffect> CoolDownEffect;

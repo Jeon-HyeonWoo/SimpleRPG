@@ -7,8 +7,8 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "../AbilityTask/AT_DashMove.h"
 #include "../../Character/SimpleRPGPlayerCharacter.h"
+
 
 UGA_Dash::UGA_Dash()
 {
@@ -47,32 +47,8 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		);
 	}
 
-	if (DashMontage)
-	{
-		DashDuration = DashMontage->GetPlayLength();
+	PlayMontage();
 
-		UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-			this,
-			NAME_None,
-			DashMontage,
-			2.0f
-		);
-
-		MontageTask->OnCompleted.AddDynamic(this, &UGA_Dash::OnMontageCompleted);
-		//MontageTask->OnBlendOut.AddDynamic(this, &UGA_Dash::OnMontageCompleted);
-		MontageTask->OnInterrupted.AddDynamic(this, &UGA_Dash::OnMontageCancelled);
-		MontageTask->OnCancelled.AddDynamic(this, &UGA_Dash::OnMontageCancelled);
-
-		MontageTask->ReadyForActivation();
-	}
-
-
-	/* Owning Ability, Direction Vector, Distance, Duration */
-	UAT_DashMove* AT_DashMove = UAT_DashMove::CreateDashMove(this, GetDashDirection(), DashDistance, DashDuration);
-	if (AT_DashMove)
-	{
-		AT_DashMove->ReadyForActivation();
-	}
 }
 
 void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -137,4 +113,69 @@ FVector UGA_Dash::GetDashDirection() const
 	}
 
 	return LastInput.GetSafeNormal();
+}
+
+EDashDirection UGA_Dash::GetDashDirectionEnum() const
+{
+	ASimpleRPGPlayerCharacter* PlayerCharacter = Cast<ASimpleRPGPlayerCharacter>(GetAvatarActorFromActorInfo());
+	if (!PlayerCharacter)
+	{
+		return EDashDirection::Forward;
+	}
+
+	FVector InputDir = PlayerCharacter->GetLastInputDirection().GetSafeNormal();
+	
+	if (InputDir.IsNearlyZero())
+	{
+		return EDashDirection::Backward;
+	}
+
+	FVector Forward = PlayerCharacter->GetActorForwardVector();
+	
+	//Dot value : -1(back), 0(90), 1(front)
+	float Dot = FVector::DotProduct(Forward, InputDir);
+	//Cross Value = Cross.Z < 0 (left) Cross.Z > 0 (right)
+	FVector Cross = FVector::CrossProduct(Forward, InputDir);
+
+
+	float AngleRad = FMath::Atan2(Cross.Z, Dot);
+	float AngleDeg = FMath::RadiansToDegrees(AngleRad);
+
+	if (AngleDeg < 0) AngleDeg += 360.0f;
+
+	int32 Index = FMath::RoundToInt(AngleDeg / 45.0f) % 8;
+	
+	UE_LOG(LogTemp, Warning, TEXT("Angle: %.1f, Index: %d"), AngleDeg, Index);
+
+	return (EDashDirection)Index;
+}
+
+void UGA_Dash::PlayMontage()
+{
+	EDashDirection Dir = GetDashDirectionEnum();
+
+	TObjectPtr<UAnimMontage>* FoundMontage = DashMontage.Find(Dir);
+	if (!FoundMontage || !*FoundMontage)
+	{
+		EndAbility(
+			CurrentSpecHandle,
+			CurrentActorInfo,
+			CurrentActivationInfo,
+			true,
+			true);
+		return;
+	}
+
+	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,
+		NAME_None,
+		*FoundMontage,
+		1.0f
+	);
+
+	Task->OnCompleted.AddDynamic(this, &UGA_Dash::OnMontageCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UGA_Dash::OnMontageCancelled);
+	Task->OnCancelled.AddDynamic(this, &UGA_Dash::OnMontageCancelled);
+
+	Task->ReadyForActivation();
 }
