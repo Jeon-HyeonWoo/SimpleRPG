@@ -11,8 +11,9 @@ struct FComboStep
 {
 	GENERATED_BODY()
 
+	//SectionName : Combo1, 2, 3
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UAnimMontage> Montage;
+	FName SectionName;
 
 	UPROPERTY(EditDefaultsOnly)
 	FDataTableRowHandle DamageRow;
@@ -72,15 +73,19 @@ protected:
 	void OnDamageEvent(FGameplayEventData PayLoad);
 
 private:
-
-	void PlayComboMontage(int32 MontageIndex);
+	//AbilityTask_PlayMontageAndWait
+	void PlayComboMontage();
 
 	void DamageEventTask();
 
-	void StartNextCombo();
 	void ResetCombo();
+	void ReserveNextCombo();
+
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combo")
+	TObjectPtr<UAnimMontage> ComboMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combo")
 	TArray<FComboStep> ComboSteps;
@@ -93,6 +98,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
 	bool bNextComboQueued = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combo")
+	bool bComboReserved = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combo")
 	TSubclassOf<UGameplayEffect> BlockMovementEffect;

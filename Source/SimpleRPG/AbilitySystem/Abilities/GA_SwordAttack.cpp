@@ -44,8 +44,18 @@ UGA_SwordAttack::UGA_SwordAttack()
 
 void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
+	if (bComboWindowOpen)
+	{
+		ReserveNextCombo();
+	}
+	else
+	{
+		bNextComboQueued = true;
+	}
+
 	//Window 상태를 안 따지고 무조건 저장
 	bNextComboQueued = true;
+	UE_LOG(LogTemp, Warning, TEXT("InputPressed Success"));
 }
 
 void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -74,7 +84,7 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		);
 	}
 
-	PlayComboMontage(0);
+	PlayComboMontage();
 
 	UAbilityTask_WaitGameplayEvent* WaitOpenTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this,		//소유 Ability
@@ -102,6 +112,7 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Endability"));
 	if (BlockMovementEffectHandle.IsValid())
 	{
 		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
@@ -126,6 +137,7 @@ void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 void UGA_SwordAttack::OnMontageCompleted()
 {
+	UE_LOG(LogTemp, Warning, TEXT("MontageCompleted at Section (count=%d)"), CurrentComboCount);
 	/* 정상 종료, 콤보 입력 없이 몽타주가 끝까지 재생되었거나, 콤보 피니시 후 종료 */
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
@@ -139,15 +151,19 @@ void UGA_SwordAttack::OnMontageCancelled()
 void UGA_SwordAttack::OnComboWindowOpen(FGameplayEventData PayLoad)
 {
 	bComboWindowOpen = true;
+	bComboReserved = false;
+
+	if (bNextComboQueued)
+	{
+		ReserveNextCombo();
+		bNextComboQueued = false;
+	}
+	
 }
 
 void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 {
 	bComboWindowOpen = false;
-	if (bNextComboQueued)
-	{
-		StartNextCombo();
-	}
 }
 
 void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
@@ -162,35 +178,32 @@ void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
 }
 
-void UGA_SwordAttack::PlayComboMontage(int32 MontageIndex)
+
+void UGA_SwordAttack::PlayComboMontage()
 {
-	/* ComboMontages의 IndexValid check */
-	if (!ComboSteps[MontageIndex].Montage)
+	//1. Montage null 체크
+	if (!ComboMontage)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
-	/* 일반 몽타주를 안쓰는 이유 : Ability와 생명주기를 같이 함 + Montage의 기능을 ability와 합쳐서 간소화 */
-	UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,							/* Task를 소유하고 있는 Ability */
-		NAME_None,						/* Task Instance 이름, Debug용도 */
-		ComboSteps[MontageIndex].Montage,	/* 재생할 Montage */
-		1.0f,							/* 재생 속도 */
-		NAME_None						/* 시작 섹션 이름 -> 단일 Montage라 필요없음 */
+	//2. Task Create
+	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,
+		NAME_None,
+		ComboMontage,
+		1.0f,
+		ComboSteps[0].SectionName
 	);
 
-	/* Montage의 정상적 재생 종료 */
-	MontageTask->OnCompleted.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
+	//3. Binding 
+	Task->OnCompleted.AddDynamic(this, &UGA_SwordAttack::OnMontageCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
+	Task->OnCancelled.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
 
-	/* 다른 Montage에 의해 끊길 시 ex)피격시 피격 Montage 재생 */
-	MontageTask->OnInterrupted.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
-
-	/* Ability 자체가 Cancel될 때, 태그 충돌 및 강제 캔슬 시 호출 */
-	MontageTask->OnCancelled.AddDynamic(this, &UGA_SwordAttack::OnMontageCancelled);
-
-	/* Task 실행 */
-	MontageTask->ReadyForActivation();
+	//4. Flush
+	Task->ReadyForActivation();
 }
 
 void UGA_SwordAttack::DamageEventTask()
@@ -205,22 +218,24 @@ void UGA_SwordAttack::DamageEventTask()
 	Task->ReadyForActivation();
 }
 
-void UGA_SwordAttack::StartNextCombo()
-{
-	bNextComboQueued = false;
-	CurrentComboCount++;
-	
-	if (CurrentComboCount > ComboSteps.Num())
-	{
-		return;
-	}
-
-	PlayComboMontage(CurrentComboCount - 1);
-}
-
 void UGA_SwordAttack::ResetCombo()
 {
 	CurrentComboCount = 0;
 	bComboWindowOpen = false;
 	bNextComboQueued = false;
+	bComboReserved = false;
+}
+
+void UGA_SwordAttack::ReserveNextCombo()
+{
+	if (!ComboSteps.IsValidIndex(CurrentComboCount)) return;
+
+	FName CurrentSection = ComboSteps[CurrentComboCount - 1].SectionName;
+	FName NextSection = ComboSteps[CurrentComboCount].SectionName;
+
+	GetAbilitySystemComponentFromActorInfo()
+		->CurrentMontageSetNextSectionName(CurrentSection, NextSection);
+
+	CurrentComboCount++;
+	bComboReserved = true;
 }

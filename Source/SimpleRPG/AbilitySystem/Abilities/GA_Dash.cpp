@@ -144,8 +144,6 @@ EDashDirection UGA_Dash::GetDashDirectionEnum() const
 	if (AngleDeg < 0) AngleDeg += 360.0f;
 
 	int32 Index = FMath::RoundToInt(AngleDeg / 45.0f) % 8;
-	
-	UE_LOG(LogTemp, Warning, TEXT("Angle: %.1f, Index: %d"), AngleDeg, Index);
 
 	return (EDashDirection)Index;
 }
