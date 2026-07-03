@@ -20,7 +20,7 @@ struct FComboStep
 };
 
 /**
- * 
+* 
  */
 UCLASS(Abstract, Blueprintable)
 class SIMPLERPG_API UGA_SwordAttack : public USimpleRPGGameplayAbility
@@ -112,3 +112,24 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|DamageEffect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 };
+
+/*
+* 힘들었던 점.
+* 1. 단일 콤보 Animation or combo별 Animation 3개 결정 -> 복귀모션 부재로 고민 -> 복귀 모션을 포기하고 Idle과 Blending하는 것으로 타협
+* 2. JumpToSection 이용시 Animation이 튀는 현상 -> Section 맞추기의 한계 -> SetCurrentNextSection으로 section 예약 
+* 3. 예약 방식의 어려움 -> CurrentSection이 끝나는 지점에 WindowClose를 가까이 붙이면 예약 방식이 어려움
+* 4. OpenWindow에서 예약을 시작 
+* 5. 해결방법
+* Input -> Open -> ComboQueue 확인 -> Close Log 순서를 차례로 확인
+* Close지점에서 CurrentCombo = None을 찾아냄 
+
+*/
+
+/*
+* 1. 데미지 계수 문제
+* OnDamageEvent() 에서 ReserveNextCombo에서 CurrentComboCount++가 되면서 ComboCount가 미리 올라가 데미지 계수 문제 밀림 현상
+* 
+* 2. 원인 
+* Count 변수가 다음 Montage 재생과 Damage 부분 두 곳에서 사용됨
+* 
+*/

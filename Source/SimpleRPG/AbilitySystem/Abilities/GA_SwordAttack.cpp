@@ -55,7 +55,6 @@ void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, cons
 
 	//Window 상태를 안 따지고 무조건 저장
 	bNextComboQueued = true;
-	UE_LOG(LogTemp, Warning, TEXT("InputPressed Success"));
 }
 
 void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -168,14 +167,23 @@ void UGA_SwordAttack::OnComboWindowClose(FGameplayEventData PayLoad)
 
 void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 {
-	int32 Index = CurrentComboCount - 1;
-	if (!ComboSteps.IsValidIndex(Index)) return;
+	//현재 재생중인 Montage Secton Name을 가져옴
+	FName CurrentSection = GetAbilitySystemComponentFromActorInfo()->GetCurrentMontageSectionName();
+
+	//섹션 이름에 해당하는 ComboStep을 찾아 계수 적용
+	const FComboStep* Step = ComboSteps.FindByPredicate(
+		[&](const FComboStep& S) { return S.SectionName == CurrentSection; }
+	);
+
+	if (!Step) return;
 
 	float Ratio;
 
-	if (!GetSkillRatio(ComboSteps[Index].DamageRow, Ratio)) return;
+	if (!GetSkillRatio(Step->DamageRow, Ratio)) return;
 
 	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
+	
+	UE_LOG(LogTemp, Warning, TEXT("HitDetect : Count = %s"), *Step->SectionName.ToString());
 }
 
 
