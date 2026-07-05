@@ -34,7 +34,7 @@ struct FMonsterStatRow : public FTableRowBase
 	float CriticalMultiplier = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MovementSpeedMultiplier = 1.0f;
+	float MoveSpeedMutiplier = 1.0f;
 
 	
 };

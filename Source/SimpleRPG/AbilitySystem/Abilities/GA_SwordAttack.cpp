@@ -182,8 +182,6 @@ void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 	if (!GetSkillRatio(Step->DamageRow, Ratio)) return;
 
 	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
-	
-	UE_LOG(LogTemp, Warning, TEXT("HitDetect : Count = %s"), *Step->SectionName.ToString());
 }
 
 
