@@ -41,7 +41,12 @@ struct FPlayerStat
 	float CriticalMultiplier = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MoveSpeedMutiplier = 1.0f;
+	float BaseMoveSpeed = 600.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MoveSpeedMultiplier = 1.0f;
+
+	
+	
 
 };

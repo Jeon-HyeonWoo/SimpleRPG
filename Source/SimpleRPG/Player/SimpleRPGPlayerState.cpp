@@ -85,7 +85,8 @@ void ASimpleRPGPlayerState::InitializeStats()
 	AS->InitAD_Defense(PlayerStat.AD_Defense);
 	AS->InitAP_Defense(PlayerStat.AP_Defense);
 
-	AS->InitMoveSpeedMutiplier(PlayerStat.MoveSpeedMutiplier);
+	AS->InitBaseMoveSpeed(PlayerStat.BaseMoveSpeed);
+	AS->InitMoveSpeedMultiplier(PlayerStat.MoveSpeedMultiplier);
 
 
 }

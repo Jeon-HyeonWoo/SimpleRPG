@@ -74,8 +74,8 @@ public:
 	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, BaseMoveSpeed)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FGameplayAttributeData SpeedMutiplier;
-	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, MoveSpeedMutiplier)
+	FGameplayAttributeData MoveSpeedMultiplier;
+	ATTRIBUTE_ACCESSORS(USimpleRPGMonsterAttributeSet, MoveSpeedMultiplier)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat")
 	FGameplayAttributeData IncomingDamage;

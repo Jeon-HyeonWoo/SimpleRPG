@@ -16,7 +16,8 @@
 
 
 
-ASimpleRPGMonsterBase::ASimpleRPGMonsterBase()
+ASimpleRPGMonsterBase::ASimpleRPGMonsterBase(const FObjectInitializer& ObjectInitializer) 
+	: Super(ObjectInitializer)
 {
 	//Base Setting
 	{

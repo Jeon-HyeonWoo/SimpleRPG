@@ -27,7 +27,7 @@ class SIMPLERPG_API ASimpleRPGPlayerCharacter : public ASimpleRPGCharacterBase
 	
 public:
 
-	ASimpleRPGPlayerCharacter();
+	ASimpleRPGPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 	/* override from ACharacter */
 	virtual void PossessedBy(AController* NewController) override;

@@ -22,7 +22,7 @@ class SIMPLERPG_API ASimpleRPGMonsterBase : public ASimpleRPGCharacterBase
 	
 public:
 
-	ASimpleRPGMonsterBase();
+	ASimpleRPGMonsterBase(const FObjectInitializer& ObjectInitializer);
 
 	virtual void PossessedBy(AController* NewController) override;
 

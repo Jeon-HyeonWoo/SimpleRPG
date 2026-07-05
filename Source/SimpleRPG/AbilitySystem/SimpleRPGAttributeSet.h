@@ -81,8 +81,8 @@ public:
 	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, CriticalMultiplier)
 
 		UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FGameplayAttributeData MoveSpeedMutiplier;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MoveSpeedMutiplier)
+	FGameplayAttributeData MoveSpeedMultiplier;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, MoveSpeedMultiplier)
 
 		UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	FGameplayAttributeData BaseMoveSpeed;

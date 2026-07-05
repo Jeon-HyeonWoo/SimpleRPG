@@ -14,7 +14,7 @@ class SIMPLERPG_API ASimpleRPGCharacterBase : public ACharacter, public IAbility
 
 public:
 	// Sets default values for this character's properties
-	ASimpleRPGCharacterBase();
+	ASimpleRPGCharacterBase(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned

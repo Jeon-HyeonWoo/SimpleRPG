@@ -22,13 +22,15 @@
 #include "../Equipment/SimpleRPGEquipmentComponent.h"
 #include "../Weapon/WeaponData.h"
 #include "SimpleRPG/SimpleRPGGameplayTag.h"
+#include "SimpleRPG/Character/Movement/PlayerCharacterMovementComponent.h"
 
 
 
 
 
 
-ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter()
+ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UPlayerCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
