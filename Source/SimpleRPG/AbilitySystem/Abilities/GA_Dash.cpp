@@ -13,10 +13,6 @@
 UGA_Dash::UGA_Dash()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
-	ActivationOwnedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
-
-	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
 }
 
 void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

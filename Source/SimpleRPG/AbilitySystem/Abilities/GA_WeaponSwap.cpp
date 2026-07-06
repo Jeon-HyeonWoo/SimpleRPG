@@ -11,11 +11,6 @@
 UGA_WeaponSwap::UGA_WeaponSwap()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
-	// Acting 계열 상호 차단
-	ActivationOwnedTags.AddTag(SimpleRPGGameplayTags::State_Acting_Swapping);
-	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Acting);
-	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
 }
 
 void UGA_WeaponSwap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

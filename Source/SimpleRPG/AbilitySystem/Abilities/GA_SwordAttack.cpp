@@ -26,20 +26,6 @@ UGA_SwordAttack::UGA_SwordAttack()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	bRetriggerInstancedAbility = false;
 	
-	// 활성화 도중 재 활성화 방지
-	FGameplayTag SwordAttackTag = FGameplayTag::RequestGameplayTag(FName("Ability.SwordAttack"));
-
-	//이 Ability가 활성화되면 캐릭터에 Tag부여
-	ActivationOwnedTags.AddTag(SwordAttackTag);
-
-	// 캐릭터에 이 Tag가 붙어있으면 Ability활성화 차단
-	ActivationBlockedTags.AddTag(SwordAttackTag);
-
-
-	//Acting 계열 상호 차단
-	ActivationOwnedTags.AddTag(SimpleRPGGameplayTags::State_Acting_Attacking);
-	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Acting);
-	ActivationBlockedTags.AddTag(SimpleRPGGameplayTags::State_Dashing);
 }
 
 void UGA_SwordAttack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)

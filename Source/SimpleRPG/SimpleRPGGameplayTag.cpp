@@ -8,6 +8,12 @@ namespace SimpleRPGGameplayTags
 	//State
 	UE_DEFINE_GAMEPLAY_TAG(State_Dashing, "State.Dasing");
 
+	//Ability Á¤Ã¼¼º 
+	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack, "Ability.Attack");
+	UE_DEFINE_GAMEPLAY_TAG(Ability_Dash, "Ability.Dash");
+	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack_Sword, "Ability.Attack.Sword");
+	UE_DEFINE_GAMEPLAY_TAG(Ability_WeaponSwap, "Ability.WeaponSwap");
+
 	//State_Movement
 	UE_DEFINE_GAMEPLAY_TAG(State_Movement_Blocked, "State.Movement.Blocked");
 
