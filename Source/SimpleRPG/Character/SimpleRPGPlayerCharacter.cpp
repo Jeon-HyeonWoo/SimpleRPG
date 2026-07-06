@@ -203,12 +203,6 @@ void ASimpleRPGPlayerCharacter::MoveHandler(const FInputActionValue& Value, FGam
 	LastInputDirection = (InputRightVector + InputForwardVector).GetSafeNormal();
 	LastInputTime = GetWorld()->GetTimeSeconds();
 
-	//Movement_Blocked Tag½Ã return
-	if (AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(SimpleRPGGameplayTags::State_Movement_Blocked))
-	{
-		return;
-	}
-
 	if (MovementVector.X != 0.0f)
 	{
 		const FVector MovementDirection = MovementRotation.RotateVector(FVector::RightVector);
