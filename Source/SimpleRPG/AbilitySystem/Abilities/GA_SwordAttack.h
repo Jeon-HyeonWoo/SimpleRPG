@@ -102,11 +102,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Combo")
 	bool bComboReserved = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Combo")
-	TSubclassOf<UGameplayEffect> BlockMovementEffect;
-
-	FActiveGameplayEffectHandle BlockMovementEffectHandle;
-
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|DamageEffect")

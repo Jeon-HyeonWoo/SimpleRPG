@@ -35,29 +35,14 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		return;
 	}
 
-	//이동 제한 GE 적용
-	if (BlockMovementEffect)
-	{
-		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
-			Handle,
-			Actorinfo,
-			ActivationInfo,
-			BlockMovementEffect.GetDefaultObject(),
-			1.0f
-		);
-	}
+	ApplyBlockMovement();
 
 	PlayMontage();
-
 }
 
 void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (BlockMovementEffectHandle.IsValid())
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
-	}
-
+	RemoveBlockMovement();
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 

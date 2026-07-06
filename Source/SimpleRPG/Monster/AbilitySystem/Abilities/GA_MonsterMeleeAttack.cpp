@@ -30,27 +30,17 @@ void UGA_MonsterMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 		return;
 	}
 
-	//공격 중 이동 불가 Effect 설정
-	if (BlockMovementEffect)
-	{
-		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
-			Handle, Actorinfo, ActivationInfo, BlockMovementEffect.GetDefaultObject(), 1.0f);
-	}
-
 	//공격 Montage 랜덤 재생 Index설정
 	MontageDataIndex = FMath::RandRange(0, AttackMontageDataArray.Num() - 1);
 
+	ApplyBlockMovement();
 	PlayMontage();
 	WaitForHitEvent();
 }
 
 void UGA_MonsterMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (BlockMovementEffectHandle.IsValid())
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
-	}
-
+	RemoveBlockMovement();
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 

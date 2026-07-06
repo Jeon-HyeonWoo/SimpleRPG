@@ -53,7 +53,6 @@ private:
 	UFUNCTION()
 	void OnPowerUpActivated(FGameplayEventData PayLoad);
 
-
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|PowerUp")
@@ -67,10 +66,4 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|PowerUp")
 	TSubclassOf<UGameplayEffect> CoolDownEffect;
 
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|PowerUp")
-	TSubclassOf<UGameplayEffect> BlockMovementEffect;
-
-private:
-
-	FActiveGameplayEffectHandle BlockMovementEffectHandle;
 };

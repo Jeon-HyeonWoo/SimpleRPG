@@ -7,6 +7,8 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystemComponent.h"
 
+
+
 UGA_SwordPowerUp::UGA_SwordPowerUp()
 {
 	/* 객체 별 정책 = 공유 액터 없이 한 액터당 하나 씩 부여 */
@@ -28,24 +30,14 @@ void UGA_SwordPowerUp::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
 		return;
 	}
-
-	if (BlockMovementEffect)
-	{
-		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
-			Handle, Actorinfo, ActivationInfo, BlockMovementEffect.GetDefaultObject(), 1.0f);
-	}
-
+	ApplyBlockMovement();
 	PlayPowerUpMontage();
 	PowerUpEvent();
 }
 
 void UGA_SwordPowerUp::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (BlockMovementEffectHandle.IsValid())
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
-	}
-
+	RemoveBlockMovement();
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 

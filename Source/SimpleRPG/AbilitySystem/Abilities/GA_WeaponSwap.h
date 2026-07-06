@@ -61,9 +61,4 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<const UWeaponData> PendingWeaponData;
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Effect")
-	TSubclassOf<UGameplayEffect> BlockMovementEffect;
-
-	FActiveGameplayEffectHandle BlockMovementEffectHandle;
 };

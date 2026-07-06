@@ -30,13 +30,7 @@ void UGA_SwordChargeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
 		return;
 	}
-
-	if (BlockMovementEffect)
-	{
-		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
-			Handle, Actorinfo, ActivationInfo, BlockMovementEffect.GetDefaultObject(), 1.0f);
-	}
-
+	ApplyBlockMovement();
 	PlayMontage();
 	WaitInputRelease();
 	DamageEventTask();
@@ -44,11 +38,7 @@ void UGA_SwordChargeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 void UGA_SwordChargeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (BlockMovementEffectHandle.IsValid())
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
-	}
-
+	RemoveBlockMovement();
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 

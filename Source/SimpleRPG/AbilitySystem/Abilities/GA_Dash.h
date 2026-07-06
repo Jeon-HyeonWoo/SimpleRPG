@@ -69,10 +69,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
 	TSubclassOf<UGameplayEffect> CoolDownEffect;
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
-	TSubclassOf<UGameplayEffect> BlockMovementEffect;
-
-	FActiveGameplayEffectHandle BlockMovementEffectHandle;
-	
 };

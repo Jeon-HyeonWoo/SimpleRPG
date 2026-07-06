@@ -7,6 +7,7 @@
 #include "SimpleRPG/AbilitySystem/Data/DamageDataTableRow.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ASimpleRPGCharacterBase* USimpleRPGGameplayAbility::GetOwnerCharacter() const
 {
@@ -82,4 +83,44 @@ void USimpleRPGGameplayAbility::ApplyDamageToTarget(AActor* Target, TSubclassOf<
         *SpecHandle.Data.Get(),
         TargetASC
     );
+}
+
+void USimpleRPGGameplayAbility::ApplyBlockMovement()
+{
+    //지정 한 한 GA는 조용히 무시
+    if (!BlockMovementEffect) return;
+
+    //이미 적용중이라면 무시
+    if (BlockMovementEffectHandle.IsValid()) return;
+
+    //GE 적용 및 Handle에 저장
+    BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
+        CurrentSpecHandle,
+        CurrentActorInfo,
+        CurrentActivationInfo,
+        BlockMovementEffect.GetDefaultObject(),
+        1.0f
+    );
+
+    if (ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo()))
+    {
+        Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+    }
+}
+
+void USimpleRPGGameplayAbility::RemoveBlockMovement()
+{
+    if (ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo()))
+    {
+        Character->GetCharacterMovement()->bOrientRotationToMovement = true;
+    }
+
+    if (BlockMovementEffectHandle.IsValid())
+    {
+        if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+        {
+            ASC->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
+            BlockMovementEffectHandle.Invalidate();
+        }
+    }
 }

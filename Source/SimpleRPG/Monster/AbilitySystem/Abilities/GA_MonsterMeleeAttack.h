@@ -79,13 +79,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Damage")
 	FGameplayTag HitEventTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Ability")
-	TSubclassOf<UGameplayEffect> BlockMovementEffect;
-
 
 private:
-
-	FActiveGameplayEffectHandle BlockMovementEffectHandle;
 
 	int32 MontageDataIndex = 0;
 };

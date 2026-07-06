@@ -68,9 +68,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|ChargeAttack")
 	TObjectPtr<UAnimMontage> ChargeAttackMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|ChargeAttack")
-	TSubclassOf<UGameplayEffect> BlockMovementEffect;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|ChargeAttack")
 	TSubclassOf<UGameplayEffect> CoolDownEffect;
 
@@ -84,8 +82,6 @@ public:
 	float FullChargeTime = 2.0f;
 
 private:
-
-	FActiveGameplayEffectHandle BlockMovementEffectHandle;
 
 	FActiveGameplayEffectHandle UnderChargeAttackEffectHandle;
 

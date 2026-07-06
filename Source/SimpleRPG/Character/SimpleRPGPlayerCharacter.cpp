@@ -112,6 +112,11 @@ void ASimpleRPGPlayerCharacter::BeginPlay()
 
 }
 
+void ASimpleRPGPlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
+
 void ASimpleRPGPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

@@ -30,4 +30,19 @@ protected:
 	bool GetSkillRatio(const FDataTableRowHandle& DTRowHandle, float& OutRatio) const;
 	
 	void ApplyDamageToTarget(AActor* Target, TSubclassOf<UGameplayEffect> DamageEffect, float SkillRatio);
+
+protected:
+
+	//이동 금지 GE를 소유자에게 적용하고 핸들을 저장
+	void ApplyBlockMovement();	
+	// 저장된 핸들로 이동 금지 GE를 해제
+	void RemoveBlockMovement();	
+
+	// 이동 금지 GE. 자식 GA가 Editor에서 GE_BlockMovement지정
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Movement")
+	TSubclassOf<UGameplayEffect> BlockMovementEffect;
+
+	// 적용된 이동 금지 GE 핸들. Remove시 사용
+	FActiveGameplayEffectHandle BlockMovementEffectHandle;
+
 };

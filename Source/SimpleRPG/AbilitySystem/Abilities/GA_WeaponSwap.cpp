@@ -49,25 +49,14 @@ void UGA_WeaponSwap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return;
 	}
 
-	//이동 제한 적용
-	if (BlockMovementEffect)
-	{
-		BlockMovementEffectHandle = ApplyGameplayEffectToOwner(
-			Handle, Actorinfo, ActivationInfo, BlockMovementEffect.GetDefaultObject(), 1.0f);
-	}
-
+	
+	ApplyBlockMovement();
 	PlaySheathMontage();
-
-
 }
 
 void UGA_WeaponSwap::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (BlockMovementEffectHandle.IsValid())
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(BlockMovementEffectHandle);
-	}
-
+	RemoveBlockMovement();
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
