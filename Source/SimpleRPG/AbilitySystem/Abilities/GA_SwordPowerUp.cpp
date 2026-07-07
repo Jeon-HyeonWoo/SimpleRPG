@@ -13,6 +13,13 @@ UGA_SwordPowerUp::UGA_SwordPowerUp()
 {
 	/* 객체 별 정책 = 공유 액터 없이 한 액터당 하나 씩 부여 */
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	//Ability 정체성
+	AbilityTags.AddTag(SimpleRPGGameplayTags::Ability_Attack_Sword);
+
+	//활성 중 차단
+	BlockAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_Attack);
+	BlockAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_WeaponSwap);
 }
 
 void UGA_SwordPowerUp::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

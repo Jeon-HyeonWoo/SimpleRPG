@@ -25,6 +25,13 @@ UGA_SwordAttack::UGA_SwordAttack()
 	*/
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	bRetriggerInstancedAbility = false;
+
+	//Ability 정체성
+	AbilityTags.AddTag(SimpleRPGGameplayTags::Ability_Attack_Sword);
+	
+	//활성 중 차단
+	BlockAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_Attack);
+	BlockAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_WeaponSwap);
 	
 }
 
@@ -92,7 +99,7 @@ void UGA_SwordAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("SwordAttack::EndAbility - bWasCancelled = %d"), bWasCancelled);
 	/*
 	* bReplicateEndAbility : 멀티플레이어에서 종료를 네트워크로 전파할지 여부
 	* bWasCancelled : 정상 종료인지, Cancel인지 구분하는 Flag, OnMotageCompleted에서 호출하면 False, OnMontageCancelled = true
@@ -112,13 +119,14 @@ void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 void UGA_SwordAttack::OnMontageCompleted()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MontageCompleted at Section (count=%d)"), CurrentComboCount);
+	UE_LOG(LogTemp, Warning, TEXT(">> OnMontageCompleted"));
 	/* 정상 종료, 콤보 입력 없이 몽타주가 끝까지 재생되었거나, 콤보 피니시 후 종료 */
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void UGA_SwordAttack::OnMontageCancelled()
 {	
+	UE_LOG(LogTemp, Warning, TEXT(">> OnMontageCancelled"));
 	/* 비정상 종료, 피격 및 다른 Ability나 행동으로 의해 끊길 경우 */
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }

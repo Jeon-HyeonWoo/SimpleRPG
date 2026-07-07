@@ -25,6 +25,6 @@ float UPlayerCharacterMovementComponent::GetMaxSpeed() const
 	//3. Get Attribute
 	float Base = ASC->GetNumericAttribute(USimpleRPGAttributeSet::GetBaseMoveSpeedAttribute());
 	float Mult = ASC->GetNumericAttribute(USimpleRPGAttributeSet::GetMoveSpeedMultiplierAttribute());
-
+	UE_LOG(LogTemp, Warning, TEXT("After cancel: Multiplier=%.2f"), Mult);
 	return 	Base * Mult;
 }

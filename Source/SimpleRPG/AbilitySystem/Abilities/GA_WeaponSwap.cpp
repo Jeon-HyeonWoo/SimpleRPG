@@ -11,6 +11,12 @@
 UGA_WeaponSwap::UGA_WeaponSwap()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	//Ability 정체성
+	AbilityTags.AddTag(SimpleRPGGameplayTags::Ability_WeaponSwap);
+
+	//활성중 차단
+	BlockAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_Attack);
 }
 
 void UGA_WeaponSwap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

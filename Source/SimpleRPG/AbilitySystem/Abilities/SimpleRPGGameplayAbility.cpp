@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "SimpleRPG/AbilitySystem/SimpleRPGAttributeSet.h"
 
 ASimpleRPGCharacterBase* USimpleRPGGameplayAbility::GetOwnerCharacter() const
 {
@@ -123,4 +124,6 @@ void USimpleRPGGameplayAbility::RemoveBlockMovement()
             BlockMovementEffectHandle.Invalidate();
         }
     }
+
+    
 }

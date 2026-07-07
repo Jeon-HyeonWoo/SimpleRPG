@@ -13,6 +13,13 @@
 UGA_SwordChargeAttack::UGA_SwordChargeAttack()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	//Ability 정체성
+	AbilityTags.AddTag(SimpleRPGGameplayTags::Ability_Attack_Sword);
+	
+	//활성 중 차단
+	BlockAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_Attack);
+	BlockAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_WeaponSwap);
 }
 
 void UGA_SwordChargeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
