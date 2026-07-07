@@ -16,6 +16,15 @@ class SIMPLERPG_API USimpleRPGGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
+protected:
+
+	virtual void ApplyCooldown(
+		const FGameplayAbilitySpecHandle Handle,
+		const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo
+	) const override;
+
+	virtual const FGameplayTagContainer* GetCooldownTags() const override { return &CoolDownTags; }
 
 //Helper Function
 public:
@@ -38,11 +47,20 @@ protected:
 	// 저장된 핸들로 이동 금지 GE를 해제
 	void RemoveBlockMovement();	
 
+
+protected:
+
 	// 이동 금지 GE. 자식 GA가 Editor에서 GE_BlockMovement지정
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Movement")
 	TSubclassOf<UGameplayEffect> BlockMovementEffect;
 
 	// 적용된 이동 금지 GE 핸들. Remove시 사용
 	FActiveGameplayEffectHandle BlockMovementEffectHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|CoolDown")
+	float CoolDownDuration = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|CoolDown")
+	FGameplayTagContainer CoolDownTags;
 
 };

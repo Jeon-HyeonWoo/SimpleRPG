@@ -33,8 +33,6 @@ public:
 		bool bWasCancelled
 	) override;
 
-	virtual UGameplayEffect* GetCooldownGameplayEffect() const override;
-
 
 private:
 
@@ -58,12 +56,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|PowerUp")
 	TObjectPtr<UAnimMontage> PowerUpMontage;
 
-
-
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|PowerUp")
 	TSubclassOf<UGameplayEffect> BuffEffect;
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|PowerUp")
-	TSubclassOf<UGameplayEffect> CoolDownEffect;
 
 };

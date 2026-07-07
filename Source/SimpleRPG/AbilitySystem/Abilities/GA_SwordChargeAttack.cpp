@@ -49,11 +49,6 @@ void UGA_SwordChargeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-UGameplayEffect* UGA_SwordChargeAttack::GetCooldownGameplayEffect() const
-{
-	return CoolDownEffect.GetDefaultObject();
-}
-
 void UGA_SwordChargeAttack::PlayMontage()
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(

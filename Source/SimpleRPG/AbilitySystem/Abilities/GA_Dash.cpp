@@ -19,7 +19,7 @@ UGA_Dash::UGA_Dash()
 
 	//발동 시 모든 공격을 취소
 	CancelAbilitiesWithTag.AddTag(SimpleRPGGameplayTags::Ability_Attack);
-
+	GetCooldownTags();
 }
 
 void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -29,6 +29,8 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
 		return;
 	}
+
+	
 
 	ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo());
 
@@ -44,11 +46,6 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
-UGameplayEffect* UGA_Dash::GetCooldownGameplayEffect() const
-{
-	return CoolDownEffect.GetDefaultObject();
 }
 
 void UGA_Dash::OnMontageCompleted()

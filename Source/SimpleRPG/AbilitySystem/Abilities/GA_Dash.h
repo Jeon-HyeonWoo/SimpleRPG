@@ -46,8 +46,6 @@ public:
 		bool bWasCancelled
 	) override;
 
-	virtual UGameplayEffect* GetCooldownGameplayEffect() const override;
-
 private:
 
 	UFUNCTION()
@@ -66,7 +64,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
 	TMap<EDashDirection, TObjectPtr<UAnimMontage>> DashMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Dash")
-	TSubclassOf<UGameplayEffect> CoolDownEffect;
 };

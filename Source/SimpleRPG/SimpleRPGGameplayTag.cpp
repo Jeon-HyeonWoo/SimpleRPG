@@ -11,11 +11,18 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack_Sword, "Ability.Attack.Sword");
 	UE_DEFINE_GAMEPLAY_TAG(Ability_WeaponSwap, "Ability.WeaponSwap");
 
+	//Ability CoolDown
+	UE_DEFINE_GAMEPLAY_TAG(CoolDown_Common_Dash, "CoolDown.Common.Dash");
+	UE_DEFINE_GAMEPLAY_TAG(CoolDown_Sword_PowerUp, "CoolDown.Sword.PowerUp");
+	UE_DEFINE_GAMEPLAY_TAG(CoolDown_Sword_ChargeAttack, "CoolDown.Sword.ChargeAttack");
+
+	
 	//State_Movement
 	UE_DEFINE_GAMEPLAY_TAG(State_Movement_Blocked, "State.Movement.Blocked");
 
 	//SetByCaller
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_Skill_Ratio, "SetByCaller.Skill.Ratio");
+	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_CoolDown_Duration, "SetByCaller.CoolDonw.Durtaion");
 
 	//Damage
 	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AD, "Damage.Type.AD");

@@ -6,6 +6,8 @@
 
 namespace SimpleRPGGameplayTags
 {
+	//State_Movement 움직임 행동
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Movement_Blocked);
 
 // 공용 State
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Dashing);
@@ -16,18 +18,14 @@ namespace SimpleRPGGameplayTags
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Dash);
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_WeaponSwap);
 
-
-//State_Movement 움직임 행동
-	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Movement_Blocked);
-
-//State_Acting 취하고 있는 행동
-	
-	
-	
+//Ability CoolDown 태그
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(CoolDown_Common_Dash);
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(CoolDown_Sword_PowerUp);
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(CoolDown_Sword_ChargeAttack);
 
 //SetByCaller 
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(SetByCaller_Skill_Ratio);
-
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(SetByCaller_CoolDown_Duration);
 
 //Damage 데미지 관련
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Type_AD);

@@ -48,11 +48,6 @@ void UGA_SwordPowerUp::EndAbility(const FGameplayAbilitySpecHandle Handle, const
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-UGameplayEffect* UGA_SwordPowerUp::GetCooldownGameplayEffect() const
-{
-	return CoolDownEffect.GetDefaultObject();
-}
-
 void UGA_SwordPowerUp::PlayPowerUpMontage()
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(

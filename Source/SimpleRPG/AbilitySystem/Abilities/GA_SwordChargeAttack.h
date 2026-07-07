@@ -33,8 +33,6 @@ public:
 		bool bWasCancelled
 	) override;
 
-	virtual UGameplayEffect* GetCooldownGameplayEffect() const override;
-
 private:
 
 	/* AbilityTask_PlayMontageAndWait */
@@ -67,10 +65,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|ChargeAttack")
 	TObjectPtr<UAnimMontage> ChargeAttackMontage;
-
-	
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|ChargeAttack")
-	TSubclassOf<UGameplayEffect> CoolDownEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|ChargeAttack")
 	TSubclassOf<UGameplayEffect> UnderChargeAttackEffect;
