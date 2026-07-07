@@ -35,8 +35,16 @@ void USimpleRPGGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle H
         return;
     }
    
+    const FDamageDataTableRow* Row = CoolDownDataRow.GetRow<FDamageDataTableRow>(TEXT("ApplyCoolDown"));
+    if (!Row)
+    {
+        return;
+    }
+    
+    float Duration = Row->CoolDown;
+
     //3. SetByCaller·Î Duration ÁÖÀÔ
-    Spec->SetSetByCallerMagnitude(SimpleRPGGameplayTags::SetByCaller_CoolDown_Duration, CoolDownDuration);
+    Spec->SetSetByCallerMagnitude(SimpleRPGGameplayTags::SetByCaller_CoolDown_Duration, Duration);
 
     Spec->DynamicGrantedTags.AppendTags(CoolDownTags);
 

@@ -58,9 +58,8 @@ protected:
 	FActiveGameplayEffectHandle BlockMovementEffectHandle;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|CoolDown")
-	float CoolDownDuration = 0.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|CoolDown")
 	FGameplayTagContainer CoolDownTags;
 
+	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|CoolDown")
+	FDataTableRowHandle CoolDownDataRow;
 };
