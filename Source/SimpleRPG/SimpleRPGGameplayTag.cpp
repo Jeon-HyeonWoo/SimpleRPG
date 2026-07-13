@@ -24,6 +24,9 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_Skill_Ratio, "SetByCaller.Skill.Ratio");
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_CoolDown_Duration, "SetByCaller.CoolDonw.Durtaion");
 
+	//SetByCaller_Monster
+	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_Monster_Ratio, "SetByCaller.Monster.Ratio");
+
 	//Damage
 	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AD, "Damage.Type.AD");
 	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AP, "Damage.Type.AP");

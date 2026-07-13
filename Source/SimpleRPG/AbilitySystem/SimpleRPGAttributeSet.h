@@ -34,6 +34,10 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+protected:
+
+	void HandleInComingDamage(const FGameplayEffectModCallbackData& Data);
+
 public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat")
@@ -89,8 +93,8 @@ public:
 	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, BaseMoveSpeed)
 
 		UPROPERTY(BlueprintReadOnly, Category = "Stat")
-	FGameplayAttributeData InComingDamage;
-	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, InComingDamage)
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(USimpleRPGAttributeSet, IncomingDamage)
 
 public:
 

@@ -3,52 +3,158 @@
 
 #include "MonsterDamageCalcExec.h"
 #include "SimpleRPG/Monster/AbilitySystem/AttributeSet/SimpleRPGMonsterAttributeSet.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "SimpleRPG/AbilitySystem/SimpleRPGAttributeSet.h"
 
+struct FMonsterDamageStatics
+{
+	FGameplayEffectAttributeCaptureDefinition Monster_AD_AttackPowerDef;
+	FGameplayEffectAttributeCaptureDefinition Monster_CriticalChanceDef;
+	FGameplayEffectAttributeCaptureDefinition Monster_CriticalMultiplierDef;
+
+	FGameplayEffectAttributeCaptureDefinition Player_AD_DefenseDef;
+	FGameplayEffectAttributeCaptureDefinition Player_IncomingDamageDef;
+	
+
+	FMonsterDamageStatics()
+	{
+		Monster_AD_AttackPowerDef = FGameplayEffectAttributeCaptureDefinition(
+			USimpleRPGMonsterAttributeSet::GetAD_AttackPowerAttribute(),
+			EGameplayEffectAttributeCaptureSource::Source,
+			false
+		);
+
+		Monster_CriticalChanceDef = FGameplayEffectAttributeCaptureDefinition(
+			USimpleRPGMonsterAttributeSet::GetCriticalChanceAttribute(),
+			EGameplayEffectAttributeCaptureSource::Source,
+			false
+		);
+
+		Monster_CriticalMultiplierDef = FGameplayEffectAttributeCaptureDefinition(
+			USimpleRPGMonsterAttributeSet::GetCriticalMultiplierAttribute(),
+			EGameplayEffectAttributeCaptureSource::Source,
+			false
+		);
+
+
+		Player_AD_DefenseDef = FGameplayEffectAttributeCaptureDefinition(
+			USimpleRPGAttributeSet::GetAD_DefenseAttribute(),
+			EGameplayEffectAttributeCaptureSource::Target,
+			false
+		);
+
+		Player_IncomingDamageDef = FGameplayEffectAttributeCaptureDefinition(
+			USimpleRPGAttributeSet::GetIncomingDamageAttribute(),
+			EGameplayEffectAttributeCaptureSource::Target,
+			false
+		);
+	}
+};
+
+static const FMonsterDamageStatics& MonsterDamageStatics()
+{
+	static FMonsterDamageStatics MDStatics;
+	return MDStatics;
+}
+
+namespace
+{
+	struct FMonsterDamageCalcInput
+	{
+		float MonsterAttackPower = 0.0f;
+		float MonsterCriticalChance = 0.0f;
+		float MonsterCriticalMultiplier = 1.0f;
+		float MonsterDamageRatio = 0.0f;
+
+		float PlayerADDefense = 0.0f;
+		float DamageToPlayerFinalDamage = 0.0f;
+	};
+
+	FMonsterDamageCalcInput CaptureAttributes(const FGameplayEffectCustomExecutionParameters& ExecutionParams)
+	{
+		const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+
+		FMonsterDamageCalcInput Result;
+
+		auto Capture = [&](const FGameplayEffectAttributeCaptureDefinition& Def, float& Out, const TCHAR* Name)
+			{
+				if (!ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(Def, FAggregatorEvaluateParameters(), Out))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Capture Failed : %s"), Name);
+				}
+			};
+
+		Capture(MonsterDamageStatics().Monster_AD_AttackPowerDef, Result.MonsterAttackPower, TEXT("Monster_AD_AttackPower"));
+		Capture(MonsterDamageStatics().Monster_CriticalChanceDef, Result.MonsterCriticalChance, TEXT("Monster_CriticalChance"));
+		Capture(MonsterDamageStatics().Monster_CriticalMultiplierDef, Result.MonsterCriticalMultiplier, TEXT("Monster_CriticalMultiplier"));
+
+		Capture(MonsterDamageStatics().Player_AD_DefenseDef, Result.PlayerADDefense, TEXT("Player_AD_Defense"));
+
+		Result.MonsterDamageRatio = Spec.GetSetByCallerMagnitude(
+			SimpleRPGGameplayTags::SetByCaller_Monster_Ratio,
+			true,
+			0.0f
+		);
+
+
+		return Result;
+	}
+
+	//Base Damage에 랜덤 데미지 부여
+	float CalculateBaseDamage(const FMonsterDamageCalcInput& In)
+	{
+		const float RandomMin = 0.9f;
+		const float RandomMax = 1.1f;
+		float Random = FMath::RandRange(RandomMin, RandomMax);
+
+		float Base = In.MonsterAttackPower * Random * In.MonsterDamageRatio;
+
+		return Base;
+	}
+
+	float ApplyCritical(float Damage, const FMonsterDamageCalcInput& In)
+	{
+		float CriticalDamage = Damage * (FMath::FRand() < In.MonsterCriticalChance ? In.MonsterCriticalMultiplier : 1.0f);
+
+		return CriticalDamage;
+	}
+
+	//방어력 계수
+	float ApplyDefense(float Damage, const FMonsterDamageCalcInput& In)
+	{
+		const float K = 100.0f;
+		const float Denom = In.PlayerADDefense + K;
+		if (Denom <= 0.0f) return Damage;
+
+		float Final = Damage * (1 - In.PlayerADDefense / Denom);
+		Final = FMath::Max(0.0f, Final);
+		
+		return Final;
+	}
+}
 
 UMonsterDamageCalcExec::UMonsterDamageCalcExec()
 {
-	//어떤 Attribute를 캡쳐할 것인가?
-	DamageCapture.AttributeToCapture = USimpleRPGMonsterAttributeSet::GetIncomingDamageAttribute();
-
-	//어디서 캡쳐할 것인가?
-	DamageCapture.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-
-	//SnapShot 여부 true = GE적용 시점의 값을 고정
-	DamageCapture.bSnapshot = true;
-
-	//Capture된 DamageCapture변수를 ExecutionParams에서 꺼내 쓸 수 있도록 등록
-	RelevantAttributesToCapture.Add(DamageCapture);
-
+	RelevantAttributesToCapture.Add(MonsterDamageStatics().Monster_AD_AttackPowerDef);
+	RelevantAttributesToCapture.Add(MonsterDamageStatics().Monster_CriticalChanceDef);
+	RelevantAttributesToCapture.Add(MonsterDamageStatics().Monster_CriticalMultiplierDef);
+	
+	RelevantAttributesToCapture.Add(MonsterDamageStatics().Player_AD_DefenseDef);
 }
 
 void UMonsterDamageCalcExec::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-	//GA에서 넘겨받은 GESpec 가져오기.
-	const FGameplayEffectSpec& GESpec = ExecutionParams.GetOwningSpec();
-	
-	//SetByCaller에서 Multiplier 꺼내기
-	float Multiplier = GESpec.GetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(FName("Data.Damage.Multiplier")),
-		true,
-		0.0f
-	);
-	UE_LOG(LogTemp, Warning, TEXT("Exec Multiplier: %f"), Multiplier);
+	const FMonsterDamageCalcInput In = CaptureAttributes(ExecutionParams);
+	float Damage = CalculateBaseDamage(In);
+	Damage = ApplyCritical(Damage, In);
+	Damage = ApplyDefense(Damage, In);
 
-	//Capture된 Damage값 꺼내기
-	FAggregatorEvaluateParameters EvalParams;
-	float DamageValue = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageCapture, EvalParams, DamageValue);
-
-	//Final Damage 계산
-	float FinalDamage = FMath::RoundToFloat(DamageValue * Multiplier);
-	
-	//Output으로 내보내기
 	OutExecutionOutput.AddOutputModifier(
 		FGameplayModifierEvaluatedData(
-			USimpleRPGAttributeSet::GetHPAttribute(),
+			MonsterDamageStatics().Player_IncomingDamageDef.AttributeToCapture,
 			EGameplayModOp::Additive,
-			-FinalDamage
+			Damage
 		)
 	);
+	
 }

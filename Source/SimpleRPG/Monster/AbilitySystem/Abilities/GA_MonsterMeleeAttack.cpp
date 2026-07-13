@@ -7,6 +7,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "SimpleRPG/Monster/Data/MonsterDamageDataTableRow.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 
 UGA_MonsterMeleeAttack::UGA_MonsterMeleeAttack()
 {
@@ -113,9 +114,8 @@ void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel());
 	UE_LOG(LogTemp, Warning, TEXT("Ratio: %f"), Ratio);
 	SpecHandle.Data.Get()->SetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(FName("Data.Damage.Multiplier")), Ratio);
-	UE_LOG(LogTemp, Warning, TEXT("SetByCaller Tag: %s, Value: %f"),
-		*FGameplayTag::RequestGameplayTag(FName("Data.Damage.Multiplier")).ToString(), Ratio);
+		SimpleRPGGameplayTags::SetByCaller_Monster_Ratio, Ratio);
+	
 	
 
 	//Test Log
