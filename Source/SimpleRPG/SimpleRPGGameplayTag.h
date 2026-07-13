@@ -44,5 +44,12 @@ namespace SimpleRPGGameplayTags
 
 //Event_Skill 액티브 스킬 발동
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Skill_Sword_PowerUp);
+
+
+	//Monster Action Tag
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(AI_Action_Attack);
+
+	//Monster Event Tag
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Monster_Attack_Melee);
 }
 

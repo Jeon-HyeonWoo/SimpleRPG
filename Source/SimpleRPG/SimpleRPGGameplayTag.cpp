@@ -44,5 +44,11 @@ namespace SimpleRPGGameplayTags
 	//Evnet_Skill_Sword
 	UE_DEFINE_GAMEPLAY_TAG(Event_Skill_Sword_PowerUp, "Event.Skill.Sword.PowerUp");
 
+	
+	//Monster Action Tag
+	UE_DEFINE_GAMEPLAY_TAG(AI_Action_Attack, "AI.Action.Attack");
+
+	//Monster Event Tag
+	UE_DEFINE_GAMEPLAY_TAG(Event_Monster_Attack_Melee, "Event.Monster.Attack.Melee");
 
 }

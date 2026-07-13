@@ -70,7 +70,7 @@ namespace
 		float DamageToPlayerFinalDamage = 0.0f;
 	};
 
-	FMonsterDamageCalcInput CaptureAttributes(const FGameplayEffectCustomExecutionParameters& ExecutionParams)
+	FMonsterDamageCalcInput CaptureMonsterAttributes(const FGameplayEffectCustomExecutionParameters& ExecutionParams)
 	{
 		const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
@@ -144,7 +144,7 @@ UMonsterDamageCalcExec::UMonsterDamageCalcExec()
 
 void UMonsterDamageCalcExec::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-	const FMonsterDamageCalcInput In = CaptureAttributes(ExecutionParams);
+	const FMonsterDamageCalcInput In = CaptureMonsterAttributes(ExecutionParams);
 	float Damage = CalculateBaseDamage(In);
 	Damage = ApplyCritical(Damage, In);
 	Damage = ApplyDefense(Damage, In);
