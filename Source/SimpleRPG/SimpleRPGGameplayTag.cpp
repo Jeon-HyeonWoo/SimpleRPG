@@ -46,9 +46,13 @@ namespace SimpleRPGGameplayTags
 
 	
 	//Monster Action Tag
+	UE_DEFINE_GAMEPLAY_TAG(AI_Action_Death, "AI.Action.Death");
+	UE_DEFINE_GAMEPLAY_TAG(AI_Action_Stagger, "AI.Action.Stagger");
 	UE_DEFINE_GAMEPLAY_TAG(AI_Action_Attack, "AI.Action.Attack");
-
+	
 	//Monster Event Tag
+	UE_DEFINE_GAMEPLAY_TAG(Event_Monster_Death, "Event.Monster.Death");
+	UE_DEFINE_GAMEPLAY_TAG(Event_Monster_Stagger, "Event.Monster.Stagger");
 	UE_DEFINE_GAMEPLAY_TAG(Event_Monster_Attack_Melee, "Event.Monster.Attack.Melee");
 
 }
