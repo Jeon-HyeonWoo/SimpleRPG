@@ -25,9 +25,6 @@ USTRUCT(BlueprintType)
 struct FMonsterActionData
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTag AbilityTriggerTag;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FMonsterMontageEntry> MontageEntries;

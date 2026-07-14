@@ -5,10 +5,19 @@
 
 const FMonsterActionData* UMonsterData::FindActionData(const FGameplayTag& ActionTag) const
 {
-	if (ActionTag.IsValid() && ActionDataMap.Find(ActionTag))
-	{
-		return &ActionDataMap[ActionTag];
-	}
+    if (!ActionTag.IsValid())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ActionTag invalid : %d, %hs"), __LINE__, __FUNCTION__); 
+        return nullptr;
+    }
 
-	return nullptr;
+    const FMonsterActionData* Found = ActionDataMap.Find(ActionTag);
+    if (!Found)
+    {
+        // 로그 (태그명 + DA명 포함)
+        UE_LOG(LogTemp, Warning, TEXT("ActionData invalid, Tag : %s, DA : %s : %d, %hs"), *ActionTag.ToString(), *GetName(), __LINE__, __FUNCTION__);
+        return nullptr;
+    }
+
+    return Found;
 }

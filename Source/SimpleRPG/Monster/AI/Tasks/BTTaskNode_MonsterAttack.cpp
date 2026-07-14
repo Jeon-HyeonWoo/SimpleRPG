@@ -32,7 +32,6 @@ EBTNodeResult::Type UBTTaskNode_MonsterAttack::ExecuteTask(UBehaviorTreeComponen
 
 	UE_LOG(LogTemp, Warning, TEXT("Sending Event Tag : %s to %s"), *EventTag.ToString(), *GetNameSafe(MonsterPawn));
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MonsterPawn, EventTag, PayLoad);
-
 	ASC->OnAbilityEnded.AddUObject(this, &UBTTaskNode_MonsterAttack::OnAbilityEnded);
 
 	CachedOwnerComp = &OwnerComp;
