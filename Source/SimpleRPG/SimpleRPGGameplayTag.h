@@ -28,7 +28,7 @@ namespace SimpleRPGGameplayTags
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(SetByCaller_CoolDown_Duration);
 
 //SetByCaller_Monster
-	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(SetByCaller_Monster_Ratio);
+	
 
 //Damage 데미지 관련
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Type_AD);

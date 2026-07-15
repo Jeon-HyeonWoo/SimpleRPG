@@ -91,7 +91,7 @@ namespace
 		Capture(MonsterDamageStatics().Player_AD_DefenseDef, Result.PlayerADDefense, TEXT("Player_AD_Defense"));
 
 		Result.MonsterDamageRatio = Spec.GetSetByCallerMagnitude(
-			SimpleRPGGameplayTags::SetByCaller_Monster_Ratio,
+			SimpleRPGGameplayTags::SetByCaller_Skill_Ratio,
 			true,
 			0.0f
 		);

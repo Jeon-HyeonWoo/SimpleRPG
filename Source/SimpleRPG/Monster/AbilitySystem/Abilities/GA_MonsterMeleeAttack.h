@@ -4,26 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "SimpleRPG/AbilitySystem/Abilities/SimpleRPGGameplayAbility.h"
+#include "SimpleRPG/Monster/AbilitySystem/Abilities/MonsterGameplayAbility.h"
 #include "GA_MonsterMeleeAttack.generated.h"
-
 
 /**
  * 
  */
-USTRUCT(BlueprintType)
-struct FMonsterAttackMontageData
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UAnimMontage> AnimMontage;
-
-	UPROPERTY(EditDefaultsOnly)
-	FName DamageRowName;
-};
 
 UCLASS()
-class SIMPLERPG_API UGA_MonsterMeleeAttack : public USimpleRPGGameplayAbility
+class SIMPLERPG_API UGA_MonsterMeleeAttack : public UMonsterGameplayAbility
 {
 	GENERATED_BODY()
 	
@@ -47,9 +36,6 @@ public:
 	) override;
 
 private:
-	
-	//AbilityTask_PlayMontageAndWait 세팅
-	void PlayMontage();
 
 	//AbbilityTask_WaitGameplayEvent 세팅
 	void WaitForHitEvent();
@@ -58,31 +44,13 @@ private:
 	UFUNCTION()
 	void OnHitEventReceived(FGameplayEventData PayLoad);
 
-	//Montage 콜백
-	UFUNCTION()
-	void OnMontageCompleted();
-
-	UFUNCTION()
-	void OnMontageCancelled();
-
 public:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Montage")
-	TArray<FMonsterAttackMontageData> AttackMontageDataArray;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Damage")
-	TObjectPtr<UDataTable> DamageDataTable;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Damage")
 	FGameplayTag HitEventTag;
-
-
-private:
-
-	int32 MontageDataIndex = 0;
 };
 
 /* 잠깐 정리용

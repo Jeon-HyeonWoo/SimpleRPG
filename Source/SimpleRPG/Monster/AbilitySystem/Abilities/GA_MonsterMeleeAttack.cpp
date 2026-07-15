@@ -23,46 +23,44 @@ void UGA_MonsterMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 		return;
 	}
 
-	//AttackMontageDataArray 배열 유효성 체크
-	if (AttackMontageDataArray.IsEmpty())
+	//TriggerEventData 체크
+	if (!TriggerEventData)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AttackMontageDataArry is Empty : %d, %hs"), __LINE__, __FUNCTION__);
+		UE_LOG(LogTemp, Error, TEXT("TriggetEvent nullptr : %d, %hs"), __LINE__, __FUNCTION__);
 		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
 		return;
 	}
 
-	//공격 Montage 랜덤 재생 Index설정
-	MontageDataIndex = FMath::RandRange(0, AttackMontageDataArray.Num() - 1);
+	if (TriggerEventData->InstigatorTags.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("TriggetEvent is empty : %d, %hs"), __LINE__, __FUNCTION__);
+		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
+		return;
+	}
+
+	//InstigatorTags 확인
+	FGameplayTag ActionTag = TriggerEventData->InstigatorTags.First();
+	if (!ActionTag.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("ActionTag invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
+		return;
+	}
 
 	ApplyBlockMovement();
-	PlayMontage();
 	WaitForHitEvent();
+	
+	if (!PlayActionMontage(ActionTag))
+	{
+		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
+		return;
+	}
 }
 
 void UGA_MonsterMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	RemoveBlockMovement();
 	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
-void UGA_MonsterMeleeAttack::PlayMontage()
-{
-	UE_LOG(LogTemp, Warning, TEXT("PlayMontage Called, Montage : %s"), *GetNameSafe(AttackMontageDataArray[MontageDataIndex].AnimMontage));
-	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,
-		NAME_None,
-		AttackMontageDataArray[MontageDataIndex].AnimMontage,
-		1.0f,
-		NAME_None,
-		false		//bStopWhenAbilityEnd
-	);
-
-	Task->OnBlendOut.AddDynamic(this, &UGA_MonsterMeleeAttack::OnMontageCompleted);
-	Task->OnCompleted.AddDynamic(this, &UGA_MonsterMeleeAttack::OnMontageCompleted);
-	Task->OnInterrupted.AddDynamic(this, &UGA_MonsterMeleeAttack::OnMontageCancelled);
-	Task->OnCancelled.AddDynamic(this, &UGA_MonsterMeleeAttack::OnMontageCancelled);
-	
-	Task->ReadyForActivation();
 }
 
 void UGA_MonsterMeleeAttack::WaitForHitEvent()
@@ -74,14 +72,17 @@ void UGA_MonsterMeleeAttack::WaitForHitEvent()
 
 	Task->EventReceived.AddDynamic(this, &UGA_MonsterMeleeAttack::OnHitEventReceived);
 
-
 	Task->ReadyForActivation();
 }
 
 void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 {
-	//Test Log
-	UE_LOG(LogTemp, Warning, TEXT("OnHitEventReceived Called"));
+	//CurrentEntry Check
+	if (!CurrentEntry)
+	{
+		UE_LOG(LogTemp, Error, TEXT("CurrentEntry invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
 
 	//Target(Player)가져오기
 	AActor* TargetActor = const_cast<AActor*>(PayLoad.Target.Get());
@@ -99,16 +100,13 @@ void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 		return;
 	}
 
-	//DataTable에서 Row가져오기
-	FName RowName = AttackMontageDataArray[MontageDataIndex].DamageRowName;
-	FMonsterDamageDataTableRow* Row = DamageDataTable->FindRow<FMonsterDamageDataTableRow>(RowName, TEXT(""));
+	//GetRow, nullptr check
+	FMonsterDamageDataTableRow* Row = CurrentEntry->DamageRowHandle.GetRow<FMonsterDamageDataTableRow>(TEXT(""));
 	if (!Row)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s is nullptr : %d, %hs"), *RowName.ToString(), __LINE__, __FUNCTION__);
+		UE_LOG(LogTemp, Warning, TEXT("DTRow is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
 		return;
 	}
-
-	float Ratio = FMath::RandRange(Row->MinMultiplier, Row->MaxMultiplier);
 
 	//SpecHandle 만들기
 	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel());
@@ -128,24 +126,3 @@ void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 	);
 }
 
-void UGA_MonsterMeleeAttack::OnMontageCompleted()
-{
-	EndAbility(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		true,
-		false
-	);
-}
-
-void UGA_MonsterMeleeAttack::OnMontageCancelled()
-{
-	EndAbility(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		true,
-		true
-	);
-}
