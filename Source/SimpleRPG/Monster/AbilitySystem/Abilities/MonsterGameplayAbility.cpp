@@ -6,6 +6,7 @@
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
 #include "SimpleRPG/Monster/Data/MonsterActionData.h"
 #include "SimpleRPG/Monster/Data/MonsterData.h"
+#include "SimpleRPG/Monster/Data/MonsterDamageDataTableRow.h"
 
 ASimpleRPGMonsterBase* UMonsterGameplayAbility::GetOwningMonster() const
 {
@@ -79,6 +80,21 @@ bool UMonsterGameplayAbility::PlayActionMontage(const FGameplayTag& ActionTag)
 	MontageTask = Task;
 
 	Task->ReadyForActivation();
+
+	return true;
+}
+
+bool UMonsterGameplayAbility::GetMonsterSkillRatio(const FDataTableRowHandle& RowHandle, float& OutRatio) const
+{
+	OutRatio = 0.0f;
+
+	FMonsterDamageDataTableRow* Row = RowHandle.GetRow<FMonsterDamageDataTableRow>(TEXT("GetMonsterSkillRatio"));
+	if (!ensureMsgf(Row, TEXT("Row is invalid")))
+	{
+		return false;
+	}
+
+	OutRatio = Row->SkillRatio;
 
 	return true;
 }

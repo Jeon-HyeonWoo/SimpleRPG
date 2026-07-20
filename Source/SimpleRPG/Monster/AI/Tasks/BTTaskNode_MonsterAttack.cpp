@@ -29,6 +29,7 @@ EBTNodeResult::Type UBTTaskNode_MonsterAttack::ExecuteTask(UBehaviorTreeComponen
 	}
 
 	FGameplayEventData PayLoad;
+	PayLoad.InstigatorTags.AddTag(ActionTag);
 
 	UE_LOG(LogTemp, Warning, TEXT("Sending Event Tag : %s to %s"), *EventTag.ToString(), *GetNameSafe(MonsterPawn));
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MonsterPawn, EventTag, PayLoad);

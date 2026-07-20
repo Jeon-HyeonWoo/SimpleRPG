@@ -35,4 +35,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|AI")
 	FGameplayTag EventTag;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|AI")
+	FGameplayTag ActionTag;
 };

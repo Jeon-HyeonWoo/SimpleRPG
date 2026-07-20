@@ -92,37 +92,11 @@ void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 		return;
 	}
 
-	//Target ASC 가져오기
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-	if (!TargetASC)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Target ASC is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
+	float Ratio = 0.0f;
 
-	//GetRow, nullptr check
-	FMonsterDamageDataTableRow* Row = CurrentEntry->DamageRowHandle.GetRow<FMonsterDamageDataTableRow>(TEXT(""));
-	if (!Row)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("DTRow is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
+	if (!GetMonsterSkillRatio(CurrentEntry->DamageRowHandle, Ratio)) return;
 
-	//SpecHandle 만들기
-	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel());
-	UE_LOG(LogTemp, Warning, TEXT("Ratio: %f"), Ratio);
-	SpecHandle.Data.Get()->SetSetByCallerMagnitude(
-		SimpleRPGGameplayTags::SetByCaller_Monster_Ratio, Ratio);
-	
-	
+	ApplyDamageToTarget(TargetActor, DamageEffect, Ratio);
 
-	//Test Log
-	UE_LOG(LogTemp, Warning, TEXT("Applying Damage to Target : %s"), *GetNameSafe(TargetActor));
-
-	//Target에 SpecHandle Data값 적용(MonsterCalcExec가 최종적으로 계산하여 Target의 AttributeSet 값 조절)
-	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
-		*SpecHandle.Data.Get(),
-		TargetASC
-	);
 }
 

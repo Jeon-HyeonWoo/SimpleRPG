@@ -25,6 +25,8 @@ protected:
 
 	bool PlayActionMontage(const FGameplayTag& ActionTag);
 
+	bool GetMonsterSkillRatio(const FDataTableRowHandle& RowHandle, float& OutRatio) const;
+
 	UFUNCTION()
 	void HandleMontageCompleted();
 	UFUNCTION()
