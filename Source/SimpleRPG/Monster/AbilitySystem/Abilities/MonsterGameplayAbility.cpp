@@ -46,6 +46,28 @@ const FMonsterMontageEntry* UMonsterGameplayAbility::GetRandomMontageEntry(const
 	return ActionData->GetRandomEntry();
 }
 
+bool UMonsterGameplayAbility::ExtractActionTag(const FGameplayEventData* TriggerEventData, FGameplayTag& OutTag)
+{
+	//ÃÊ±âÈ­
+	OutTag = FGameplayTag();
+
+	if (!TriggerEventData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TriggerEventData Invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return false;
+	}
+
+	if (TriggerEventData->InstigatorTags.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("TriggerEventData's InstigatorTags Empty : %d, %hs"), __LINE__, __FUNCTION__);
+		return false;
+	}
+
+	OutTag = TriggerEventData->InstigatorTags.First();
+	UE_LOG(LogTemp, Warning, TEXT("%d, %s"), __LINE__, *OutTag.ToString());
+	return OutTag.IsValid();
+}
+
 bool UMonsterGameplayAbility::PlayActionMontage(const FGameplayTag& ActionTag)
 {
 	const FMonsterMontageEntry* Entry = GetRandomMontageEntry(ActionTag);

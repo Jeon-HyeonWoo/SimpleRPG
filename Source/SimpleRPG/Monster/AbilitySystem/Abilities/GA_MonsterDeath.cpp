@@ -14,7 +14,7 @@ UGA_MonsterDeath::UGA_MonsterDeath()
 
 void UGA_MonsterDeath::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 #pragma region valid check
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
@@ -46,76 +46,32 @@ void UGA_MonsterDeath::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 
 #pragma endregion
 
+	FGameplayTag ActionTag;
+	if (!ExtractActionTag(TriggerEventData, ActionTag))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
 	//CharacterMovement Stop
 	Pawn->StopMovement();
 	//Behavior Tree Stop
 	BrainComp->StopLogic(TEXT("Death"));
 
-	TaskPlayDeathMontage();
-}
-
-void UGA_MonsterDeath::TaskPlayDeathMontage()
-{
-	UAnimMontage* Montage = GetDeathMontage();
-	if (!Montage)
+	if (!PlayActionMontage(ActionTag))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Montage is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		UE_LOG(LogTemp, Error, TEXT("DeathMontage playing failed : %s"), *GetNameSafe(Pawn));
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		Pawn->Destroy();
 		return;
 	}
-
-	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,
-		NAME_None,
-		Montage,
-		1.0f
-	);
-
-	
-	Task->OnCompleted.AddDynamic(this, &UGA_MonsterDeath::OnMontageCompleted);
-
-	Task->ReadyForActivation();
 }
 
-UAnimMontage* UGA_MonsterDeath::GetDeathMontage()
+void UGA_MonsterDeath::OnActionMontageCompleted()
 {
-	
-	ASimpleRPGMonsterBase* Pawn = Cast<ASimpleRPGMonsterBase>(GetAvatarActorFromActorInfo());
-	if (!ensureMsgf(IsValid(Pawn), TEXT("MonsterDeath : MonsterPawn invalid")))
-	{
-		return nullptr;
-	}
-	
-	const FGameplayTag& Tag = Pawn->DeathTag;
-	if (!Tag.IsValid())
-	{
-		UE_LOG(LogTemp, Error, TEXT("MonsterDeathTag is invalid : %d, %hs"), __LINE__, __FUNCTION__);
-		return nullptr;
-	}
+	ASimpleRPGMonsterBase* Monster = GetOwningMonster();
 
-	UAnimMontage* Montage = Pawn->GetAnimSet().GetAnimMontageByTag(Pawn->DeathTag);
-	if (Montage)
-	{
-		return Montage;
-	}
+	Super::OnActionMontageCompleted();
 
-	return nullptr;
-}
-
-void UGA_MonsterDeath::OnMontageCompleted()
-{
-	ASimpleRPGMonsterBase* Pawn = Cast<ASimpleRPGMonsterBase>(GetAvatarActorFromActorInfo());
-
-	EndAbility(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		true,
-		false
-	);
-
-	if (IsValid(Pawn))
-	{
-		Pawn->Destroy();
-	}
-	
+	if (IsValid(Monster)) { Monster->Destroy(); }
 }

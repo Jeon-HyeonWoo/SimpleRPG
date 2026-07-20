@@ -5,6 +5,7 @@
 #include "GameplayEffectExtension.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
 #include "Perception/AISenseConfig_Damage.h"
+#include "SimpleRPG/Monster/Components/MonsterHealthComponent.h"
 
 void USimpleRPGMonsterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
@@ -41,14 +42,23 @@ void USimpleRPGMonsterAttributeSet::HandleIncomingDamage(const FGameplayEffectMo
 	//6. 사망 및 피격 분기
 	if (GetHP() <= 0.0f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 		OnHPDepleted.Broadcast(Instigator);
 	}
 	else
 	{
 		ASimpleRPGMonsterBase* Monster = Cast<ASimpleRPGMonsterBase>(GetOwningActor());
-		if (IsValid(Monster))
+		if (!ensureMsgf(IsValid(Monster), TEXT("MonsterCharacter invalid")))
 		{
-			Monster->HandleDamaged(Instigator);
+			return;
+		}
+
+		UMonsterHealthComponent* MonsterHealthComp = Monster->GetMonsterHealthComponent();
+
+		if (IsValid(MonsterHealthComp))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
+			MonsterHealthComp->HandleDamaged(Instigator);
 		}
 		else
 		{

@@ -4,7 +4,7 @@
 #include "GA_MonsterStagger.h"
 #include "AbilitySystemComponent.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
-#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 
 UGA_MonsterStagger::UGA_MonsterStagger()
@@ -15,6 +15,7 @@ UGA_MonsterStagger::UGA_MonsterStagger()
 
 void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 	//1. Commit Ability 체크
 	if (!CommitAbility(Handle, Actorinfo, ActivationInfo))
 	{
@@ -22,56 +23,28 @@ void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		return;
 	}
 
-	TaskPlayMontageAndWait();
-	TaskWaitForStaggerEvent();
-}
-
-void UGA_MonsterStagger::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
-{
-	Super::EndAbility(Handle, Actorinfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
-void UGA_MonsterStagger::TaskPlayMontageAndWait()
-{
-	if (MontageTask)
+	FGameplayTag ActionTag;
+	if (!ExtractActionTag(TriggerEventData, ActionTag))
 	{
-		MontageTask->EndTask();
-	}
-
-
-	ASimpleRPGMonsterBase* Pawn = Cast<ASimpleRPGMonsterBase>(GetAvatarActorFromActorInfo());
-	if (!IsValid(Pawn))
-	{
-		UE_LOG(LogTemp, Error, TEXT("OwnerPawn is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
 		return;
 	}
 
-	//이 부분 Tag를 어떻게 채워넣을지?
-	UAnimMontage* Montage = Pawn->GetAnimSet().GetAnimMontageByTag(Pawn->HitReactTag);
-	UE_LOG(LogTemp, Warning, TEXT("Stagger Montage: %s"), *GetNameSafe(Montage));
+	TaskWaitForStaggerEvent();
 
-	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,
-		NAME_None,
-		Montage,
-		1.0f
-	);
-
-	//Task->OnBlendOut.AddDynamic(this, &UGA_MonsterStagger::OnMontageCompleted);
-	Task->OnCompleted.AddDynamic(this, &UGA_MonsterStagger::OnMontageCompleted);
-	Task->OnInterrupted.AddDynamic(this, &UGA_MonsterStagger::OnMontageInterupted);
-	Task->OnCancelled.AddDynamic(this, &UGA_MonsterStagger::OnMontageCancelled);
-
-	Task->ReadyForActivation();
-
-	MontageTask = Task;
+	if (!PlayActionMontage(ActionTag))
+	{
+		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
+		return;
+	}
 }
+
 
 void UGA_MonsterStagger::TaskWaitForStaggerEvent()
 {
 	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this,
-		StaggerEventTag,
+		SimpleRPGGameplayTags::Monster_Event_Stagger,
 		nullptr,
 		false
 	);
@@ -80,45 +53,14 @@ void UGA_MonsterStagger::TaskWaitForStaggerEvent()
 	Task->ReadyForActivation();
 }
 
-
-void UGA_MonsterStagger::OnMontageCompleted()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Stagger Montage COMPLETED"));
-	EndAbility(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		true,
-		false
-	);
-}
-
-void UGA_MonsterStagger::OnMontageCancelled()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Stagger Montage CANCELLED"));
-	EndAbility(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		true,
-		true
-	);
-}
-
-void UGA_MonsterStagger::OnMontageInterupted()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Stagger Montage INTERUPTED"));
-	EndAbility(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		true,
-		true
-	);
-}
-
 void UGA_MonsterStagger::OnStaggeredAgain(FGameplayEventData PayLoad)
 {
-	TaskPlayMontageAndWait();
+	FGameplayTag ActionTag;
+	if (!ExtractActionTag(&PayLoad, ActionTag))
+	{
+		return;
+	}
+
+	PlayActionMontage(ActionTag);
 }
 

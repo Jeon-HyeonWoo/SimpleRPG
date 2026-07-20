@@ -23,26 +23,10 @@ void UGA_MonsterMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 		return;
 	}
 
-	//TriggerEventData 체크
-	if (!TriggerEventData)
-	{
-		UE_LOG(LogTemp, Error, TEXT("TriggetEvent nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
-		return;
-	}
-
-	if (TriggerEventData->InstigatorTags.IsEmpty())
-	{
-		UE_LOG(LogTemp, Error, TEXT("TriggetEvent is empty : %d, %hs"), __LINE__, __FUNCTION__);
-		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
-		return;
-	}
-
 	//InstigatorTags 확인
-	FGameplayTag ActionTag = TriggerEventData->InstigatorTags.First();
-	if (!ActionTag.IsValid())
+	FGameplayTag ActionTag;
+	if (!ExtractActionTag(TriggerEventData, ActionTag))
 	{
-		UE_LOG(LogTemp, Error, TEXT("ActionTag invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
 		return;
 	}

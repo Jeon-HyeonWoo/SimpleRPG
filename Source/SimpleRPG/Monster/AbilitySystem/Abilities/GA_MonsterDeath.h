@@ -4,18 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "SimpleRPG/AbilitySystem/Abilities/SimpleRPGGameplayAbility.h"
+#include "SimpleRPG/Monster/AbilitySystem/Abilities/MonsterGameplayAbility.h"
 #include "GA_MonsterDeath.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIMPLERPG_API UGA_MonsterDeath : public USimpleRPGGameplayAbility
+class SIMPLERPG_API UGA_MonsterDeath : public UMonsterGameplayAbility
 {
 	GENERATED_BODY()
 	
 public:
-
+	
 	UGA_MonsterDeath();
 
 	virtual void ActivateAbility(
@@ -27,11 +28,6 @@ public:
 
 private:
 
-	void TaskPlayDeathMontage();
-	UAnimMontage* GetDeathMontage();
+	virtual void OnActionMontageCompleted() override;
 
-private:
-
-	UFUNCTION()
-	void OnMontageCompleted();
 };

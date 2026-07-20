@@ -13,8 +13,7 @@
 #include "SimpleRPG/Monster/Data/MonsterStatRow.h"
 #include "Perception/AISenseConfig_Damage.h"
 #include "AbilitySystemBlueprintLibrary.h"
-
-
+#include "SimpleRPG/Monster/Components/MonsterHealthComponent.h"
 
 ASimpleRPGMonsterBase::ASimpleRPGMonsterBase(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
@@ -60,6 +59,16 @@ ASimpleRPGMonsterBase::ASimpleRPGMonsterBase(const FObjectInitializer& ObjectIni
 		HPBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 		HPBarWidgetComponent->SetDrawSize(FVector2D(150, 15));
 	}
+
+	//Create MonsterHealthComponent
+	{
+		MonsterHealthComponent = CreateDefaultSubobject<UMonsterHealthComponent>(TEXT("MonsterHealthComponent"));
+		if (!MonsterHealthComponent)
+		{
+			UE_LOG(LogTemp, Error, TEXT("MonsterHealthComponent created failed : %d, %hs"), __LINE__, __FUNCTION__);
+			return;
+		}
+	}
 }
 
 void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
@@ -70,54 +79,12 @@ void ASimpleRPGMonsterBase::PossessedBy(AController* NewController)
 
 	GiveAbility();
 	InitializeStats();
-	BindDelegate();
-}
-
-void ASimpleRPGMonsterBase::HandleDamaged(AActor* _Instigator)
-{
-	FGameplayEventData PayLoad;
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, StaggerEventTag, PayLoad);
-
-	UpdateHPBar();
-	ReportDamageToPerception(_Instigator);
-}
-
-void ASimpleRPGMonsterBase::HandleDeath(AActor* Actor)
-{
-	if (bIsDead) 
-	{
-		return;
-	}
-	bIsDead = true;
-	
-	UE_LOG(LogTemp, Error, TEXT("HandleDeath was called? 2"));
-
-	FGameplayEventData PayLoad;
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, DeathEventTag, PayLoad);
-
-}
-
-void ASimpleRPGMonsterBase::UpdateHPBar()
-{
-	UMonsterHPBarWidget* W_MonsterHPBar = Cast<UMonsterHPBarWidget>(HPBarWidgetComponent->GetWidget());
-	if (!W_MonsterHPBar)
-	{
-		UE_LOG(LogTemp, Error, TEXT("MonsterHPBar is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	W_MonsterHPBar->SetHP(GetAttributeSet()->GetHP(), GetAttributeSet()->GetMaxHP());
+	MonsterHealthComponent->InitializeWithOwner(this);
 }
 
 void ASimpleRPGMonsterBase::StopMovement()
 {
 	GetCharacterMovement()->StopMovementImmediately();
-}
-
-void ASimpleRPGMonsterBase::RestoreHP()
-{
-	AttributeSet->SetHP(AttributeSet->GetMaxHP());
-	UpdateHPBar();
 }
 
 void ASimpleRPGMonsterBase::ApplyInvulnerability()
@@ -221,37 +188,3 @@ void ASimpleRPGMonsterBase::InitializeStats()
 	//5. Runtime debug 
 	UE_LOG(LogTemp, Warning, TEXT("[%s] MaxHp = %.1f, AD_AP=%.1f"), *GetName(), AttributeSet->GetMaxHP(), AttributeSet->GetAD_AttackPower());
 }
-
-void ASimpleRPGMonsterBase::BindDelegate()
-{
-	if (!IsValid(AttributeSet))
-	{
-		UE_LOG(LogTemp, Error, TEXT("AttributeSet is invalid : %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	//Test용 Death 판정 Delegate
-	AttributeSet->OnHPDepleted.AddDynamic(this, &ASimpleRPGMonsterBase::HandleDeath);
-}
-
-void ASimpleRPGMonsterBase::ReportDamageToPerception(AActor* _Instigator)
-{
-	if (!_Instigator)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Instigator is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
-		return;
-	}
-
-	UAISense_Damage::ReportDamageEvent(
-		GetWorld(),
-		this,			//DamagedActor(Monster)
-		_Instigator,		//InstigatorActor(Player)
-		1.0f,
-		_Instigator->GetActorLocation(),
-		GetActorLocation()
-		//Tag : Default Name_None, 필요하면 추가
-	);
-
-	UE_LOG(LogTemp, Warning, TEXT("Reporting Instigator"));
-}
-

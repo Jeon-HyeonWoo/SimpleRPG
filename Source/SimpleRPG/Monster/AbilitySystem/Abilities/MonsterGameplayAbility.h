@@ -23,6 +23,8 @@ protected:
 	ASimpleRPGMonsterBase* GetOwningMonster() const;
 	const FMonsterMontageEntry* GetRandomMontageEntry(const FGameplayTag& ActionTag) const;
 
+	bool ExtractActionTag(const FGameplayEventData* TriggerEventData, FGameplayTag& OutTag);
+
 	bool PlayActionMontage(const FGameplayTag& ActionTag);
 
 	bool GetMonsterSkillRatio(const FDataTableRowHandle& RowHandle, float& OutRatio) const;

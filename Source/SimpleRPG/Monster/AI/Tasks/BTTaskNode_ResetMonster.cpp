@@ -5,6 +5,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "SimpleRPG/Monster/AI/MonsterAIController.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
+#include "SimpleRPG/Monster/Components/MonsterHealthComponent.h"
 
 
 UBTTaskNode_ResetMonster::UBTTaskNode_ResetMonster()
@@ -30,6 +31,13 @@ EBTNodeResult::Type UBTTaskNode_ResetMonster::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
+	UMonsterHealthComponent* MonsterHealthComp = MonsterPawn->GetMonsterHealthComponent();
+	if (IsValid(MonsterHealthComp))
+	{
+		UE_LOG(LogTemp, Error, TEXT("MonsterHealthComponent is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return EBTNodeResult::Failed;
+	}
+
 	UBlackboardComponent* BBComp = OwnerComp.GetBlackboardComponent();
 	if (!BBComp)
 	{
@@ -37,10 +45,12 @@ EBTNodeResult::Type UBTTaskNode_ResetMonster::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
+	
+
 #pragma endregion
 
 	//Recover full Hp
-	MonsterPawn->RestoreHP();
+	MonsterHealthComp->RestoreHP();
 	MonsterPawn->RemoveInvulnerability();
 	//IsOutOfLeashKey ÇØÁ¦
 	BBComp->SetValueAsBool(IsOutOfLeashKey.SelectedKeyName, false);
