@@ -9,6 +9,17 @@
 /**
  * 
  */
+
+struct FAbilityEndedData;
+class ASimpleRPGMonsterBase;
+class UAbilitySystemComponent;
+
+struct FBTMonsterAttackMemory
+{
+	TWeakObjectPtr<UBehaviorTreeComponent> OwnerComp;
+	FDelegateHandle DelegateHandle;
+};
+
 UCLASS()
 class SIMPLERPG_API UBTTaskNode_MonsterAttack : public UBTTaskNode
 {
@@ -22,15 +33,17 @@ public:
 
 	virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-public:
-
-	UFUNCTION()
-	void OnAbilityEnded(const FAbilityEndedData& AbilityEndedData);
+	virtual uint16 GetInstanceMemorySize() const override;
 
 public:
 
-	UPROPERTY()
-	TObjectPtr<UBehaviorTreeComponent> CachedOwnerComp;
+	void OnAbilityEnded(const FAbilityEndedData& AbilityEndedData, uint8* NodeMemory);
+
+private:
+
+	UAbilitySystemComponent* GetMonsterASC(UBehaviorTreeComponent* InOwnerComp) const;
+
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|AI")
 	FGameplayTag EventTag;
@@ -38,3 +51,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|AI")
 	FGameplayTag ActionTag;
 };
+
+/*
+*	
+*	
+*	
+*  
+*/

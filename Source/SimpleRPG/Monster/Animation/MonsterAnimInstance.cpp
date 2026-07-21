@@ -3,13 +3,23 @@
 
 #include "MonsterAnimInstance.h"
 #include "GameFramework/Pawn.h"
+#include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
+#include "SimpleRPG/Monster/Components/MonsterHealthComponent.h"
 
 void UMonsterAnimInstance::NativeInitializeAnimation()
 {
 	OwnerPawn = TryGetPawnOwner();
-	if (!IsValid(OwnerPawn))
+	if (!IsValid(OwnerPawn)) return;
+
+	ASimpleRPGMonsterBase* MonsterPawn = Cast<ASimpleRPGMonsterBase>(OwnerPawn);
+	if (!MonsterPawn)
 	{
-		UE_LOG(LogTemp, Error, TEXT("OwnerPawn is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	HealthComponent = MonsterPawn->GetMonsterHealthComponent();
+	if (!IsValid(HealthComponent))
+	{
 		return;
 	}
 }
@@ -24,6 +34,11 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (IsValid(OwnerPawn))
 	{
 		OwnerVelocity = OwnerPawn->GetVelocity();
+	}
+
+	if (IsValid(HealthComponent))
+	{
+		bIsDead = HealthComponent->IsDead();
 	}
 }
 

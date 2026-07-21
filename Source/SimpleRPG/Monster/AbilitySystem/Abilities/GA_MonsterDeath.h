@@ -26,6 +26,12 @@ public:
 		const FGameplayEventData* TriggerEventData
 	) override;
 
+public:
+
+	UFUNCTION()
+	void OnDeathBlendOut();
+
+
 private:
 
 	virtual void OnActionMontageCompleted() override;

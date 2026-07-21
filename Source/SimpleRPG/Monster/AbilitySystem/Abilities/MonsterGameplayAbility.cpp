@@ -123,11 +123,13 @@ bool UMonsterGameplayAbility::GetMonsterSkillRatio(const FDataTableRowHandle& Ro
 
 void UMonsterGameplayAbility::HandleMontageCompleted()
 {
+	UE_LOG(LogTemp, Warning, TEXT(">>> COMPLETED"));
 	OnActionMontageCompleted();
 }
 
 void UMonsterGameplayAbility::HandleMontageCancelled()
 {
+	UE_LOG(LogTemp, Warning, TEXT(">>> CANCELLED"));
 	OnActionMontageCancelled();
 }
 

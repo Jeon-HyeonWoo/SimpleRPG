@@ -10,6 +10,7 @@
  * 
  */
 class APawn;
+class UMonsterHealthComponent;
 
 UCLASS()
 class SIMPLERPG_API UMonsterAnimInstance : public UAnimInstance
@@ -38,10 +39,14 @@ protected:
 	UPROPERTY()
 	TObjectPtr<APawn> OwnerPawn;
 
+	UPROPERTY()
+	TObjectPtr<UMonsterHealthComponent> HealthComponent;
+
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Locomotion", meta=(AllowPrivateAccess="true"))
 	float Speed;
 
-	
+	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+	bool bIsDead = false;
 	
 };

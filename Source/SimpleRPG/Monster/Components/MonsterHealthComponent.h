@@ -33,6 +33,10 @@ public:
 	//TODO : Move to UIComponent
 	void UpdateHPBar();
 
+public:
+
+	bool IsDead() const { return bIsDead; }
+
 private:
 
 	void BindDelegate();
@@ -45,6 +49,5 @@ private:
 
 	TWeakObjectPtr<ASimpleRPGMonsterBase> MonsterCharacter;
 
-	
 	bool bIsDead = false;
 };

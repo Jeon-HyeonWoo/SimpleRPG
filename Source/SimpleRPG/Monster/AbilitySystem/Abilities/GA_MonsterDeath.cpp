@@ -65,6 +65,21 @@ void UGA_MonsterDeath::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		Pawn->Destroy();
 		return;
 	}
+
+	if (MontageTask)
+	{
+		MontageTask->OnBlendOut.AddDynamic(this, &UGA_MonsterDeath::OnDeathBlendOut);
+	}
+}
+
+void UGA_MonsterDeath::OnDeathBlendOut()
+{
+	ASimpleRPGMonsterBase* Monster = GetOwningMonster();
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	if (IsValid(Monster))
+	{
+		Monster->Destroy();
+	}
 }
 
 void UGA_MonsterDeath::OnActionMontageCompleted()
