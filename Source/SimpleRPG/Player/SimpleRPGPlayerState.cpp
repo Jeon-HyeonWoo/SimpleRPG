@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "../AbilitySystem/SimpleRPGAbilitySet.h"
 #include "../AbilitySystem/SimpleRPGAttributeSet.h"
+#include "SimpleRPG/Teams/SimpleRPGTeam.h"
 
 ASimpleRPGPlayerState::ASimpleRPGPlayerState(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
@@ -25,6 +26,8 @@ ASimpleRPGPlayerState::ASimpleRPGPlayerState(const FObjectInitializer& ObjectIni
 	{
 		UE_LOG(LogTemp, Error, TEXT("%d, %hs AttributeSet Create Failed"), __LINE__, __FUNCTION__);
 	}
+
+	TeamId = FGenericTeamId((uint8)ESimpleRPGTeam::Player);
 }
 
 UAbilitySystemComponent* ASimpleRPGPlayerState::GetAbilitySystemComponent() const

@@ -44,3 +44,17 @@ void ASimpleRPGPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 }
+
+FGenericTeamId ASimpleRPGPlayerController::GetGenericTeamId() const
+{
+	return FGenericTeamId();
+}
+
+void ASimpleRPGPlayerController::SetGenericTeamId(const FGenericTeamId& NewTeamId)
+{
+}
+
+ETeamAttitude::Type ASimpleRPGPlayerController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	return ETeamAttitude::Type();
+}

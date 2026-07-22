@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"
+#include "SimpleRPG/Teams/SimpleRPGTeam.h"
+#include "GenericTeamAgentInterface.h"
 #include "SimpleRPGPlayerState.generated.h"
 
 /**
@@ -34,6 +36,9 @@ public:
 
 	const UPawnData* GetPawnData() const;
 
+	FGenericTeamId GetTeamId() const { return TeamId; }
+	void SetTeamId(FGenericTeamId _TeamId) { TeamId = _TeamId; }
+
 public:
 	//왜 GE로 안했나? = GE_initStat는 너무 귀찮았다. 런타임 조정일 때만 GE를 써서 특정 AttributeSet을 뽑아 쓰는게 더 나을 것 같다.
 	void InitializeStats();
@@ -50,5 +55,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<USimpleRPGAttributeSet> AttributeSet;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleRPG|Team", meta = (AllowPrivateAccess = "true"))
+	FGenericTeamId TeamId;
 
 };

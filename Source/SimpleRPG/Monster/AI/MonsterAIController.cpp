@@ -86,7 +86,7 @@ void AMonsterAIController::SetupSightSense()
 	{
 		SenseConfigSight->SightRadius = 1000.0f;								//감지범위
 		SenseConfigSight->LoseSightRadius = 1500.0f;							//감지해제범위
-		SenseConfigSight->PeripheralVisionAngleDegrees = 360.0f;				//감지 각도
+		SenseConfigSight->PeripheralVisionAngleDegrees = 120.0f;				//감지 각도
 		//TODO : IGenericTeamAgentInterface 설정 이후 중립, 아군 감지 해제
 		SenseConfigSight->DetectionByAffiliation.bDetectEnemies = true;			//적 감지
 		SenseConfigSight->DetectionByAffiliation.bDetectNeutrals = true;		//중립 감지

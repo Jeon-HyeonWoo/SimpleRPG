@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GenericTeamAgentInterface.h"
 #include "SimpleRPGPlayerController.generated.h"
 
 /**
@@ -15,7 +16,7 @@ struct FInputActionValue;
 class USimpleRPGInputConfig;
 
 UCLASS()
-class SIMPLERPG_API ASimpleRPGPlayerController : public APlayerController
+class SIMPLERPG_API ASimpleRPGPlayerController : public APlayerController, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 	
@@ -23,10 +24,14 @@ public:
 
 	ASimpleRPGPlayerController();
 
+	//PlayerController
 	virtual void BeginPlay() override;
-
-	/* InputComponent가 준비가 되었을 때 호출 */
 	virtual void SetupInputComponent() override;
+
+	//Team
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamId) override;
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 public:
 
