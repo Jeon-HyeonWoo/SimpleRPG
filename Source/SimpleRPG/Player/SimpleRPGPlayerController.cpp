@@ -47,14 +47,62 @@ void ASimpleRPGPlayerController::SetupInputComponent()
 
 FGenericTeamId ASimpleRPGPlayerController::GetGenericTeamId() const
 {
-	return FGenericTeamId();
+	//GetPlayerState -> Call PlayerState::GetTeamId
+	ASimpleRPGPlayerState* PS = GetPlayerState<ASimpleRPGPlayerState>();
+	if (!PS)
+	{
+		UE_LOG(LogTemp, Error, TEXT("PlayerState Invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return FGenericTeamId::NoTeam;
+	}
+
+	return PS->GetTeamId();
 }
 
 void ASimpleRPGPlayerController::SetGenericTeamId(const FGenericTeamId& NewTeamId)
 {
+	//GetPlayerState -> Call PlayerState::SetTeamId(FGenericTeamId)
+	ASimpleRPGPlayerState* PS = GetPlayerState<ASimpleRPGPlayerState>();
+	if (!PS)
+	{
+		UE_LOG(LogTemp, Error, TEXT("PlayerState Invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+	PS->SetTeamId(NewTeamId);
 }
 
 ETeamAttitude::Type ASimpleRPGPlayerController::GetTeamAttitudeTowards(const AActor& Other) const
 {
+	//Other에서 TeamInterface 찾기
+	//Other가 Pawn이면 Other.GetPlayerController() 에서 찾기
+	//못 찾으면 Netural
+	//상대 팀 번호 얻기
+	// 내 팀 번호와 비교
+	// 같으면 Friendly, 다르면 Hostile
+	const APawn* OtherPawn = Cast<APawn>(&Other);
+	if (!OtherPawn)
+	{
+		UE_LOG(LogTemp, Error, TEXT("OtherPawn invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return ETeamAttitude::Neutral;
+	}
+
+	AController* OtherController = OtherPawn->GetController();
+	if (!OtherController)
+	{
+		return ETeamAttitude::Neutral;
+	}
+
+	const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(OtherController);
+	if (!TeamAgent)
+	{
+		TeamAgent = Cast<IGenericTeamAgentInterface>(&Other);
+		if (!TeamAgent)
+		{
+			return ETeamAttitude::Neutral;
+		}
+	}
+	
+	FGenericTeamId OtherTeamId = TeamAgent->GetGenericTeamId();
+
+	
 	return ETeamAttitude::Type();
 }

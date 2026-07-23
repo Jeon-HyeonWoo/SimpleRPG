@@ -20,7 +20,8 @@ public class SimpleRPG : ModuleRules
 			"GameplayTasks",
             "AIModule",
             "NavigationSystem",
-			"UMG"
+			"UMG",
+            "DeveloperSettings",
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
