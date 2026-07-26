@@ -21,6 +21,10 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
+	ETeamAttitude::Type GetAttitudeBetween(FGenericTeamId MyId, const AActor& Other) const;
+
+private:
+
 	ETeamAttitude::Type GetAttitude(FGenericTeamId MyId, FGenericTeamId OtherId) const;
 
 private:

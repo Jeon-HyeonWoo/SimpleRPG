@@ -10,6 +10,7 @@
 #include "SimpleRPGPlayerState.h"
 #include "../Character/PawnData.h"
 #include "../Input/SimpleRPGInputConfig.h"
+#include "SimpleRPG/Teams/SimpleRPGTeamSubsystem.h"
 
 ASimpleRPGPlayerController::ASimpleRPGPlayerController()
 {
@@ -72,36 +73,13 @@ void ASimpleRPGPlayerController::SetGenericTeamId(const FGenericTeamId& NewTeamI
 
 ETeamAttitude::Type ASimpleRPGPlayerController::GetTeamAttitudeTowards(const AActor& Other) const
 {
-	//Other에서 TeamInterface 찾기
-	//Other가 Pawn이면 Other.GetPlayerController() 에서 찾기
-	//못 찾으면 Netural
-	//상대 팀 번호 얻기
-	// 내 팀 번호와 비교
-	// 같으면 Friendly, 다르면 Hostile
-	const APawn* OtherPawn = Cast<APawn>(&Other);
-	if (!OtherPawn)
-	{
-		UE_LOG(LogTemp, Error, TEXT("OtherPawn invalid : %d, %hs"), __LINE__, __FUNCTION__);
-		return ETeamAttitude::Neutral;
-	}
+	UGameInstance* GI = GetGameInstance();
+	if (!GI) return ETeamAttitude::Neutral;
 
-	AController* OtherController = OtherPawn->GetController();
-	if (!OtherController)
-	{
-		return ETeamAttitude::Neutral;
-	}
+	USimpleRPGTeamSubsystem* Sub = GI->GetSubsystem<USimpleRPGTeamSubsystem>();
+	if (!Sub) return ETeamAttitude::Neutral;
 
-	const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(OtherController);
-	if (!TeamAgent)
-	{
-		TeamAgent = Cast<IGenericTeamAgentInterface>(&Other);
-		if (!TeamAgent)
-		{
-			return ETeamAttitude::Neutral;
-		}
-	}
-	
-	FGenericTeamId OtherTeamId = TeamAgent->GetGenericTeamId();
+	return Sub->GetAttitudeBetween(GetGenericTeamId(), Other);
 
 	
 	return ETeamAttitude::Type();

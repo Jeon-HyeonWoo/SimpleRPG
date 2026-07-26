@@ -4,6 +4,8 @@
 #include "MonsterAIController.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
 #include "SimpleRPG/Monster/Data/MonsterData.h"
+#include "SimpleRPG/Teams/SimpleRPGTeam.h"
+#include "SimpleRPG/Teams/SimpleRPGTeamSubsystem.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -23,6 +25,7 @@ AMonsterAIController::AMonsterAIController()
 	
 	SetupSightSense();
 	SetupDamageSense();
+	SetGenericTeamId(FGenericTeamId((uint8)ESimpleRPGTeam::Monster));
 
 }
 
@@ -70,6 +73,17 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 
 }
 
+ETeamAttitude::Type AMonsterAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	UGameInstance* GI = GetGameInstance();
+	if (!GI) return ETeamAttitude::Neutral;
+	
+	USimpleRPGTeamSubsystem* Sub = GI->GetSubsystem<USimpleRPGTeamSubsystem>();
+	if (!Sub) return ETeamAttitude::Neutral;
+
+	return Sub->GetAttitudeBetween(GetGenericTeamId(), Other);
+}
+
 void AMonsterAIController::SetupSightSense()
 {
 	//Create SenseConfig Sight and valid check
@@ -89,8 +103,8 @@ void AMonsterAIController::SetupSightSense()
 		SenseConfigSight->PeripheralVisionAngleDegrees = 120.0f;				//감지 각도
 		//TODO : IGenericTeamAgentInterface 설정 이후 중립, 아군 감지 해제
 		SenseConfigSight->DetectionByAffiliation.bDetectEnemies = true;			//적 감지
-		SenseConfigSight->DetectionByAffiliation.bDetectNeutrals = true;		//중립 감지
-		SenseConfigSight->DetectionByAffiliation.bDetectFriendlies = true;		//아군 감지
+		SenseConfigSight->DetectionByAffiliation.bDetectNeutrals = false;		//중립 감지
+		SenseConfigSight->DetectionByAffiliation.bDetectFriendlies = false;		//아군 감지
 	}
 
 	//Reigst SightSense with PerceptionComponent
