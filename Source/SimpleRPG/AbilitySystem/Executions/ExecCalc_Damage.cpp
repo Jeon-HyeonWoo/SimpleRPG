@@ -115,8 +115,6 @@ namespace
 			true,    // bWarnIfNotFound = true → 태그 못 찾으면 엔진이 알아서 경고
 			0.0f);
 
-		UE_LOG(LogTemp, Warning, TEXT("Critical! %f"), Result.CriticalChance);
-
 		return Result;
 	}
 
@@ -178,6 +176,4 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 			Damage											//얼마를
 		)
 	);
-
-	UE_LOG(LogTemp, Warning, TEXT("Final Damage Output : %.1f"), Damage);
 }

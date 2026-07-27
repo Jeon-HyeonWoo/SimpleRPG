@@ -50,9 +50,6 @@ void USimpleRPGEquipmentComponent::RequestWeaponSwap(int32 SlotIndex)
 	}
 
 	UAbilitySystemComponent* ASC = GetASC();
-	UE_LOG(LogTemp, Warning, TEXT("ASC ptr %p, Class : %s"),
-		ASC, ASC ? *ASC->GetClass()->GetName() : TEXT("null")
-		);
 	if (!ASC)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%d, %hs, ASC is invalid"), __LINE__, __FUNCTION__);

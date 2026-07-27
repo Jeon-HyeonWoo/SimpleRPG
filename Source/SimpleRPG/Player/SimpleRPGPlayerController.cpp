@@ -80,7 +80,4 @@ ETeamAttitude::Type ASimpleRPGPlayerController::GetTeamAttitudeTowards(const AAc
 	if (!Sub) return ETeamAttitude::Neutral;
 
 	return Sub->GetAttitudeBetween(GetGenericTeamId(), Other);
-
-	
-	return ETeamAttitude::Type();
 }

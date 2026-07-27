@@ -32,7 +32,7 @@ EBTNodeResult::Type UBTTaskNode_ResetMonster::ExecuteTask(UBehaviorTreeComponent
 	}
 
 	UMonsterHealthComponent* MonsterHealthComp = MonsterPawn->GetMonsterHealthComponent();
-	if (IsValid(MonsterHealthComp))
+	if (!IsValid(MonsterHealthComp))
 	{
 		UE_LOG(LogTemp, Error, TEXT("MonsterHealthComponent is invalid : %d, %hs"), __LINE__, __FUNCTION__);
 		return EBTNodeResult::Failed;

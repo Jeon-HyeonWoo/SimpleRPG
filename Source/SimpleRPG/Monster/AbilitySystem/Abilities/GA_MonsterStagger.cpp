@@ -7,6 +7,7 @@
 #include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 
+
 UGA_MonsterStagger::UGA_MonsterStagger()
 {
 	//Instance 정책 : 각 액터별 적용
@@ -15,7 +16,6 @@ UGA_MonsterStagger::UGA_MonsterStagger()
 
 void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 	//1. Commit Ability 체크
 	if (!CommitAbility(Handle, Actorinfo, ActivationInfo))
 	{
@@ -30,13 +30,22 @@ void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		return;
 	}
 
-	TaskWaitForStaggerEvent();
-
+	//TaskWaitForStaggerEvent();
 	if (!PlayActionMontage(ActionTag))
 	{
 		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
 		return;
 	}
+
+	UAbilitySystemComponent* ASC = GetSimpleRPGASC();
+	if (ASC)
+	{
+		FGameplayTagContainer AttackTag;
+		AttackTag.AddTag(SimpleRPGGameplayTags::Monster_Ability_Attack);
+		ASC->CancelAbilities(&AttackTag, nullptr, this);
+	}
+
+
 }
 
 

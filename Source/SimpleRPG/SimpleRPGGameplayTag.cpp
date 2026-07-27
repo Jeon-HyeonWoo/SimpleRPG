@@ -50,8 +50,12 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Event_Stagger,	"Monster.Event.Stagger");
 	
 	//Monster Action Ability Define Tag
+	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Attack, "Monster.Ability.Attack");
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Attack_Melee,	"Monster.Ability.Attack.Melee");
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Attack_Ranged,	"Monster.Ability.Attack.Ranged");
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Death,			"Monster.Ability.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Stagger,			"Monster.Ability.Stagger");
+
+	//Monster State
+	UE_DEFINE_GAMEPLAY_TAG(Monster_State_Stagger, "Monster.State.Stagger");
 }

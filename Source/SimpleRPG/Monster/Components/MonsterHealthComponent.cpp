@@ -25,10 +25,8 @@ void UMonsterHealthComponent::InitializeWithOwner(ASimpleRPGMonsterBase* InMonst
 
 void UMonsterHealthComponent::HandleDamaged(AActor* _Instigator)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 	FGameplayEventData PayLoad;
 	PayLoad.InstigatorTags.AddTag(SimpleRPGGameplayTags::Monster_Ability_Stagger);
-	UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwner(), SimpleRPGGameplayTags::Monster_Event_Stagger, PayLoad);
 	
 	UpdateHPBar();

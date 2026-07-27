@@ -253,7 +253,6 @@ void ASimpleRPGPlayerCharacter::WeaponslotHandler(const FInputActionValue& Value
 
 void ASimpleRPGPlayerCharacter::OnAbilityInputPressed(const FInputActionValue& Value, FGameplayTag InputTag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("InputPressed : %s"), *InputTag.ToString());
 
 	//ASC nullptr check
 	if (!AbilitySystemComponent)
@@ -272,8 +271,6 @@ void ASimpleRPGPlayerCharacter::OnAbilityInputPressed(const FInputActionValue& V
 
 void ASimpleRPGPlayerCharacter::OnAbilityInputReleased(const FInputActionValue& Value, FGameplayTag InputTag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("InputReleased"), *InputTag.ToString());
-
 	if (!AbilitySystemComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%d, %hs, AbilitySystemComponent is invalid"), __LINE__, __FUNCTION__);

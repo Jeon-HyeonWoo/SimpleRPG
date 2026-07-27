@@ -115,7 +115,6 @@ void UGA_SwordAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 void UGA_SwordAttack::OnMontageCompleted()
 {
-	UE_LOG(LogTemp, Warning, TEXT(">> OnMontageCompleted"));
 	/* 정상 종료, 콤보 입력 없이 몽타주가 끝까지 재생되었거나, 콤보 피니시 후 종료 */
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }

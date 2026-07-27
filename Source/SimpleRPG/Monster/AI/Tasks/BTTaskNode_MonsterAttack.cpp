@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
 #include "SimpleRPG/Monster/AI/MonsterAIController.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 
 UBTTaskNode_MonsterAttack::UBTTaskNode_MonsterAttack()
 {
@@ -67,7 +68,7 @@ EBTNodeResult::Type UBTTaskNode_MonsterAttack::AbortTask(UBehaviorTreeComponent&
 
 uint16 UBTTaskNode_MonsterAttack::GetInstanceMemorySize() const
 {
-	return Super::GetInstanceMemorySize() + sizeof(*this);
+	return sizeof(FBTMonsterAttackMemory);
 }
 
 void UBTTaskNode_MonsterAttack::OnAbilityEnded(const FAbilityEndedData& AbilityEndedData, uint8* NodeMemory)
@@ -76,6 +77,13 @@ void UBTTaskNode_MonsterAttack::OnAbilityEnded(const FAbilityEndedData& AbilityE
 	if (!Memory)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Memory Invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	if (!AbilityEndedData.AbilityThatEnded ||
+		!AbilityEndedData.AbilityThatEnded->AbilityTags.HasTag(SimpleRPGGameplayTags::Monster_Ability_Attack))
+	{
+		UE_LOG(LogTemp, Warning, TEXT(">> Fillter : %s"), *GetNameSafe(AbilityEndedData.AbilityThatEnded));
 		return;
 	}
 

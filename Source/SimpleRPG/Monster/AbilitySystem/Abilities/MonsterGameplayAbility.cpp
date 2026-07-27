@@ -64,7 +64,7 @@ bool UMonsterGameplayAbility::ExtractActionTag(const FGameplayEventData* Trigger
 	}
 
 	OutTag = TriggerEventData->InstigatorTags.First();
-	UE_LOG(LogTemp, Warning, TEXT("%d, %s"), __LINE__, *OutTag.ToString());
+
 	return OutTag.IsValid();
 }
 
@@ -123,13 +123,11 @@ bool UMonsterGameplayAbility::GetMonsterSkillRatio(const FDataTableRowHandle& Ro
 
 void UMonsterGameplayAbility::HandleMontageCompleted()
 {
-	UE_LOG(LogTemp, Warning, TEXT(">>> COMPLETED"));
 	OnActionMontageCompleted();
 }
 
 void UMonsterGameplayAbility::HandleMontageCancelled()
 {
-	UE_LOG(LogTemp, Warning, TEXT(">>> CANCELLED"));
 	OnActionMontageCancelled();
 }
 

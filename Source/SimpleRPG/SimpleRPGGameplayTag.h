@@ -52,9 +52,13 @@ namespace SimpleRPGGameplayTags
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Monster_Event_Stagger);
 
 	//Monster Action Ability Define Tag
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Monster_Ability_Attack);
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Monster_Ability_Attack_Melee);
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Monster_Ability_Attack_Ranged);
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Monster_Ability_Death);
 	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Monster_Ability_Stagger);
+
+	//Monster State
+	SIMPLERPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Monster_State_Stagger);
 }
 
