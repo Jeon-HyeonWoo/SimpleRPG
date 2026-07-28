@@ -72,8 +72,4 @@ private:
 
 	UPROPERTY()
 	FActiveGameplayEffectHandle InvulnerabilityEffectHandle;
-
-private:
-
-	bool bIsDead = false;
 };
