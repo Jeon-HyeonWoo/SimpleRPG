@@ -63,6 +63,10 @@ EBTNodeResult::Type UBTTaskNode_MonsterAttack::AbortTask(UBehaviorTreeComponent&
 	ASC->OnAbilityEnded.Remove(Memory->DelegateHandle);
 	Memory->DelegateHandle.Reset();
 
+	FGameplayTagContainer AttackTag;
+	AttackTag.AddTag(SimpleRPGGameplayTags::Monster_Ability_Attack);
+	ASC->CancelAbilities(&AttackTag, nullptr);
+
 	return EBTNodeResult::Aborted;
 }
 
