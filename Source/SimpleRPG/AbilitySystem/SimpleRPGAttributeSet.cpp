@@ -46,14 +46,22 @@ void USimpleRPGAttributeSet::HandleInComingDamage(const FGameplayEffectModCallba
 	else
 	{
 		
-		ASimpleRPGPlayerCharacter* Character = Cast<ASimpleRPGPlayerCharacter>(GetOwningActor());
-		if (IsValid(Character))
+		UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent();
+		if (!ASC)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GetOwningAbilitySystem Invalid : %d, %hs"), __LINE__, __FUNCTION__);
+			return;
+		}
+
+		ASimpleRPGPlayerCharacter* PlayerCharacter = Cast<ASimpleRPGPlayerCharacter>(ASC->GetAvatarActor());
+
+		if (IsValid(PlayerCharacter))
 		{
 			//TODO :: 피격 분기
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Monster cast failed : %d, %hs"), __LINE__, __FUNCTION__);
+			UE_LOG(LogTemp, Error, TEXT("PlayerCharacter Character cast failed : %d, %hs"), __LINE__, __FUNCTION__);
 		}
 	}
 
