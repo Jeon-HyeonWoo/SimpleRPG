@@ -5,6 +5,7 @@
 #include "GameplayEffectExtension.h"
 #include "SimpleRPG/Character/SimpleRPGPlayerCharacter.h"
 #include "SimpleRPG/SimpleRPGGameplayTag.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 void USimpleRPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
@@ -61,6 +62,26 @@ void USimpleRPGAttributeSet::HandleInComingDamage(const FGameplayEffectModCallba
 			//TODO :: 피격 분기
 			FGameplayTagContainer OutputTags;
 			Data.EffectSpec.GetAllAssetTags(OutputTags);
+
+			FGameplayTag EventTag;
+			FGameplayEventData PayLoad;
+			if (OutputTags.HasTag(SimpleRPGGameplayTags::HitReact_Stagger))
+			{
+				EventTag = SimpleRPGGameplayTags::Event_Combat_Stagger;
+			}
+			else if (OutputTags.HasTag(SimpleRPGGameplayTags::HitReact_KnockDown))
+			{
+				EventTag = SimpleRPGGameplayTags::Event_Combat_KnockDown;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Player HitReact: no reaction (None or no tag)"));
+			}
+
+			if (EventTag.IsValid())
+			{
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(PlayerCharacter, EventTag, PayLoad);
+			}
 		}
 		else
 		{

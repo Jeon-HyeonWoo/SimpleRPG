@@ -10,6 +10,8 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Ability_Dash,			"Ability.Dash");
 	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack_Sword,	"Ability.Attack.Sword");
 	UE_DEFINE_GAMEPLAY_TAG(Ability_WeaponSwap,		"Ability.WeaponSwap");
+	UE_DEFINE_GAMEPLAY_TAG(Ability_Stagger,			"Ability.Stagger")
+	UE_DEFINE_GAMEPLAY_TAG(Ability_KnockDown,		"Ability.KnockDown")
 
 	//Ability CoolDown
 	UE_DEFINE_GAMEPLAY_TAG(CoolDown_Common_Dash,		"CoolDown.Common.Dash");
@@ -21,9 +23,9 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(State_Movement_Blocked, "State.Movement.Blocked");
 
 	//피격상태 태그
-	UE_DEFINE_GAMEPLAY_TAG(HitReact_Stagger, "HitReact.Stagger");
-	UE_DEFINE_GAMEPLAY_TAG(HitReact_KnockDown, "HitReact.KnockDown");
-	UE_DEFINE_GAMEPLAY_TAG(HitReact_None, "HitReact.None");
+	UE_DEFINE_GAMEPLAY_TAG(HitReact_Stagger,	"HitReact.Stagger");
+	UE_DEFINE_GAMEPLAY_TAG(HitReact_KnockDown,	"HitReact.KnockDown");
+	UE_DEFINE_GAMEPLAY_TAG(HitReact_None,		"HitReact.None");
 
 	//SetByCaller
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_Skill_Ratio,			"SetByCaller.Skill.Ratio");
@@ -43,8 +45,9 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_Death,				"Event.Combat.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_ComboWindow_Open,	"Event.Combat.ComboWindow.Open");
 	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_ComboWindow_Close,	"Event.Combat.ComboWindow.Close");
-	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_AttackTrigger,	"Event.Combat.AttackTrigger");
-
+	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_AttackTrigger,		"Event.Combat.AttackTrigger");
+	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_Stagger,			"Event.Combat.Stagger");
+	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_KnockDown,			"Event.Combat.KnockDown");
 
 	//Evnet_Skill_Sword
 	UE_DEFINE_GAMEPLAY_TAG(Event_Skill_Sword_PowerUp, "Event.Skill.Sword.PowerUp");
@@ -55,7 +58,7 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Event_Stagger,	"Monster.Event.Stagger");
 	
 	//Monster Action Ability Define Tag
-	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Attack, "Monster.Ability.Attack");
+	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Attack,			"Monster.Ability.Attack");
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Attack_Melee,	"Monster.Ability.Attack.Melee");
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Attack_Ranged,	"Monster.Ability.Attack.Ranged");
 	UE_DEFINE_GAMEPLAY_TAG(Monster_Ability_Death,			"Monster.Ability.Death");
