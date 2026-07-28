@@ -11,6 +11,8 @@ UGA_MonsterStagger::UGA_MonsterStagger()
 {
 	//Instance 정책 : 각 액터별 적용
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	//재발동 트리거 활성
+	bRetriggerInstancedAbility = true;
 }
 
 void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* Actorinfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
