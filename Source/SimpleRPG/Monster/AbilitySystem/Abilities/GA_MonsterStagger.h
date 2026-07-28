@@ -27,14 +27,6 @@ public:
 		const FGameplayAbilityActivationInfo ActivationInfo,
 		const FGameplayEventData* TriggerEventData
 	) override;
-
-private:
-	//Helper Function
-	void TaskWaitForStaggerEvent();
-
-private:
-	//Callback Function
-	UFUNCTION()
-	void OnStaggeredAgain(FGameplayEventData PayLoad);
-
+	
+	
 };

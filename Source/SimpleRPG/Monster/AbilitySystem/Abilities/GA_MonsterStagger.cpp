@@ -5,7 +5,6 @@
 #include "AbilitySystemComponent.h"
 #include "SimpleRPG/Monster/SimpleRPGMonsterBase.h"
 #include "SimpleRPG/SimpleRPGGameplayTag.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 
 
 UGA_MonsterStagger::UGA_MonsterStagger()
@@ -30,7 +29,6 @@ void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		return;
 	}
 
-	//TaskWaitForStaggerEvent();
 	if (!PlayActionMontage(ActionTag))
 	{
 		EndAbility(Handle, Actorinfo, ActivationInfo, true, true);
@@ -45,31 +43,6 @@ void UGA_MonsterStagger::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		ASC->CancelAbilities(&AttackTag, nullptr, this);
 	}
 
-
 }
 
-
-void UGA_MonsterStagger::TaskWaitForStaggerEvent()
-{
-	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
-		this,
-		SimpleRPGGameplayTags::Monster_Event_Stagger,
-		nullptr,
-		false
-	);
-
-	Task->EventReceived.AddDynamic(this, &UGA_MonsterStagger::OnStaggeredAgain);
-	Task->ReadyForActivation();
-}
-
-void UGA_MonsterStagger::OnStaggeredAgain(FGameplayEventData PayLoad)
-{
-	FGameplayTag ActionTag;
-	if (!ExtractActionTag(&PayLoad, ActionTag))
-	{
-		return;
-	}
-
-	PlayActionMontage(ActionTag);
-}
 
