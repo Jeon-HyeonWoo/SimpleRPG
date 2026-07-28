@@ -80,7 +80,7 @@ void UGA_MonsterMeleeAttack::OnHitEventReceived(FGameplayEventData PayLoad)
 
 	if (!GetMonsterSkillRatio(CurrentEntry->DamageRowHandle, Ratio)) return;
 
-	ApplyDamageToTarget(TargetActor, DamageEffect, Ratio);
+	ApplyDamageToTarget(TargetActor, DamageEffect, Ratio, CurrentEntry->InflictedHitReactionTag);
 
 }
 

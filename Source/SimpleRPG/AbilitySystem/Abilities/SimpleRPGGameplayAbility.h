@@ -38,7 +38,7 @@ protected:
 
 	bool GetSkillRatio(const FDataTableRowHandle& DTRowHandle, float& OutRatio) const;
 	
-	void ApplyDamageToTarget(AActor* Target, TSubclassOf<UGameplayEffect> DamageEffect, float SkillRatio);
+	void ApplyDamageToTarget(AActor* Target, TSubclassOf<UGameplayEffect> DamageEffect, float SkillRatio, FGameplayTag InflictedHitReaction = FGameplayTag());
 
 protected:
 

@@ -4,6 +4,7 @@
 #include "SimpleRPGAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "SimpleRPG/Character/SimpleRPGPlayerCharacter.h"
+#include "SimpleRPG/SimpleRPGGameplayTag.h"
 
 void USimpleRPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
@@ -58,6 +59,8 @@ void USimpleRPGAttributeSet::HandleInComingDamage(const FGameplayEffectModCallba
 		if (IsValid(PlayerCharacter))
 		{
 			//TODO :: 피격 분기
+			FGameplayTagContainer OutputTags;
+			Data.EffectSpec.GetAllAssetTags(OutputTags);
 		}
 		else
 		{

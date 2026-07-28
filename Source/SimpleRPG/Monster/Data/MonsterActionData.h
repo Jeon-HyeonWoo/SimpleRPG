@@ -19,6 +19,8 @@ struct FMonsterMontageEntry
 	UPROPERTY(EditDefaultsOnly, meta = (RowType = "/Script/SimpleRPG.MonsterDamageDataTableRow"))
 	FDataTableRowHandle DamageRowHandle;
 	
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag InflictedHitReactionTag;
 };
 
 USTRUCT(BlueprintType)

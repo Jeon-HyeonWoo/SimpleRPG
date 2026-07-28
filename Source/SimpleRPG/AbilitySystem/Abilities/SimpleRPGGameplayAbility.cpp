@@ -86,7 +86,7 @@ bool USimpleRPGGameplayAbility::GetSkillRatio(const FDataTableRowHandle& DTRowHa
     return true;
 }
 
-void USimpleRPGGameplayAbility::ApplyDamageToTarget(AActor* Target, TSubclassOf<UGameplayEffect> DamageEffect, float SkillRatio)
+void USimpleRPGGameplayAbility::ApplyDamageToTarget(AActor* Target, TSubclassOf<UGameplayEffect> DamageEffect, float SkillRatio, FGameplayTag InflictedHitReaction)
 {
     //1. Target Actor null check  
     if (!Target)
@@ -120,6 +120,11 @@ void USimpleRPGGameplayAbility::ApplyDamageToTarget(AActor* Target, TSubclassOf<
         SimpleRPGGameplayTags::SetByCaller_Skill_Ratio,
         SkillRatio
     );
+
+    if (InflictedHitReaction.IsValid())
+    {
+        SpecHandle.Data->AddDynamicAssetTag(InflictedHitReaction);
+    }
 
     //5. Apply Damage to TargetASC
     GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(

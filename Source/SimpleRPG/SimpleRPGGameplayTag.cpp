@@ -20,6 +20,11 @@ namespace SimpleRPGGameplayTags
 	//State_Movement
 	UE_DEFINE_GAMEPLAY_TAG(State_Movement_Blocked, "State.Movement.Blocked");
 
+	//피격상태 태그
+	UE_DEFINE_GAMEPLAY_TAG(HitReact_Stagger, "HitReact.Stagger");
+	UE_DEFINE_GAMEPLAY_TAG(HitReact_KnockDown, "HitReact.KnockDown");
+	UE_DEFINE_GAMEPLAY_TAG(HitReact_None, "HitReact.None");
+
 	//SetByCaller
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_Skill_Ratio,			"SetByCaller.Skill.Ratio");
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_CoolDown_Duration,	"SetByCaller.CoolDonw.Durtaion");
