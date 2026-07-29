@@ -184,7 +184,5 @@ void ASimpleRPGMonsterBase::InitializeStats()
 		AttributeSet->InitCriticalChance(StatRow->CriticalChance);
 		AttributeSet->InitCriticalMultiplier(StatRow->CriticalMultiplier);
 	}
-	
-	//5. Runtime debug 
-	UE_LOG(LogTemp, Warning, TEXT("[%s] MaxHp = %.1f, AD_AP=%.1f"), *GetName(), AttributeSet->GetMaxHP(), AttributeSet->GetAD_AttackPower());
+
 }

@@ -9,7 +9,7 @@ struct FMonsterAIConfig
 	GENERATED_BODY()
 
 
-#pragma region Ragne
+#pragma region Range
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(ClampMin="0.0"))
 	float DetectionRange = 400.0f;

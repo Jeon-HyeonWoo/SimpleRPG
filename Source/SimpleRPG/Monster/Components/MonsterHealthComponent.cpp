@@ -35,7 +35,6 @@ void UMonsterHealthComponent::HandleDamaged(AActor* _Instigator)
 
 void UMonsterHealthComponent::HandleDeath(AActor* Actor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 	if (bIsDead) return;
 
 	bIsDead = true;
@@ -44,10 +43,7 @@ void UMonsterHealthComponent::HandleDeath(AActor* Actor)
 
 	FGameplayEventData PayLoad;
 	PayLoad.InstigatorTags.AddTag(SimpleRPGGameplayTags::Monster_Ability_Death);
-	UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwner(), SimpleRPGGameplayTags::Monster_Event_Death, PayLoad);
-
-	
 }
 
 void UMonsterHealthComponent::RestoreHP()
