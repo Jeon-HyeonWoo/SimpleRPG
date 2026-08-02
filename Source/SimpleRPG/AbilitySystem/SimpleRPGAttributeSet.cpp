@@ -39,54 +39,16 @@ void USimpleRPGAttributeSet::HandleInComingDamage(const FGameplayEffectModCallba
 	}
 
 	//5. 사망 및 피격 분기
-	//5-1. 데미지를 받고 체력이 0 이하로 내려간다면 사망
 	if (GetHP() <= 0.0f)
 	{
-		//TODO::Death 분기
+		OnPlayerHPDepleted.Broadcast(Instigator);
 	}
-	//5-2. 사망하지 않고 데미지를 깎인다는 걸 알림
 	else
 	{
+		FGameplayTagContainer OutputTags;
+		Data.EffectSpec.GetAllAssetTags(OutputTags);
 		
-		UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent();
-		if (!ASC)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("GetOwningAbilitySystem Invalid : %d, %hs"), __LINE__, __FUNCTION__);
-			return;
-		}
-
-		ASimpleRPGPlayerCharacter* PlayerCharacter = Cast<ASimpleRPGPlayerCharacter>(ASC->GetAvatarActor());
-
-		if (IsValid(PlayerCharacter))
-		{
-			//TODO :: 피격 분기
-			FGameplayTagContainer OutputTags;
-			Data.EffectSpec.GetAllAssetTags(OutputTags);
-
-			FGameplayTag EventTag;
-			FGameplayEventData PayLoad;
-			if (OutputTags.HasTag(SimpleRPGGameplayTags::HitReact_Stagger))
-			{
-				EventTag = SimpleRPGGameplayTags::Event_Combat_Stagger;
-			}
-			else if (OutputTags.HasTag(SimpleRPGGameplayTags::HitReact_KnockDown))
-			{
-				EventTag = SimpleRPGGameplayTags::Event_Combat_KnockDown;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Player HitReact: no reaction (None or no tag)"));
-			}
-
-			if (EventTag.IsValid())
-			{
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(PlayerCharacter, EventTag, PayLoad);
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("PlayerCharacter Character cast failed : %d, %hs"), __LINE__, __FUNCTION__);
-		}
+		OnPlayerDamaged.Broadcast(Instigator, OutputTags);
 	}
 
 }

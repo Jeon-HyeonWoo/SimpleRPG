@@ -18,6 +18,7 @@ class USimpleRPGEquipmentComponent;
 class UInputAction;
 class ASimpleRPGPlayerState;
 class UPawnData;
+class UPlayerHealthComponent;
 struct FInputActionValue;
 
 UCLASS()
@@ -58,6 +59,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Equipment")
 	TObjectPtr<USimpleRPGEquipmentComponent> EquipmentComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Equipment")
+	TObjectPtr<UPlayerHealthComponent> HealthComponent;
 
 //Native Input Handler Func
 public:
@@ -72,6 +75,11 @@ public:
 	void OnAbilityInputPressed(const FInputActionValue& Value, FGameplayTag InputTag);
 	void OnAbilityInputReleased(const FInputActionValue& Value, FGameplayTag InputTag);
 
+public:
+
+	FVector GetLastInputDirection() const { return LastInputDirection; }
+	float GetLastInputTime() const { return LastInputTime; }
+
 //Native Input
 public:
 
@@ -84,11 +92,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SimpleRPG|Input")
 	TObjectPtr<UInputAction> IA_Look;
 
-
-public:
-
-	FVector GetLastInputDirection() const { return LastInputDirection; }
-	float GetLastInputTime() const { return LastInputTime; }
 private:
 
 	UPROPERTY()

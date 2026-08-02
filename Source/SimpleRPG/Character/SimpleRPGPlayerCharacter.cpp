@@ -23,6 +23,7 @@
 #include "../Weapon/WeaponData.h"
 #include "SimpleRPG/SimpleRPGGameplayTag.h"
 #include "SimpleRPG/Character/Movement/PlayerCharacterMovementComponent.h"
+#include "SimpleRPG/Character/Components/PlayerHealthComponent.h"
 
 
 
@@ -73,6 +74,15 @@ ASimpleRPGPlayerCharacter::ASimpleRPGPlayerCharacter(const FObjectInitializer& O
 		UE_LOG(LogTemp, Error, TEXT("%d, %hs, EquipmentComponent is invalid"), __LINE__, __FUNCTION__);
 	}
 	
+	//Create HealthComponent
+	{
+		HealthComponent = CreateDefaultSubobject<UPlayerHealthComponent>(TEXT("HealthComponent"));
+		if (!IsValid(HealthComponent))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HealthComponent Inavlid : %d, %hs"), __LINE__, __FUNCTION__);
+			return;
+		}
+	}
 }
 
 void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
@@ -86,7 +96,8 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 		return;
 	}
 	InitializeAbilitySystem(PS);
-	
+	HealthComponent->BindToAttributeSet();
+
 	//2. Default PawnData 지정 / Ability부여 / 기본 무기 부여
 	if (HasAuthority())
 	{

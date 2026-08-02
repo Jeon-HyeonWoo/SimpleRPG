@@ -24,6 +24,7 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerHPDepleted, AActor*, Instigator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerDamaged, AActor*, Instigator, FGameplayTagContainer, AssetTags);
 
 UCLASS()
 class SIMPLERPG_API USimpleRPGAttributeSet : public UAttributeSet
@@ -99,5 +100,8 @@ public:
 public:
 
 	UPROPERTY(BlueprintAssignable)
-	FOnPlayerHPDepleted OnHPDepleted;
+	FOnPlayerHPDepleted OnPlayerHPDepleted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerDamaged OnPlayerDamaged;
 };
