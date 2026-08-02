@@ -10,8 +10,10 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Ability_Dash,			"Ability.Dash");
 	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack_Sword,	"Ability.Attack.Sword");
 	UE_DEFINE_GAMEPLAY_TAG(Ability_WeaponSwap,		"Ability.WeaponSwap");
-	UE_DEFINE_GAMEPLAY_TAG(Ability_Stagger,			"Ability.Stagger")
-	UE_DEFINE_GAMEPLAY_TAG(Ability_KnockDown,		"Ability.KnockDown")
+	UE_DEFINE_GAMEPLAY_TAG(Ability_Stagger,			"Ability.Stagger");
+	UE_DEFINE_GAMEPLAY_TAG(Ability_KnockDown,		"Ability.KnockDown");
+	UE_DEFINE_GAMEPLAY_TAG(Ability_Death,			"Ability.Death");
+
 
 	//Ability CoolDown
 	UE_DEFINE_GAMEPLAY_TAG(CoolDown_Common_Dash,		"CoolDown.Common.Dash");

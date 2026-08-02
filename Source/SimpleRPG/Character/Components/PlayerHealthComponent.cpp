@@ -69,6 +69,7 @@ void UPlayerHealthComponent::HandleDamaged(AActor* Instigator, FGameplayTagConta
 	}
 	else
 	{
+		//TODO : 추후 HitReat None 확인시 삭제 요망.
 		UE_LOG(LogTemp, Warning, TEXT("None HitReact Tag"));
 	}
 
@@ -81,6 +82,16 @@ void UPlayerHealthComponent::HandleDamaged(AActor* Instigator, FGameplayTagConta
 
 void UPlayerHealthComponent::HandleDeath(AActor* Instigator)
 {
+	AActor* OwnerPawn = GetOwner();
+	if (!IsValid(OwnerPawn))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OwnerPawn Invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+	FGameplayEventData PayLoad;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerPawn, SimpleRPGGameplayTags::Event_Combat_Death, PayLoad);
 }
 
 
