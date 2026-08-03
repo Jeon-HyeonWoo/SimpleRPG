@@ -4,7 +4,10 @@
 #include "ANS_SwordHitTrace.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GenericTeamAgentInterface.h"
+#include "GameFramework/Controller.h"
 #include "GameFramework/Pawn.h"
+
 
 void UANS_SwordHitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
@@ -53,6 +56,18 @@ void UANS_SwordHitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 			if (HitActor == nullptr) continue;
 			if (!Cast<APawn>(HitActor)) continue;
+			APawn* OwnerPawn = Cast<APawn>(OwnerActor);
+			if (OwnerActor)
+			{
+				if (IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(OwnerPawn->GetController()))
+				{
+					if (TeamAgent->GetTeamAttitudeTowards(*HitActor) != ETeamAttitude::Hostile)
+					{
+						continue;   // 적대 아니면 스킵 (아군 몬스터 등)
+					}
+				}
+			}
+
 			if (HitActors.Contains(HitActor)) continue;
 			
 			HitActors.Add(HitActor);

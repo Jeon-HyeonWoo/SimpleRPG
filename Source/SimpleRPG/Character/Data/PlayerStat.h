@@ -26,7 +26,7 @@ struct FPlayerStat
 	float AP_AttackPower = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float AD_Defense = 0.0f;
+	float AD_Defense = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AP_Defense = 0.0f;

@@ -57,7 +57,6 @@ void USimpleRPGMonsterAttributeSet::HandleIncomingDamage(const FGameplayEffectMo
 
 		if (IsValid(MonsterHealthComp))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d, %hs"), __LINE__, __FUNCTION__);
 			MonsterHealthComp->HandleDamaged(Instigator);
 		}
 		else

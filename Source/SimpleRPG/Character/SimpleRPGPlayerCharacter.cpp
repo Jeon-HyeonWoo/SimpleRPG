@@ -115,6 +115,7 @@ void ASimpleRPGPlayerCharacter::PossessedBy(AController* NewController)
 		GrantDefaultAbilities(PawnData);
 		InitializeEquipment(PawnData);
 	}
+	
 }
 
 void ASimpleRPGPlayerCharacter::BeginPlay()

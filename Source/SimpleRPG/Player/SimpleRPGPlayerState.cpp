@@ -86,7 +86,9 @@ void ASimpleRPGPlayerState::InitializeStats()
 	AS->InitCriticalMultiplier(PlayerStat.CriticalMultiplier);
 
 	AS->InitAD_Defense(PlayerStat.AD_Defense);
+	UE_LOG(LogTemp, Warning, TEXT("Init AD_Defense = %f"), AS->GetAD_Defense());
 	AS->InitAP_Defense(PlayerStat.AP_Defense);
+	
 
 	AS->InitBaseMoveSpeed(PlayerStat.BaseMoveSpeed);
 	AS->InitMoveSpeedMultiplier(PlayerStat.MoveSpeedMultiplier);
