@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SimpleRPGGameplayAbility.h"
+#include "MeleeGameplayAbility.h"
 #include "GA_SwordChargeAttack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIMPLERPG_API UGA_SwordChargeAttack : public USimpleRPGGameplayAbility
+class SIMPLERPG_API UGA_SwordChargeAttack : public UMeleeGameplayAbility
 {
 	GENERATED_BODY()
 

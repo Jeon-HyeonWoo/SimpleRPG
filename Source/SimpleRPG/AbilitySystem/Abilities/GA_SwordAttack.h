@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SimpleRPGGameplayAbility.h"
+#include "MeleeGameplayAbility.h"
 #include "GA_SwordAttack.generated.h"
 
 USTRUCT(BlueprintType)
@@ -23,7 +23,7 @@ struct FComboStep
 * 
  */
 UCLASS(Abstract, Blueprintable)
-class SIMPLERPG_API UGA_SwordAttack : public USimpleRPGGameplayAbility
+class SIMPLERPG_API UGA_SwordAttack : public UMeleeGameplayAbility
 {
 	GENERATED_BODY()
 	
