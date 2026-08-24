@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SimpleRPGGameplayAbility.h"
+#include "PlayerGameplayAbility.h"
 #include "GA_WeaponSwap.generated.h"
 
 /**
@@ -14,7 +15,7 @@ class USimpleRPGEquipmentComponent;
 class UWeaponData;
 
 UCLASS()
-class SIMPLERPG_API UGA_WeaponSwap : public USimpleRPGGameplayAbility
+class SIMPLERPG_API UGA_WeaponSwap : public UPlayerGameplayAbility
 {
 	GENERATED_BODY()
 

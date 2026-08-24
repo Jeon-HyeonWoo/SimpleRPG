@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "SimpleRPGGameplayAbility.h"
+#include "PlayerGameplayAbility.h"
 #include "GA_SwordPowerUp.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIMPLERPG_API UGA_SwordPowerUp : public USimpleRPGGameplayAbility
+class SIMPLERPG_API UGA_SwordPowerUp : public UPlayerGameplayAbility
 {
 	GENERATED_BODY()
 	

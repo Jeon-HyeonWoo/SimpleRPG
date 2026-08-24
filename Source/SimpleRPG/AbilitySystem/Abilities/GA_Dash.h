@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SimpleRPGGameplayAbility.h"
+#include "PlayerGameplayAbility.h"
 #include "GA_Dash.generated.h"
 
 UENUM()
@@ -23,7 +24,7 @@ enum class EDashDirection : uint8
  * 
  */
 UCLASS()
-class SIMPLERPG_API UGA_Dash : public USimpleRPGGameplayAbility
+class SIMPLERPG_API UGA_Dash : public UPlayerGameplayAbility
 {
 	GENERATED_BODY()
 	

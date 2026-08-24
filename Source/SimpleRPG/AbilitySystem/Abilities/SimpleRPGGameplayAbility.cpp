@@ -10,47 +10,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SimpleRPG/AbilitySystem/SimpleRPGAttributeSet.h"
 
-void USimpleRPGGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
-{
-    //1. CoolDown GE Class 가져오기
-    UGameplayEffect* CoolDownGE = GetCooldownGameplayEffect();
-    if (!CoolDownGE)
-    {
-        return;
-    }
-
-    //2. GESpec생성
-    FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(
-        CoolDownGE->GetClass(),
-        GetAbilityLevel()
-    );
-    if (!SpecHandle.IsValid())
-    {
-        return;
-    }
-
-    FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
-    if (!Spec)
-    {
-        return;
-    }
-   
-    const FDamageDataTableRow* Row = CoolDownDataRow.GetRow<FDamageDataTableRow>(TEXT("ApplyCoolDown"));
-    if (!Row)
-    {
-        return;
-    }
-    
-    float Duration = Row->CoolDown;
-
-    //3. SetByCaller로 Duration 주입
-    Spec->SetSetByCallerMagnitude(SimpleRPGGameplayTags::SetByCaller_CoolDown_Duration, Duration);
-
-    Spec->DynamicGrantedTags.AppendTags(CoolDownTags);
-
-    //4. 적용
-    ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
-}
 
 ASimpleRPGCharacterBase* USimpleRPGGameplayAbility::GetOwnerCharacter() const
 {
