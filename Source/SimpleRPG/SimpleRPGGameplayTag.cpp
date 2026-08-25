@@ -33,13 +33,6 @@ namespace SimpleRPGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_Skill_Ratio,			"SetByCaller.Skill.Ratio");
 	UE_DEFINE_GAMEPLAY_TAG(SetByCaller_CoolDown_Duration,	"SetByCaller.CoolDonw.Durtaion");
 
-	//SetByCaller_Monster
-	
-
-	//Damage
-	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AD, "Damage.Type.AD");
-	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AP, "Damage.Type.AP");
-
 
 	//Event_Combat Shared
 	UE_DEFINE_GAMEPLAY_TAG(Event_Combat_HitDetect,			"Event.Combat.HitDetect");
@@ -68,4 +61,21 @@ namespace SimpleRPGGameplayTags
 
 	//Monster State
 	UE_DEFINE_GAMEPLAY_TAG(Monster_State_Stagger, "Monster.State.Stagger");
+
+	//Player_Skill_Data
+	UE_DEFINE_GAMEPLAY_TAG(Skill_Cost_HP, "Skill.Cost.HP");
+	UE_DEFINE_GAMEPLAY_TAG(Skill_Cost_MP, "Skill.Cost.MP");
+
+	UE_DEFINE_GAMEPLAY_TAG(Skill_Category_Active, "Skill.Category.Active");
+	UE_DEFINE_GAMEPLAY_TAG(Skill_Category_Passive, "Skill.Category.Passive");
+
+	//Damage_Type
+	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AD_Melee, "Damage.Type.AD.Melee");
+	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AD_Range, "Damage.Type.AD.Range");
+	UE_DEFINE_GAMEPLAY_TAG(Damage_Type_AP, "Damage.Type.AP");
+	
+	//Weapon_Type
+	UE_DEFINE_GAMEPLAY_TAG(Weapon_Type_Sword, "Weapon.Type.Sword");
+
+
 }
