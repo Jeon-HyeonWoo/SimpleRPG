@@ -8,6 +8,8 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "../Data/DamageDataTableRow.h"
+#include "SimpleRPG/AbilitySystem/Data/SkillData.h"
+#include "SimpleRPG/AbilitySystem/Data/SkillDataTableRow.h"
 #include "SimpleRPG/Monster/AbilitySystem/AttributeSet/SimpleRPGMonsterAttributeSet.h"
 
 UGA_SwordAttack::UGA_SwordAttack()
@@ -149,18 +151,38 @@ void UGA_SwordAttack::OnDamageEvent(FGameplayEventData PayLoad)
 	//현재 재생중인 Montage Secton Name을 가져옴
 	FName CurrentSection = GetAbilitySystemComponentFromActorInfo()->GetCurrentMontageSectionName();
 
-	//섹션 이름에 해당하는 ComboStep을 찾아 계수 적용
-	const FComboStep* Step = ComboSteps.FindByPredicate(
-		[&](const FComboStep& S) { return S.SectionName == CurrentSection; }
-	);
+	const USkillData* SkillData = Cast<USkillData>(GetCurrentSourceObject());
+	if (!SkillData)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SkillData is nullptr : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
 
-	if (!Step) return;
+	const FSkillDataTableRow* Row = SkillData->GetSkillDataTableRow();
+	if (!Row)
+	{
+		return;
+	}
 
-	float Ratio;
+	//TODO : FSkillProgressState 도입 시 실제 CurrentGrade를 전달
+	const float Ratio = Row->GetDamageMultifilerAtGrade(CurrentSection, 1);
+	if (Ratio <= 0.0f)
+	{
+		//해당 단계를 찾지 못한 경우
+		return;
+	}
 
-	if (!GetSkillRatio(Step->DamageRow, Ratio)) return;
+	UE_LOG(LogTemp, Warning, TEXT("Stage : %s / Ratio : %.2f"), *CurrentSection.ToString(), Ratio);
 
-	ApplyDamageToTarget(const_cast<AActor*>(PayLoad.Target.Get()), DamageEffect, Ratio);
+	AActor* Target = const_cast<AActor*>(PayLoad.Target.Get());
+	if (!IsValid(Target))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Target is invalid : %d, %hs"), __LINE__, __FUNCTION__);
+		return;
+	}
+
+
+	ApplyDamageToTarget(Target, DamageEffect, Ratio);
 }
 
 

@@ -14,9 +14,6 @@ struct FComboStep
 	//SectionName : Combo1, 2, 3
 	UPROPERTY(EditDefaultsOnly)
 	FName SectionName;
-
-	UPROPERTY(EditDefaultsOnly)
-	FDataTableRowHandle DamageRow;
 };
 
 /**
