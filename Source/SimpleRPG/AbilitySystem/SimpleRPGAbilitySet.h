@@ -14,11 +14,15 @@
 
 class USimpleRPGGameplayAbility;
 class UAbilitySystemComponent;
+class USkillData;
 
 USTRUCT(BlueprintType)
 struct FSimpleRPGAbilitySetEntry
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USkillData> SkillData;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USimpleRPGGameplayAbility> AbilityClass;

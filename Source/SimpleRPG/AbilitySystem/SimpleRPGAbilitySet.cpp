@@ -5,7 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/SimpleRPGGameplayAbility.h"
 #include "GameplayAbilitySpec.h"
-#include "../AbilitySystem/Abilities/SimpleRPGGameplayAbility.h"
+#include "Data/SkillData.h"
 
 void FSimpleRPGAbilitySet_GrantedHandles::AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle)
 {
@@ -43,15 +43,22 @@ void USimpleRPGAbilitySet::GiveToAbilitySystem(UAbilitySystemComponent* ASC, FSi
 
 	for (const FSimpleRPGAbilitySetEntry& Entry : GrantedAbilities)
 	{
-		if (!IsValid(Entry.AbilityClass))
+		TSubclassOf<USimpleRPGGameplayAbility> ClassTOGrant = Entry.AbilityClass;
+
+		if (IsValid(Entry.SkillData))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s, is invalid"), *(Entry.AbilityClass.Get()->GetName()));
+			ClassTOGrant = Entry.SkillData->LogicAbilityClass;
+		}
+
+		if (!IsValid(ClassTOGrant))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AbilityClass is invalid in AbilitySet [%s] : %d, %hs"),
+				*GetNameSafe(this), __LINE__, __FUNCTION__);
 			continue;
 		}
 
 		/* Spec = 말 그대로 Ability에 대한 스펙, 정보 묶음 AbilityClass와 Level, 부여오브젝트, 런타임테그, 핸들(포인터개념)을 포함 */
-		FGameplayAbilitySpec AbilitySpec(Entry.AbilityClass, 1);
-		AbilitySpec.InputID = static_cast<int32>(Entry.InputID);
+		FGameplayAbilitySpec AbilitySpec(Entry.AbilityClass, 1, static_cast<int32>(Entry.InputID), Entry.SkillData);
 
 		/* GiveAbility의 반환값이 SpecHandle 해당 Handle번호를 변수로 만들어서 Granted에 부여 */
 		FGameplayAbilitySpecHandle GrantedHandle = ASC->GiveAbility(AbilitySpec);
