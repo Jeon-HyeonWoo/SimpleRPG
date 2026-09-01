@@ -3,11 +3,28 @@
 
 #include "SkillDataTableRow.h"
 
-float FSkillDataTableRow::GetDamageMultifilerAtGrade(int32 InGrade) const
-{	
+const FSkillStageBalance* FSkillDataTableRow::FindStage(FName InStageId) const
+{
+	return Stages.FindByPredicate(
+		[InStageId](const FSkillStageBalance& InStage)
+		{
+			return InStage.StageId == InStageId;
+		}
+	);
+}
+
+float FSkillDataTableRow::GetDamageMultifilerAtGrade(FName InStageId, int32 InGrade) const
+{
+	const FSkillStageBalance* Stage = FindStage(InStageId);
+	if (!Stage)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Stage [%s] not Found : %d, %hs"), *InStageId.ToString(), __LINE__, __FUNCTION__);
+		return 0.0f;
+	}
+
 	const int32 SafeGrade = GetClampedGrade(InGrade);
 
-	return DamageMultiplier + ((SafeGrade - 1) * DamageMultiplierPerGrade);
+	return Stage->DamageMultiplier + ((SafeGrade - 1) * Stage->DamageMultiplierPerGrade);
 }
 
 float FSkillDataTableRow::GetCostAtGrade(int32 InGrade) const

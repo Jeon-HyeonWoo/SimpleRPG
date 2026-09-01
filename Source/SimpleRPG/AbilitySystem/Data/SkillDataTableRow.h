@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "GameplayTagContainer.h"
+#include "SkillStageBalance.h"
 #include "SkillDataTableRow.generated.h"
 
 USTRUCT(BlueprintType)
@@ -60,13 +61,8 @@ struct FSkillDataTableRow : public FTableRowBase
 
 #pragma region Damage
 
-	/* 기본 공격력 대비 공격력 계수 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Damage", meta = (ClampMin = "0.0"))
-	float DamageMultiplier = 1.0f;
-
-	/* Grade 대비 추가되는 계수 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Damage", meta = (ClampMin = "0.0"))
-	float DamageMultiplierPerGrade = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Damage")
+	TArray<FSkillStageBalance> Stages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SimpleRPG|Damage", meta = (Categories = "Damage.Type"))
 	FGameplayTag DamageType;
@@ -89,8 +85,10 @@ struct FSkillDataTableRow : public FTableRowBase
 
 #pragma region Helper
 
+	const FSkillStageBalance* FindStage(FName InStageId) const;
+
 	/* 등급 반영한 최종 공격력 계수 반환 */
-	float GetDamageMultifilerAtGrade(int32 InGrade) const;
+	float GetDamageMultifilerAtGrade(FName InStageId, int32 InGrade) const;
 
 	/* 등급을 반영한 최종 자원 소모량 반환 */
 	float GetCostAtGrade(int32 InGrade) const;
