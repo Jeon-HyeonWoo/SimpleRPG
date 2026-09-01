@@ -43,19 +43,22 @@ void USimpleRPGAbilitySet::GiveToAbilitySystem(UAbilitySystemComponent* ASC, FSi
 
 	for (const FSimpleRPGAbilitySetEntry& Entry : GrantedAbilities)
 	{
-		TSubclassOf<USimpleRPGGameplayAbility> ClassTOGrant = Entry.AbilityClass;
+		TSubclassOf<USimpleRPGGameplayAbility> ClassToGrant = Entry.AbilityClass;
 
 		if (IsValid(Entry.SkillData))
 		{
-			ClassTOGrant = Entry.SkillData->LogicAbilityClass;
+			ClassToGrant = Entry.SkillData->LogicAbilityClass;
 		}
 
-		if (!IsValid(ClassTOGrant))
+		if (!IsValid(ClassToGrant))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("AbilityClass is invalid in AbilitySet [%s] : %d, %hs"),
 				*GetNameSafe(this), __LINE__, __FUNCTION__);
 			continue;
 		}
+
+		UE_LOG(LogTemp, Warning, TEXT("Grant: %s / SkillData: %s"),
+			*GetNameSafe(ClassToGrant), *GetNameSafe(Entry.SkillData));
 
 		/* Spec = 말 그대로 Ability에 대한 스펙, 정보 묶음 AbilityClass와 Level, 부여오브젝트, 런타임테그, 핸들(포인터개념)을 포함 */
 		FGameplayAbilitySpec AbilitySpec(Entry.AbilityClass, 1, static_cast<int32>(Entry.InputID), Entry.SkillData);
